@@ -229,11 +229,12 @@ export const AudioPlayer: React.FC = memo(() => {
 
     return (
         <div className={`
-            fixed left-0 right-0 z-50 transition-all duration-300
+            fixed left-0 right-0 z-[100] transition-all duration-300
             ${isMobile ? 'bottom-[64px]' : 'bottom-0'} 
             bg-white/95 dark:bg-slate-900/95 backdrop-blur-md
             border-t border-primary-200 dark:border-primary-800
             shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)]
+            pb-safe
         `}>
             <div className="max-w-4xl mx-auto px-4">
                 {/* Progress bar */}
