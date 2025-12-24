@@ -1,0 +1,74 @@
+/**
+ * Route Definitions for Nur-Al-Quran
+ * 
+ * Centralized route configuration for React Router.
+ * All routes are typed and used for navigation and breadcrumbs.
+ * 
+ * @module config/routes
+ */
+
+import type { RouteDefinition } from '@/types';
+
+/**
+ * Application route paths
+ */
+export const ROUTES = {
+    HOME: '/',
+    SURAHS: '/surahs',
+    JUZ: '/juz',
+    SURAH: '/surah/:surahId',
+    JUZ_VIEW: '/juz/:juzId',
+    BOOKMARKS: '/bookmarks',
+    SETTINGS: '/settings',
+    SEARCH: '/search',
+} as const;
+
+/**
+ * Helper function to generate Surah route
+ * @param surahId - The Surah number (1-114)
+ */
+export const getSurahRoute = (surahId: number): string =>
+    `/surah/${surahId}`;
+
+/**
+ * Helper function to generate Juz route
+ * @param juzId - The Juz number (1-30)
+ */
+export const getJuzRoute = (juzId: number): string =>
+    `/juz/${juzId}`;
+
+/**
+ * Navigation items for the main menu
+ */
+export const NAV_ITEMS: readonly RouteDefinition[] = [
+    {
+        path: ROUTES.HOME,
+        name: 'Home',
+        icon: 'home',
+        showInNav: true,
+    },
+    {
+        path: ROUTES.SURAHS,
+        name: 'Surahs',
+        icon: 'book-open',
+        showInNav: true,
+    },
+    {
+        path: ROUTES.JUZ,
+        name: 'Juz',
+        icon: 'layers',
+        showInNav: true,
+    },
+    {
+        path: ROUTES.BOOKMARKS,
+        name: 'Bookmarks',
+        icon: 'bookmark',
+        showInNav: true,
+    },
+    {
+        path: ROUTES.SETTINGS,
+        name: 'Settings',
+        icon: 'settings',
+        showInNav: true,
+    },
+] as const;

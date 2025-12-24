@@ -1,0 +1,206 @@
+/**
+ * Global CSS Styles for Nur-Al-Quran
+ * 
+ * Tailwind CSS directives and custom global styles.
+ * Includes Arabic font imports and base theme variables.
+ */
+
+/* Google Fonts - MUST be first */
+/* Google Fonts loaded in index.html */
+
+/* Tailwind CSS Directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base Layer Customizations */
+@layer base {
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Base body styles */
+  body {
+    @apply bg-surface-light dark:bg-surface-dark;
+    @apply text-slate-900 dark:text-slate-100;
+    @apply antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Arabic text default styling */
+  [lang="ar"],
+  .font-arabic {
+    font-family: 'Amiri Quran', 'Amiri', 'Scheherazade New', serif;
+    direction: rtl;
+  }
+
+  /* Focus styles for accessibility */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary-500;
+  }
+
+  /* Selection colors */
+  ::selection {
+    @apply bg-primary-200 dark:bg-primary-800 text-primary-900 dark:text-primary-100;
+  }
+}
+
+/* Component Layer - Reusable patterns */
+@layer components {
+
+  /* Card component */
+  .card {
+    @apply bg-white dark:bg-slate-800;
+    @apply border border-slate-200 dark:border-slate-700;
+    @apply rounded-xl shadow-sm;
+    @apply transition-shadow duration-200;
+  }
+
+  .card:hover {
+    @apply shadow-md;
+  }
+
+  /* Verse card specific styling */
+  .verse-card {
+    @apply card p-4 md:p-6;
+  }
+
+  /* Arabic verse text */
+  .arabic-text {
+    @apply font-arabic text-arabic-base md:text-arabic-lg;
+    @apply text-slate-900 dark:text-slate-100;
+    @apply leading-loose;
+    direction: rtl;
+    text-align: right;
+  }
+
+  /* Translation text */
+  .translation-text {
+    @apply text-sm md:text-base;
+    @apply text-slate-600 dark:text-slate-400;
+    @apply leading-relaxed;
+  }
+
+  /* Button base */
+  .btn {
+    @apply inline-flex items-center justify-center;
+    @apply px-4 py-2 rounded-lg;
+    @apply font-medium text-sm;
+    @apply transition-all duration-200;
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply btn;
+    @apply bg-primary-600 text-white;
+    @apply hover:bg-primary-700;
+    @apply focus-visible:ring-primary-500;
+  }
+
+  .btn-secondary {
+    @apply btn;
+    @apply bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100;
+    @apply hover:bg-slate-200 dark:hover:bg-slate-600;
+  }
+
+  .btn-ghost {
+    @apply btn;
+    @apply bg-transparent text-slate-600 dark:text-slate-400;
+    @apply hover:bg-slate-100 dark:hover:bg-slate-800;
+  }
+
+  /* Icon button */
+  .icon-btn {
+    @apply p-2 rounded-full;
+    @apply text-slate-600 dark:text-slate-400;
+    @apply hover:bg-slate-100 dark:hover:bg-slate-800;
+    @apply transition-colors duration-200;
+  }
+
+  /* Verse number badge */
+  .verse-number {
+    @apply inline-flex items-center justify-center;
+    @apply w-8 h-8 md:w-10 md:h-10;
+    @apply rounded-full;
+    @apply bg-primary-100 dark:bg-primary-900;
+    @apply text-primary-700 dark:text-primary-300;
+    @apply text-xs md:text-sm font-bold;
+  }
+
+  /* Surah badge */
+  .surah-badge {
+    @apply inline-flex items-center;
+    @apply px-3 py-1 rounded-full;
+    @apply text-xs font-medium;
+  }
+
+  .surah-badge-makkah {
+    @apply surah-badge;
+    @apply bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300;
+  }
+
+  .surah-badge-madinah {
+    @apply surah-badge;
+    @apply bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300;
+  }
+
+  /* Settings card */
+  .settings-card {
+    @apply bg-[#1A1F2E] rounded-2xl p-5 border-2 transition-all duration-200 cursor-pointer;
+  }
+
+  .settings-card-selected {
+    @apply settings-card border-amber-500;
+  }
+
+  .settings-card-unselected {
+    @apply settings-card border-slate-700 hover:border-slate-600;
+  }
+
+  /* Settings toggle button */
+  .settings-toggle {
+    @apply flex-1 py-3 px-4 rounded-xl font-medium text-base transition-all duration-200;
+  }
+
+  .settings-toggle-selected {
+    @apply settings-toggle bg-amber-500 text-white;
+  }
+
+  .settings-toggle-unselected {
+    @apply settings-toggle bg-[#1A1F2E] text-slate-400 hover:bg-[#242B3D];
+  }
+}
+
+/* Utility Layer - Custom utilities */
+@layer utilities {
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Text balance for better readability */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Animation delays */
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+}
