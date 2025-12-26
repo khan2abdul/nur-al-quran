@@ -17,6 +17,9 @@ interface MainLayoutProps {
 
     /** Optional additional class names */
     readonly className?: string;
+
+    /** Whether the content should span full width without container constraints */
+    readonly isFullWidth?: boolean;
 }
 
 /**
@@ -29,20 +32,21 @@ interface MainLayoutProps {
  */
 export const MainLayout: React.FC<MainLayoutProps> = memo(({
     children,
-    className = ''
+    className = '',
+    isFullWidth = false
 }) => {
     return (
-        <div className="min-h-screen bg-[#0f172a]">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
             {/* Navigation */}
             <Navbar />
 
             {/* Main Content */}
             <main
                 className={`
-          pt-14 pb-20 md:pt-16 md:pb-8
-          px-2 md:px-6 lg:px-8 max-w-7xl mx-auto
-          ${className}
-        `.trim()}
+                    pt-14 pb-20 md:pt-16 md:pb-8
+                    ${isFullWidth ? '' : 'px-2 md:px-6 lg:px-8 max-w-7xl mx-auto'}
+                    ${className}
+                `.trim()}
             >
                 {children}
             </main>

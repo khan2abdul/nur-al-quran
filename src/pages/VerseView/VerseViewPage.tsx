@@ -216,16 +216,16 @@ export const VerseViewPage: React.FC = memo(() => {
     }
 
     return (
-        <div className="min-h-screen bg-[#0f172a] py-6 md:py-10 pb-40 px-0 text-white">
-            <div className="w-full">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-6 md:py-10 pb-40 px-0 transition-colors duration-300">
+            <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
                 {/* Navigation & Controls */}
-                <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
                     <SurahSelector currentSurahId={surahNumber} />
 
                     {/* View Controls */}
-                    <div className="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-800 p-1.5 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <div className="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-800 p-2 rounded-[1.5rem] shadow-xl border border-slate-200 dark:border-white/5">
                         {/* Language Toggle */}
-                        <div className="flex flex-wrap items-center bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5">
+                        <div className="flex flex-wrap items-center bg-slate-100 dark:bg-slate-700/50 rounded-2xl p-1">
                             {[
                                 { id: 'default', label: 'Default' },
                                 { id: 'en', label: 'English' },
@@ -236,9 +236,9 @@ export const VerseViewPage: React.FC = memo(() => {
                                 <button
                                     key={mode.id}
                                     onClick={() => setDisplayMode(mode.id as any)}
-                                    className={`px-3 py-1.5 text-[10px] font-bold rounded-md flex items-center gap-1 transition-all ${displayMode === mode.id
-                                        ? 'bg-white dark:bg-slate-600 text-primary-600 dark:text-primary-300 shadow-sm'
-                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                                    className={`px-4 py-2 text-[10px] md:text-xs font-bold rounded-xl flex items-center gap-1 transition-all ${displayMode === mode.id
+                                        ? 'bg-white dark:bg-slate-600 text-emerald-600 dark:text-emerald-400 shadow-lg'
+                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                                         }`}
                                 >
                                     {mode.label}
@@ -246,15 +246,15 @@ export const VerseViewPage: React.FC = memo(() => {
                             ))}
                         </div>
 
-                        <div className="w-px h-4 bg-slate-200 dark:bg-slate-700" />
+                        <div className="hidden sm:block w-px h-6 bg-slate-200 dark:bg-white/10" />
 
                         {/* Font Size Controls */}
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-700/50 rounded-2xl p-1">
                             <button
                                 onClick={() => setFontSize('small')}
-                                className={`w-7 h-7 flex items-center justify-center rounded text-xs font-bold transition-colors ${fontSize === 'small'
-                                    ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300'
-                                    : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
+                                className={`w-9 h-9 flex items-center justify-center rounded-xl text-xs font-bold transition-all ${fontSize === 'small'
+                                    ? 'bg-white dark:bg-slate-600 text-emerald-600 dark:text-emerald-400 shadow-md'
+                                    : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
                                     }`}
                                 aria-label="Small font"
                             >
@@ -262,9 +262,9 @@ export const VerseViewPage: React.FC = memo(() => {
                             </button>
                             <button
                                 onClick={() => setFontSize('medium')}
-                                className={`w-7 h-7 flex items-center justify-center rounded text-sm font-bold transition-colors ${fontSize === 'medium'
-                                    ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300'
-                                    : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
+                                className={`w-9 h-9 flex items-center justify-center rounded-xl text-sm font-bold transition-all ${fontSize === 'medium'
+                                    ? 'bg-white dark:bg-slate-600 text-emerald-600 dark:text-emerald-400 shadow-md'
+                                    : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
                                     }`}
                                 aria-label="Medium font"
                             >
@@ -272,9 +272,9 @@ export const VerseViewPage: React.FC = memo(() => {
                             </button>
                             <button
                                 onClick={() => setFontSize('large')}
-                                className={`w-7 h-7 flex items-center justify-center rounded text-base font-bold transition-colors ${fontSize === 'large'
-                                    ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300'
-                                    : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
+                                className={`w-9 h-9 flex items-center justify-center rounded-xl text-base font-bold transition-all ${fontSize === 'large'
+                                    ? 'bg-white dark:bg-slate-600 text-emerald-600 dark:text-emerald-400 shadow-md'
+                                    : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'
                                     }`}
                                 aria-label="Large font"
                             >

@@ -15,9 +15,8 @@ import type { RouteDefinition } from '@/types';
 export const ROUTES = {
     HOME: '/',
     SURAHS: '/surahs',
-    JUZ: '/juz',
+    WISDOM: '/wisdom',
     SURAH: '/surah/:surahId',
-    JUZ_VIEW: '/juz/:juzId',
     BOOKMARKS: '/bookmarks',
     SETTINGS: '/settings',
     SEARCH: '/search',
@@ -54,9 +53,9 @@ export const NAV_ITEMS: readonly RouteDefinition[] = [
         showInNav: true,
     },
     {
-        path: ROUTES.JUZ,
-        name: 'Juz',
-        icon: 'layers',
+        path: ROUTES.WISDOM,
+        name: 'Divine Wisdom',
+        icon: 'sparkles',
         showInNav: true,
     },
     {

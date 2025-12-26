@@ -262,7 +262,7 @@ export const AudioPlayer: React.FC = memo(() => {
                 </div>
 
                 {/* Controls */}
-                <div className="flex items-center justify-between py-3 gap-4">
+                <div className="flex items-center justify-between py-3 gap-2 md:gap-4">
                     {/* Left: Reciter info */}
                     <div className="flex-1 min-w-0">
                         <ReciterSelector />
@@ -276,7 +276,7 @@ export const AudioPlayer: React.FC = memo(() => {
                         {/* Skip backward */}
                         <button
                             onClick={actions.skipBackward}
-                            className="p-2 text-white/40 hover:text-cyan-400 transition-colors"
+                            className="hidden md:flex p-2 text-white/40 hover:text-cyan-400 transition-colors"
                             aria-label="Rewind 10 seconds"
                         >
                             {Icons.rewind10}
@@ -319,7 +319,7 @@ export const AudioPlayer: React.FC = memo(() => {
                         {/* Skip forward */}
                         <button
                             onClick={actions.skipForward}
-                            className="p-2 text-white/40 hover:text-cyan-400 transition-colors"
+                            className="hidden md:flex p-2 text-white/40 hover:text-cyan-400 transition-colors"
                             aria-label="Forward 10 seconds"
                         >
                             {Icons.forward10}
@@ -327,9 +327,9 @@ export const AudioPlayer: React.FC = memo(() => {
                     </div>
 
                     {/* Right: Time and speed */}
-                    <div className="flex-1 flex items-center justify-end gap-4">
-                        <span className="text-[10px] font-mono text-white/30 tabular-nums uppercase tracking-widest">
-                            {formatDuration(timeState.currentTime)} <span className="text-white/10 mx-1">/</span> {formatDuration(timeState.duration)}
+                    <div className="flex-1 flex items-center justify-end gap-2 md:gap-4 min-w-0">
+                        <span className="text-[10px] font-mono text-white/30 tabular-nums uppercase tracking-widest truncate">
+                            {formatDuration(timeState.currentTime)} <span className="text-white/10 mx-0.5">/</span> {formatDuration(timeState.duration)}
                         </span>
                         <SpeedSelector />
                     </div>

@@ -13,6 +13,7 @@ import { LanguageProvider } from '@/context/LanguageContext';
 import { AudioPlayerProvider } from '@/context/AudioPlayerContext';
 import { ViewProvider } from '@/context/ViewContext';
 import { AIProvider } from '@/context/AIContext';
+import { AuthProvider } from '@/context/AuthContext';
 import { MainLayout } from '@/layouts/MainLayout';
 import { ROUTES } from '@/config/routes';
 
@@ -22,7 +23,7 @@ const SurahListPage = lazy(() => import('@/pages/SurahList/SurahListPage'));
 const VerseViewPage = lazy(() => import('@/pages/VerseView/VerseViewPage'));
 const SettingsPage = lazy(() => import('@/pages/Settings/SettingsPage'));
 const BookmarksPage = lazy(() => import('@/pages/Bookmarks/BookmarksPage'));
-const JuzListPage = lazy(() => import('@/pages/JuzList/JuzListPage'));
+const DivineWisdomPage = lazy(() => import('@/pages/DivineWisdom/DivineWisdomPage'));
 
 /**
  * Loading Spinner for Suspense fallback
@@ -83,54 +84,59 @@ const ErrorFallback: React.FC<{ error?: Error }> = memo(({ error }) => (
 
 ErrorFallback.displayName = 'ErrorFallback';
 
+import ScrollToTop from '@/components/layout/ScrollToTop';
+
 /**
  * Main App Component
  */
 const App: React.FC = () => {
     return (
         <BrowserRouter>
+            <ScrollToTop />
             <ThemeProvider>
                 <LanguageProvider>
                     <AIProvider>
                         <AudioPlayerProvider>
                             <ViewProvider>
-                                <MainLayout>
+                                <AuthProvider>
                                     <Suspense fallback={<LoadingSpinner />}>
                                         <Routes>
                                             {/* Main Routes */}
-                                            <Route path={ROUTES.HOME} element={<HomePage />} />
-                                            <Route path={ROUTES.SURAHS} element={<SurahListPage />} />
-                                            <Route path={ROUTES.SURAH} element={<VerseViewPage />} />
-                                            <Route path={ROUTES.JUZ} element={<JuzListPage />} />
+                                            <Route path={ROUTES.HOME} element={<MainLayout><HomePage /></MainLayout>} />
+                                            <Route path={ROUTES.SURAHS} element={<MainLayout><SurahListPage /></MainLayout>} />
+                                            <Route path={ROUTES.SURAH} element={<MainLayout isFullWidth><VerseViewPage /></MainLayout>} />
+                                            <Route path={ROUTES.WISDOM} element={<MainLayout><DivineWisdomPage /></MainLayout>} />
 
                                             {/* Other Routes */}
                                             <Route
                                                 path={ROUTES.BOOKMARKS}
-                                                element={<BookmarksPage />}
+                                                element={<MainLayout><BookmarksPage /></MainLayout>}
                                             />
                                             <Route
                                                 path={ROUTES.SETTINGS}
-                                                element={<SettingsPage />}
+                                                element={<MainLayout><SettingsPage /></MainLayout>}
                                             />
 
                                             {/* 404 Not Found */}
                                             <Route
                                                 path="*"
                                                 element={
-                                                    <div className="py-12 text-center">
-                                                        <span className="text-6xl mb-4 block">🔍</span>
-                                                        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                                                            Page Not Found
-                                                        </h1>
-                                                        <p className="text-slate-500 dark:text-slate-400">
-                                                            The page you're looking for doesn't exist.
-                                                        </p>
-                                                    </div>
+                                                    <MainLayout>
+                                                        <div className="py-12 text-center">
+                                                            <span className="text-6xl mb-4 block">🔍</span>
+                                                            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                                                                Page Not Found
+                                                            </h1>
+                                                            <p className="text-slate-500 dark:text-slate-400">
+                                                                The page you're looking for doesn't exist.
+                                                            </p>
+                                                        </div>
+                                                    </MainLayout>
                                                 }
                                             />
                                         </Routes>
                                     </Suspense>
-                                </MainLayout>
+                                </AuthProvider>
                             </ViewProvider>
                         </AudioPlayerProvider>
                     </AIProvider>

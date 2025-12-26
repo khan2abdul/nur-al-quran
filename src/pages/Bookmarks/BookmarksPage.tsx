@@ -10,6 +10,7 @@
 import React, { memo, useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useBookmarks } from '@/hooks/useBookmarks';
+import { useAuth } from '@/context/AuthContext';
 import { fetchSurahs } from '@/services/quranApi';
 import { getSurahRoute } from '@/config/routes';
 import type { Surah, Bookmark } from '@/types';
@@ -131,6 +132,7 @@ BookmarkCard.displayName = 'BookmarkCard';
  * Bookmarks Page Component
  */
 export const BookmarksPage: React.FC = memo(() => {
+    const { user, signInWithGoogle } = useAuth();
     const { bookmarks, removeBookmark, clearAllBookmarks, count } = useBookmarks();
     const [surahs, setSurahs] = useState<Surah[]>([]);
     const [loading, setLoading] = useState(true);
@@ -164,6 +166,28 @@ export const BookmarksPage: React.FC = memo(() => {
         setShowClearConfirm(false);
         if ('vibrate' in navigator) navigator.vibrate([50, 30, 50]);
     }, [clearAllBookmarks]);
+
+    if (!user) {
+        return (
+            <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-24 h-24 bg-cyan-400/10 rounded-[2rem] flex items-center justify-center mb-8">
+                    <svg className="w-12 h-12 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+                <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Personalized Library</h1>
+                <p className="text-slate-500 dark:text-slate-400 max-w-sm mb-10 leading-relaxed">
+                    Join Nur Al-Quran to save your favorite verses and access them anytime, anywhere.
+                </p>
+                <button
+                    onClick={signInWithGoogle}
+                    className="px-10 py-4 rounded-2xl bg-cyan-400 hover:bg-cyan-300 text-slate-900 font-bold transition-all shadow-xl shadow-cyan-400/20"
+                >
+                    Sign In to Bookmark
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-surface-light dark:bg-slate-900 py-6 px-4">
