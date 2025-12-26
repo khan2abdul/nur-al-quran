@@ -9,19 +9,15 @@
 
 import React, { memo, useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
-import { fetchSurah, fetchVerses, fetchChapterAudio } from '@/services/quranApi';
-import { useAudioPlayer } from '@/context/AudioPlayerContext';
+import { fetchSurah, fetchVerses, fetchChapterAudio, fetchSurahInfo } from '@/services/quranApi';
+import { useAudioSync, useAudioActions } from '@/context/AudioPlayerContext';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { SurahHeader } from '@/components/quran/SurahHeader';
 import { VerseCard } from '@/components/quran/VerseCard';
 import { AudioPlayer } from '@/components/ui/AudioPlayer';
 import { ROUTES } from '@/config/routes';
 import type { Surah, Verse } from '@/types';
-import { surah1Info } from '@/data/quran/surah-1';
-
-const SURAH_INFO: Record<number, any> = {
-    1: surah1Info
-};
+import { getVerseMeaning, loadSurahMeanings } from '@/data/meanings';
 
 /**
  * Loading Skeleton for Verses
@@ -49,34 +45,34 @@ interface SurahSelectorProps {
 
 const SurahSelector: React.FC<SurahSelectorProps> = memo(({ currentSurahId }) => {
     return (
-        <div className="flex items-center gap-2 text-sm">
+        <div className="flex items-center gap-3 text-xs font-mono uppercase tracking-[0.2em]">
             <Link
                 to={ROUTES.SURAHS}
-                className="text-primary-600 dark:text-primary-400 hover:underline"
+                className="text-cyan-400/60 hover:text-cyan-400 transition-colors"
             >
-                ← All Surahs
+                ← Library
             </Link>
-            <span className="text-slate-300 dark:text-slate-600">|</span>
-            <div className="flex items-center gap-2">
+            <span className="text-white/10">|</span>
+            <div className="flex items-center gap-4">
                 {currentSurahId > 1 && (
                     <Link
                         to={`/surah/${currentSurahId - 1}`}
-                        className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400"
+                        className="text-white/40 hover:text-cyan-400 transition-colors"
                         aria-label="Previous Surah"
                     >
-                        ◀
+                        PREV
                     </Link>
                 )}
-                <span className="text-slate-600 dark:text-slate-400">
-                    Surah {currentSurahId} of 114
+                <span className="text-white/80 font-bold">
+                    Surah {currentSurahId}
                 </span>
                 {currentSurahId < 114 && (
                     <Link
                         to={`/surah/${currentSurahId + 1}`}
-                        className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400"
+                        className="text-white/40 hover:text-cyan-400 transition-colors"
                         aria-label="Next Surah"
                     >
-                        ▶
+                        NEXT
                     </Link>
                 )}
             </div>
@@ -96,15 +92,18 @@ export const VerseViewPage: React.FC = memo(() => {
     const startingVerse = (location.state as { startingVerse?: number })?.startingVerse;
 
     const [surah, setSurah] = useState<Surah | null>(null);
+    const [surahInfo, setSurahInfo] = useState<any | null>(null);
     const [verses, setVerses] = useState<Verse[]>([]);
     const [loading, setLoading] = useState(true);
+    const [meaningsLoaded, setMeaningsLoaded] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     // View State
-    const [translationLang, setTranslationLang] = useState<'en' | 'hi'>('hi');
+    const [displayMode, setDisplayMode] = useState<'default' | 'en' | 'hi' | 'hinglish' | 'asaan' | 'ar'>('default');
     const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
 
-    const { state, actions } = useAudioPlayer();
+    const syncState = useAudioSync();
+    const actions = useAudioActions();
     const { isBookmarked, toggleBookmark } = useBookmarks();
     const versesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -115,18 +114,28 @@ export const VerseViewPage: React.FC = memo(() => {
                 setLoading(true);
                 setError(null);
 
-                // Fetch surah info and verses in parallel
-                const [surahData, versesData] = await Promise.all([
+                // Fetch surah info, verses and metadata in parallel
+                const [surahData, versesData, metadata] = await Promise.all([
                     fetchSurah(surahNumber),
                     fetchVerses(surahNumber, 1, 300), // Load all verses
+                    fetchSurahInfo(surahNumber)
                 ]);
 
                 setSurah(surahData);
                 setVerses(versesData.verses);
+                setSurahInfo(metadata);
+
+                // Load meanings asynchronously
+                try {
+                    await loadSurahMeanings(surahNumber);
+                    setMeaningsLoaded(true);
+                } catch (meaningsErr) {
+                    console.warn('Meanings loading failed:', meaningsErr);
+                }
 
                 // Load audio
                 try {
-                    const audioData = await fetchChapterAudio(surahNumber, state.selectedReciter?.id ?? 7);
+                    const audioData = await fetchChapterAudio(surahNumber, syncState.selectedReciter?.id ?? 7);
                     await actions.loadSurah(surahNumber, audioData.audioUrl, audioData.verseTimings);
                 } catch (audioErr) {
                     console.warn('Audio loading failed:', audioErr);
@@ -140,7 +149,7 @@ export const VerseViewPage: React.FC = memo(() => {
         };
 
         loadData();
-    }, [surahNumber, state.selectedReciter?.id, actions]);
+    }, [surahNumber, syncState.selectedReciter?.id, actions]);
 
     // Auto-scroll to starting verse on load
     useEffect(() => {
@@ -160,16 +169,21 @@ export const VerseViewPage: React.FC = memo(() => {
 
     // Auto-scroll to current verse when playing
     useEffect(() => {
-        if (state.isPlaying && state.currentSurah === surahNumber) {
-            const verseElement = document.getElementById(`verse-${state.currentVerse}`);
+        if (syncState.isPlaying && syncState.currentSurah === surahNumber) {
+            // Updated to find the element inside VerseCard (id is on the card itself)
+            const verseElement = document.getElementById(`verse-${syncState.currentVerse}`);
             if (verseElement) {
-                verseElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center',
+                // Ensure we scroll with an offset to account for the sticky audio player
+                const yOffset = -120; // Room for player and top header
+                const y = verseElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+                window.scrollTo({
+                    top: y,
+                    behavior: 'smooth'
                 });
             }
         }
-    }, [state.currentVerse, state.isPlaying, state.currentSurah, surahNumber]);
+    }, [syncState.currentVerse, syncState.isPlaying, syncState.currentSurah, surahNumber]);
 
     // Handle bookmark toggle
     const handleBookmarkToggle = useCallback((verseNumber: number) => {
@@ -180,7 +194,7 @@ export const VerseViewPage: React.FC = memo(() => {
     // Handle verse click
     const handleVerseClick = useCallback((verseNumber: number) => {
         actions.seekToVerse(verseNumber);
-        actions.play();
+        // We removed actions.play() per user request: only play icon should trigger audio
     }, [actions]);
 
     if (error) {
@@ -202,121 +216,127 @@ export const VerseViewPage: React.FC = memo(() => {
     }
 
     return (
-        <div className="py-6 pb-32">
-            {/* Navigation & Controls */}
-            <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
-                <SurahSelector currentSurahId={surahNumber} />
+        <div className="min-h-screen bg-[#0f172a] py-6 md:py-10 pb-40 px-0 text-white">
+            <div className="w-full">
+                {/* Navigation & Controls */}
+                <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <SurahSelector currentSurahId={surahNumber} />
 
-                {/* View Controls */}
-                <div className="flex items-center gap-3 bg-white dark:bg-slate-800 p-1.5 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
-                    {/* Language Toggle */}
-                    <div className="flex items-center bg-slate-100 dark:bg-slate-700 rounded-md p-0.5">
-                        <button
-                            onClick={() => setTranslationLang('en')}
-                            className={`px-3 py-1.5 text-xs font-bold rounded flex items-center gap-1 transition-all ${translationLang === 'en'
-                                ? 'bg-white dark:bg-slate-600 text-primary-600 dark:text-primary-300 shadow-sm'
-                                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
-                                }`}
-                        >
-                            EN
-                        </button>
-                        <button
-                            onClick={() => setTranslationLang('hi')}
-                            className={`px-3 py-1.5 text-xs font-bold rounded flex items-center gap-1 transition-all ${translationLang === 'hi'
-                                ? 'bg-white dark:bg-slate-600 text-primary-600 dark:text-primary-300 shadow-sm'
-                                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
-                                }`}
-                        >
-                            HI
-                        </button>
-                    </div>
-
-                    <div className="w-px h-4 bg-slate-200 dark:bg-slate-700" />
-
-                    {/* Font Size Controls */}
-                    <div className="flex items-center gap-1">
-                        <button
-                            onClick={() => setFontSize('small')}
-                            className={`w-7 h-7 flex items-center justify-center rounded text-xs font-bold transition-colors ${fontSize === 'small'
-                                ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300'
-                                : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
-                                }`}
-                            aria-label="Small font"
-                        >
-                            A
-                        </button>
-                        <button
-                            onClick={() => setFontSize('medium')}
-                            className={`w-7 h-7 flex items-center justify-center rounded text-sm font-bold transition-colors ${fontSize === 'medium'
-                                ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300'
-                                : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
-                                }`}
-                            aria-label="Medium font"
-                        >
-                            A
-                        </button>
-                        <button
-                            onClick={() => setFontSize('large')}
-                            className={`w-7 h-7 flex items-center justify-center rounded text-base font-bold transition-colors ${fontSize === 'large'
-                                ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300'
-                                : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
-                                }`}
-                            aria-label="Large font"
-                        >
-                            A
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Surah Header */}
-            {loading ? (
-                <div className="card p-8 mb-6 animate-pulse">
-                    <div className="h-10 bg-slate-200 dark:bg-slate-700 rounded w-48 mx-auto mb-4" />
-                    <div className="h-6 bg-slate-200 dark:bg-slate-700 rounded w-32 mx-auto mb-2" />
-                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-24 mx-auto" />
-                </div>
-            ) : surah ? (
-                <SurahHeader surah={surah} history={SURAH_INFO[surahNumber]} />
-            ) : null}
-
-            {/* Verses */}
-            <div ref={versesContainerRef} className="space-y-4">
-                {loading ? (
-                    // Loading skeletons
-                    Array.from({ length: 5 }).map((_, i) => (
-                        <VerseSkeleton key={i} />
-                    ))
-                ) : (
-                    verses.map((verse) => (
-                        <div id={`verse-${verse.verseNumber}`} key={verse.id}>
-                            <VerseCard
-                                verseNumber={verse.verseNumber}
-                                arabic={verse.arabic}
-                                english={verse.translations.find(t => t.language === 'en')?.text ?? ''}
-                                hindi={verse.translations.find(t => t.language === 'hi')?.text}
-                                hinglish={verse.hinglish}
-                                meaning={verse.meaning}
-                                meaningEn={verse.meaningEn}
-                                difficultWords={(verse as any).difficultWords}
-                                translationLang={translationLang}
-                                fontSize={fontSize}
-                                isPlaying={
-                                    state.isPlaying &&
-                                    state.currentSurah === surahNumber &&
-                                    state.currentVerse === verse.verseNumber
-                                }
-                                isBookmarked={isBookmarked(surahNumber, verse.verseNumber)}
-                                onBookmarkToggle={handleBookmarkToggle}
-                                onClick={handleVerseClick}
-                            />
+                    {/* View Controls */}
+                    <div className="flex flex-wrap items-center gap-3 bg-white dark:bg-slate-800 p-1.5 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        {/* Language Toggle */}
+                        <div className="flex flex-wrap items-center bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5">
+                            {[
+                                { id: 'default', label: 'Default' },
+                                { id: 'en', label: 'English' },
+                                { id: 'ar', label: 'Arabic' },
+                                { id: 'hinglish', label: 'Hinglish' },
+                                { id: 'asaan', label: 'Asaan Alfaaz' }
+                            ].map((mode) => (
+                                <button
+                                    key={mode.id}
+                                    onClick={() => setDisplayMode(mode.id as any)}
+                                    className={`px-3 py-1.5 text-[10px] font-bold rounded-md flex items-center gap-1 transition-all ${displayMode === mode.id
+                                        ? 'bg-white dark:bg-slate-600 text-primary-600 dark:text-primary-300 shadow-sm'
+                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                                        }`}
+                                >
+                                    {mode.label}
+                                </button>
+                            ))}
                         </div>
-                    ))
-                )}
-            </div>
 
-            {/* Audio Player */}
-            <AudioPlayer />
+                        <div className="w-px h-4 bg-slate-200 dark:bg-slate-700" />
+
+                        {/* Font Size Controls */}
+                        <div className="flex items-center gap-1">
+                            <button
+                                onClick={() => setFontSize('small')}
+                                className={`w-7 h-7 flex items-center justify-center rounded text-xs font-bold transition-colors ${fontSize === 'small'
+                                    ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300'
+                                    : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
+                                    }`}
+                                aria-label="Small font"
+                            >
+                                A
+                            </button>
+                            <button
+                                onClick={() => setFontSize('medium')}
+                                className={`w-7 h-7 flex items-center justify-center rounded text-sm font-bold transition-colors ${fontSize === 'medium'
+                                    ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300'
+                                    : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
+                                    }`}
+                                aria-label="Medium font"
+                            >
+                                A
+                            </button>
+                            <button
+                                onClick={() => setFontSize('large')}
+                                className={`w-7 h-7 flex items-center justify-center rounded text-base font-bold transition-colors ${fontSize === 'large'
+                                    ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300'
+                                    : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
+                                    }`}
+                                aria-label="Large font"
+                            >
+                                A
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Surah Header */}
+                {loading ? (
+                    <div className="card p-8 mb-6 animate-pulse">
+                        <div className="h-10 bg-slate-200 dark:bg-slate-700 rounded w-48 mx-auto mb-4" />
+                        <div className="h-6 bg-slate-200 dark:bg-slate-700 rounded w-32 mx-auto mb-2" />
+                        <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-24 mx-auto" />
+                    </div>
+                ) : surah ? (
+                    <SurahHeader surah={surah} history={surahInfo} />
+                ) : null}
+
+                {/* Verses */}
+                <div ref={versesContainerRef} className="space-y-4">
+                    {loading ? (
+                        // Loading skeletons
+                        Array.from({ length: 5 }).map((_, i) => (
+                            <VerseSkeleton key={i} />
+                        ))
+                    ) : (
+                        verses.map((verse) => {
+                            // Get meaning from TSX files
+                            const verseMeaning = getVerseMeaning(surahNumber, verse.verseNumber);
+
+                            return (
+                                <VerseCard
+                                    key={verse.id}
+                                    verseNumber={verse.verseNumber}
+                                    arabic={verse.arabic}
+                                    english={verse.translations.find(t => t.language === 'en')?.text ?? ''}
+                                    hindi={verseMeaning?.meaningHi}
+                                    hinglish={verseMeaning?.meaningHi}
+                                    asaanAlfaaz={verseMeaning?.hinglish}
+                                    meaning={verseMeaning?.meaningHi}
+                                    meaningEn={verseMeaning?.meaningEn}
+                                    easyWords={verseMeaning?.easyWords}
+                                    difficultWords={(verse as any).difficultWords}
+                                    displayMode={displayMode}
+                                    fontSize={fontSize}
+                                    isPlaying={
+                                        syncState.currentSurah === surahNumber &&
+                                        syncState.currentVerse === verse.verseNumber
+                                    }
+                                    isBookmarked={isBookmarked(surahNumber, verse.verseNumber)}
+                                    onBookmarkToggle={handleBookmarkToggle}
+                                    onClick={handleVerseClick}
+                                />
+                            );
+                        })
+                    )}
+                </div>
+
+                <AudioPlayer />
+            </div>
         </div>
     );
 });

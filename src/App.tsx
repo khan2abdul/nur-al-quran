@@ -12,6 +12,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { AudioPlayerProvider } from '@/context/AudioPlayerContext';
 import { ViewProvider } from '@/context/ViewContext';
+import { AIProvider } from '@/context/AIContext';
 import { MainLayout } from '@/layouts/MainLayout';
 import { ROUTES } from '@/config/routes';
 
@@ -90,47 +91,49 @@ const App: React.FC = () => {
         <BrowserRouter>
             <ThemeProvider>
                 <LanguageProvider>
-                    <AudioPlayerProvider>
-                        <ViewProvider>
-                            <MainLayout>
-                                <Suspense fallback={<LoadingSpinner />}>
-                                    <Routes>
-                                        {/* Main Routes */}
-                                        <Route path={ROUTES.HOME} element={<HomePage />} />
-                                        <Route path={ROUTES.SURAHS} element={<SurahListPage />} />
-                                        <Route path={ROUTES.SURAH} element={<VerseViewPage />} />
-                                        <Route path={ROUTES.JUZ} element={<JuzListPage />} />
+                    <AIProvider>
+                        <AudioPlayerProvider>
+                            <ViewProvider>
+                                <MainLayout>
+                                    <Suspense fallback={<LoadingSpinner />}>
+                                        <Routes>
+                                            {/* Main Routes */}
+                                            <Route path={ROUTES.HOME} element={<HomePage />} />
+                                            <Route path={ROUTES.SURAHS} element={<SurahListPage />} />
+                                            <Route path={ROUTES.SURAH} element={<VerseViewPage />} />
+                                            <Route path={ROUTES.JUZ} element={<JuzListPage />} />
 
-                                        {/* Other Routes */}
-                                        <Route
-                                            path={ROUTES.BOOKMARKS}
-                                            element={<BookmarksPage />}
-                                        />
-                                        <Route
-                                            path={ROUTES.SETTINGS}
-                                            element={<SettingsPage />}
-                                        />
+                                            {/* Other Routes */}
+                                            <Route
+                                                path={ROUTES.BOOKMARKS}
+                                                element={<BookmarksPage />}
+                                            />
+                                            <Route
+                                                path={ROUTES.SETTINGS}
+                                                element={<SettingsPage />}
+                                            />
 
-                                        {/* 404 Not Found */}
-                                        <Route
-                                            path="*"
-                                            element={
-                                                <div className="py-12 text-center">
-                                                    <span className="text-6xl mb-4 block">🔍</span>
-                                                    <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                                                        Page Not Found
-                                                    </h1>
-                                                    <p className="text-slate-500 dark:text-slate-400">
-                                                        The page you're looking for doesn't exist.
-                                                    </p>
-                                                </div>
-                                            }
-                                        />
-                                    </Routes>
-                                </Suspense>
-                            </MainLayout>
-                        </ViewProvider>
-                    </AudioPlayerProvider>
+                                            {/* 404 Not Found */}
+                                            <Route
+                                                path="*"
+                                                element={
+                                                    <div className="py-12 text-center">
+                                                        <span className="text-6xl mb-4 block">🔍</span>
+                                                        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                                                            Page Not Found
+                                                        </h1>
+                                                        <p className="text-slate-500 dark:text-slate-400">
+                                                            The page you're looking for doesn't exist.
+                                                        </p>
+                                                    </div>
+                                                }
+                                            />
+                                        </Routes>
+                                    </Suspense>
+                                </MainLayout>
+                            </ViewProvider>
+                        </AudioPlayerProvider>
+                    </AIProvider>
                 </LanguageProvider>
             </ThemeProvider>
         </BrowserRouter>

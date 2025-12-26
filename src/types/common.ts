@@ -98,6 +98,9 @@ export interface AppSettings {
 
     /** Translation font size setting */
     readonly translationFontSize: 'sm' | 'base' | 'lg';
+
+    /** AI Model for generation */
+    readonly aiModel: string;
 }
 
 /**
@@ -111,6 +114,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     showWordByWord: false,
     arabicFontSize: 'base',
     translationFontSize: 'base',
+    aiModel: 'gemini-1.5-flash',
 } as const;
 
 /**

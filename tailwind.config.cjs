@@ -57,7 +57,7 @@ module.exports = {
                 // Arabic script fonts
                 arabic: ['Amiri', 'Scheherazade New', 'serif'],
                 // UI fonts
-                sans: ['Inter', 'system-ui', 'sans-serif'],
+                sans: ['Outfit', 'Inter', 'system-ui', 'sans-serif'],
                 // Verse numbers
                 mono: ['JetBrains Mono', 'monospace'],
             },

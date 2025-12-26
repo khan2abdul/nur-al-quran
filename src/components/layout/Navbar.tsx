@@ -83,7 +83,7 @@ const ThemeToggle: React.FC = memo(() => {
     return (
         <button
             onClick={toggleTheme}
-            className="icon-btn"
+            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 text-white/40 hover:text-cyan-400 transition-all"
             aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
         >
             {isDark ? Icons.sun : Icons.moon}
@@ -109,11 +109,11 @@ const LanguageSwitcher: React.FC = memo(() => {
         <div className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="icon-btn flex items-center gap-1 px-2"
+                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 text-white/40 hover:text-cyan-400 transition-all font-bold text-[10px] uppercase tracking-widest"
                 aria-label="Select language"
                 aria-expanded={isOpen}
             >
-                <span className="text-sm font-medium uppercase">{language}</span>
+                {language}
             </button>
 
             {isOpen && (
@@ -123,16 +123,16 @@ const LanguageSwitcher: React.FC = memo(() => {
                         onClick={() => setIsOpen(false)}
                         aria-hidden="true"
                     />
-                    <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 z-20 overflow-hidden">
+                    <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-xl shadow-2xl border border-white/10 z-20 overflow-hidden backdrop-blur-xl">
                         {availableLanguages.map((lang) => (
                             <button
                                 key={lang.code}
                                 onClick={() => handleSelect(lang.code)}
-                                className={`w-full px-4 py-2 text-left text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors ${language === lang.code ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300' : ''
+                                className={`w-full px-5 py-3 text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 ${language === lang.code ? 'bg-cyan-400/10' : ''
                                     }`}
                             >
-                                <span className="font-medium">{lang.nativeName}</span>
-                                <span className="text-slate-500 dark:text-slate-400 ml-2">{lang.name}</span>
+                                <span className={`font-bold text-sm block ${language === lang.code ? 'text-cyan-400' : 'text-white'}`}>{lang.nativeName}</span>
+                                <span className="text-[10px] text-white/40 uppercase tracking-widest block mt-0.5">{lang.name}</span>
                             </button>
                         ))}
                     </div>
@@ -151,31 +151,30 @@ const DesktopNav: React.FC = memo(() => {
     const location = useLocation();
 
     return (
-        <header className="hidden md:block fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
+        <header className="hidden md:block fixed top-0 left-0 right-0 z-50 bg-[#0f172a]/80 backdrop-blur-xl border-b border-white/5">
             <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
                 {/* Logo */}
-                <Link to={ROUTES.HOME} className="flex items-center gap-2">
-                    <span className="text-2xl">🌙</span>
-                    <span className="font-bold text-lg text-slate-900 dark:text-white">
-                        Nur Al-Quran
+                <Link to={ROUTES.HOME} className="flex items-center gap-3 group">
+                    <span className="text-2xl group-hover:scale-110 transition-transform">🌙</span>
+                    <span className="font-bold text-lg text-white tracking-tight">
+                        Nur <span className="text-cyan-400">Al-Quran</span>
                     </span>
                 </Link>
 
                 {/* Navigation Links */}
-                <nav className="flex items-center gap-1">
+                <nav className="flex items-center gap-2">
                     {NAV_ITEMS.filter(item => item.showInNav).map((item) => {
                         const isActive = location.pathname === item.path;
                         return (
                             <Link
                                 key={item.path}
                                 to={item.path}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors ${isActive
-                                        ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'
-                                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                                className={`flex items-center gap-2 px-5 py-2 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${isActive
+                                    ? 'bg-cyan-400 text-slate-900 shadow-[0_0_15px_rgba(34,211,238,0.4)]'
+                                    : 'text-white/40 hover:text-white hover:bg-white/5'
                                     }`}
                             >
-                                {getIcon(item.icon)}
-                                <span>{item.name}</span>
+                                {item.name}
                             </Link>
                         );
                     })}
@@ -183,7 +182,6 @@ const DesktopNav: React.FC = memo(() => {
 
                 {/* Actions */}
                 <div className="flex items-center gap-2">
-                    <LanguageSwitcher />
                     <ThemeToggle />
                 </div>
             </div>
@@ -205,21 +203,23 @@ const MobileNav: React.FC = memo(() => {
     ).slice(0, 4);
 
     return (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-700 safe-area-bottom">
-            <div className="flex items-center justify-around h-16 px-2">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0f172a]/90 backdrop-blur-xl border-t border-white/5 safe-area-bottom">
+            <div className="flex items-center justify-around h-16 px-4">
                 {mobileItems.map((item) => {
                     const isActive = location.pathname === item.path;
                     return (
                         <Link
                             key={item.path}
                             to={item.path}
-                            className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors ${isActive
-                                    ? 'text-primary-600 dark:text-primary-400'
-                                    : 'text-slate-500 dark:text-slate-400'
+                            className={`flex flex-col items-center justify-center gap-1 px-4 py-2 transition-all ${isActive
+                                ? 'text-cyan-400'
+                                : 'text-white/30'
                                 }`}
                         >
-                            {getIcon(item.icon)}
-                            <span className="text-[10px] font-medium">{item.name}</span>
+                            <div className={`${isActive ? 'scale-110' : ''}`}>
+                                {getIcon(item.icon)}
+                            </div>
+                            <span className="text-[9px] font-bold uppercase tracking-widest mt-1">{item.name}</span>
                         </Link>
                     );
                 })}
@@ -228,8 +228,8 @@ const MobileNav: React.FC = memo(() => {
                 <Link
                     to={ROUTES.SETTINGS}
                     className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors ${location.pathname === ROUTES.SETTINGS
-                            ? 'text-primary-600 dark:text-primary-400'
-                            : 'text-slate-500 dark:text-slate-400'
+                        ? 'text-primary-600 dark:text-primary-400'
+                        : 'text-slate-500 dark:text-slate-400'
                         }`}
                 >
                     {getIcon('settings')}
@@ -247,17 +247,16 @@ MobileNav.displayName = 'MobileNav';
  */
 const MobileHeader: React.FC = memo(() => {
     return (
-        <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
+        <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#0f172a]/90 backdrop-blur-xl border-b border-white/5 px-2">
             <div className="flex items-center justify-between h-14 px-4">
                 <Link to={ROUTES.HOME} className="flex items-center gap-2">
                     <span className="text-xl">🌙</span>
-                    <span className="font-bold text-slate-900 dark:text-white">
-                        Nur Al-Quran
+                    <span className="font-bold text-white tracking-tight">
+                        Nur <span className="text-cyan-400">Al-Quran</span>
                     </span>
                 </Link>
 
                 <div className="flex items-center gap-1">
-                    <LanguageSwitcher />
                     <ThemeToggle />
                 </div>
             </div>

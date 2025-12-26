@@ -11,8 +11,8 @@
  * API Configuration
  */
 export const API_CONFIG = {
-    /** Quran.com API base URL */
-    BASE_URL: 'https://api.quran.com/api/v4',
+    /** Quran Foundation API base URL */
+    BASE_URL: 'https://apis.quran.foundation/content/api/v4',
 
     /** Request timeout in milliseconds */
     TIMEOUT: 10000,

@@ -8,7 +8,7 @@
  */
 
 import React, { memo, useCallback } from 'react';
-import { useAudioPlayer } from '@/context/AudioPlayerContext';
+import { useAudioActions } from '@/context/AudioPlayerContext';
 import { toArabicNumerals } from '@/utils/helpers';
 import type { DifficultWord } from '@/types';
 
@@ -28,17 +28,23 @@ interface VerseCardProps {
     /** Hinglish translation */
     readonly hinglish?: string;
 
+    /** Asaan Alfaz / Simplified Hinglish */
+    readonly asaanAlfaaz?: string;
+
     /** Meaning/Tafsir */
     readonly meaning?: string;
 
     /** English Meaning/Tafsir */
     readonly meaningEn?: string;
 
+    /** Aasaan Alfaz tags */
+    readonly easyWords?: string[];
+
     /** Difficult words for interactive display */
     readonly difficultWords?: DifficultWord[];
 
-    /** Active translation language */
-    readonly translationLang: 'en' | 'hi';
+    /** Display mode */
+    readonly displayMode: 'default' | 'en' | 'hi' | 'hinglish' | 'asaan' | 'ar';
 
     /** Font size setting */
     readonly fontSize: 'small' | 'medium' | 'large';
@@ -61,9 +67,9 @@ interface VerseCardProps {
  */
 const BookmarkIcon: React.FC<{ filled: boolean }> = ({ filled }) => (
     <svg
-        className={`w-5 h-5 transition-colors ${filled
-            ? 'text-gold-500 fill-gold-500'
-            : 'text-slate-400 hover:text-gold-500'
+        className={`w-6 h-6 transition-all ${filled
+            ? 'text-cyan-400 fill-cyan-400'
+            : 'text-slate-400 hover:text-cyan-400'
             }`}
         fill={filled ? 'currentColor' : 'none'}
         stroke="currentColor"
@@ -72,7 +78,7 @@ const BookmarkIcon: React.FC<{ filled: boolean }> = ({ filled }) => (
         <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={2}
+            strokeWidth={1.5}
             d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
         />
     </svg>
@@ -82,14 +88,15 @@ const BookmarkIcon: React.FC<{ filled: boolean }> = ({ filled }) => (
  * Audio Wave Animation
  */
 const AudioWave: React.FC = memo(() => (
-    <div className="flex items-center gap-0.5 h-4">
-        {[1, 2, 3, 4].map((i) => (
+    <div className="flex items-end gap-1 h-6">
+        {[1, 2, 3, 4, 5].map((i) => (
             <div
                 key={i}
-                className="w-0.5 bg-primary-500 rounded-full animate-pulse"
+                className="w-1 bg-cyan-400 rounded-full animate-pulse"
                 style={{
-                    height: `${Math.random() * 12 + 4}px`,
+                    height: `${Math.random() * 80 + 20}%`,
                     animationDelay: `${i * 0.1}s`,
+                    animationDuration: '1s'
                 }}
             />
         ))}
@@ -107,71 +114,97 @@ export const VerseCard: React.FC<VerseCardProps> = memo(({
     english,
     hindi,
     hinglish,
+    asaanAlfaaz,
     meaning,
     meaningEn,
+    easyWords,
     difficultWords,
-    translationLang,
+    displayMode,
     fontSize,
     isPlaying = false,
     isBookmarked = false,
     onBookmarkToggle,
     onClick,
 }) => {
-    const { actions } = useAudioPlayer();
+    const actions = useAudioActions();
     const [activeWordIdx, setActiveWordIdx] = React.useState<number | null>(null);
 
-    // Font size classes - Overriding default sizes
-    const arabicSize = fontSize === 'small' ? 'text-2xl' : fontSize === 'large' ? 'text-4xl md:text-5xl' : 'text-3xl md:text-4xl';
-    const translationSize = fontSize === 'small' ? 'text-sm' : fontSize === 'large' ? 'text-lg' : 'text-base';
+    // Dynamic sizing and mode flags
+    const translationSize = fontSize === 'small' ? 'text-lg' : fontSize === 'large' ? 'text-2xl' : 'text-xl';
+    const arabicSize = fontSize === 'small' ? 'text-3xl' : fontSize === 'large' ? 'text-5xl md:text-6xl' : 'text-4xl md:text-5xl';
 
-    // Select meaning based on language
-    const displayMeaning = translationLang === 'en' ? meaningEn : meaning;
+    const isArabicOnly = displayMode === 'ar';
+    const isEnglishOnly = displayMode === 'en';
+    const isHindiOnly = displayMode === 'hi';
+    const isHinglishOnly = displayMode === 'hinglish';
+    const isAsaanOnly = displayMode === 'asaan';
+    const isDefault = displayMode === 'default';
+
+    const [activeDifficultWord, setActiveDifficultWord] = React.useState<DifficultWord | null>(null);
 
     const handleClick = useCallback(() => {
         onClick?.(verseNumber);
         actions.seekToVerse(verseNumber);
+        setActiveDifficultWord(null); // Close tooltip on card click
     }, [verseNumber, onClick, actions]);
 
-    // Render interactive Hinglish
-    const renderHinglish = () => {
-        if (!hinglish) return null;
-        if (!difficultWords?.length) return hinglish;
+    const handlePlayClick = useCallback((e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (isPlaying) {
+            actions.pause();
+        } else {
+            actions.seekToVerse(verseNumber);
+            actions.play();
+        }
+    }, [isPlaying, verseNumber, actions]);
 
-        const words = hinglish.split(' ');
-        return words.map((word, idx) => {
-            const cleanWord = word.replace(/[^a-zA-Z]/g, '');
-            const diffWord = difficultWords.find(dw =>
-                cleanWord.toLowerCase() === dw.word.toLowerCase() ||
-                cleanWord.toLowerCase() === dw.transliteration.toLowerCase()
-            );
+    const renderContent = () => {
+        let text = '';
+        if (isEnglishOnly) text = english;
+        else if (isHindiOnly) text = hindi || english;
+        else if (isHinglishOnly) text = hinglish || english;
+        else if (isAsaanOnly || isDefault) text = asaanAlfaaz || hinglish || english;
 
-            if (diffWord) {
-                return (
-                    <span
-                        key={idx}
-                        className="relative inline-block mx-0.5 cursor-pointer group"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveWordIdx(activeWordIdx === idx ? null : idx);
-                        }}
-                    >
-                        <span className="border-b-2 border-dotted border-primary-400 dark:border-primary-500 font-medium text-primary-700 dark:text-primary-300">
-                            {word}
-                        </span>
+        if (!text) return null;
 
-                        {/* Tooltip */}
-                        {(activeWordIdx === idx) && (
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-slate-900 text-white text-xs rounded-lg py-2 px-3 shadow-xl z-10 text-center animate-fade-in">
-                                <span className="font-bold block mb-0.5 text-gold-400">{diffWord.word}</span>
-                                <span className="block opacity-90">{diffWord.meaning}</span>
-                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900" />
-                            </div>
-                        )}
-                    </span>
-                );
-            }
-            return <span key={idx} className="mx-0.5">{word}</span>;
-        });
+        // If we have difficult words, try to highlight them
+        if (difficultWords && difficultWords.length > 0 && (isHinglishOnly || isAsaanOnly || isDefault)) {
+            let parts: (string | React.ReactNode)[] = [text];
+
+            difficultWords.forEach((dw) => {
+                const newParts: (string | React.ReactNode)[] = [];
+                parts.forEach((part) => {
+                    if (typeof part !== 'string') {
+                        newParts.push(part);
+                        return;
+                    }
+
+                    const subParts = part.split(new RegExp(`(${dw.word})`, 'gi'));
+                    subParts.forEach((sp) => {
+                        if (sp.toLowerCase() === dw.word.toLowerCase()) {
+                            newParts.push(
+                                <span
+                                    key={`${dw.word}-${Math.random()}`}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setActiveDifficultWord(dw);
+                                    }}
+                                    className="border-b-2 border-cyan-400/50 cursor-help hover:bg-cyan-400/10 transition-colors px-0.5 rounded"
+                                >
+                                    {sp}
+                                </span>
+                            );
+                        } else {
+                            newParts.push(sp);
+                        }
+                    });
+                });
+                parts = newParts;
+            });
+            return <>{parts}</>;
+        }
+
+        return text;
     };
 
     const handleBookmarkClick = useCallback((e: React.MouseEvent) => {
@@ -184,83 +217,90 @@ export const VerseCard: React.FC<VerseCardProps> = memo(({
             id={`verse-${verseNumber}`}
             onClick={handleClick}
             className={`
-        verse-card cursor-pointer transition-all duration-300
-        ${isPlaying
-                    ? 'bg-amber-100 dark:bg-amber-900/40 border-amber-400 dark:border-amber-600 shadow-lg ring-2 ring-amber-300 dark:ring-amber-700'
-                    : 'hover:shadow-md'
+                group cursor-pointer transition-all duration-500 flex flex-col md:flex-row
+                rounded-[2rem] md:rounded-[3rem] overflow-hidden mb-8 md:mb-12 border-2 md:border-4
+                ${isPlaying
+                    ? 'border-cyan-400 shadow-[0_0_50px_rgba(34,211,238,0.4)] scale-[1.01]'
+                    : 'border-transparent hover:border-white/5 shadow-2xl hover:scale-[1.005]'
                 }
-      `}
+            `}
             role="button"
             tabIndex={0}
             aria-label={`Verse ${verseNumber}`}
         >
-            {/* Header: Verse number and bookmark */}
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                    {/* Verse number badge */}
-                    <div className={`verse-number ${isPlaying ? 'bg-amber-200 dark:bg-amber-800 text-amber-800 dark:text-amber-200' : ''}`}>
-                        {verseNumber}
-                    </div>
-
-                    {/* Arabic verse number */}
-                    <span className="font-arabic text-sm text-slate-500 dark:text-slate-400">
-                        ﴿{toArabicNumerals(verseNumber)}﴾
-                    </span>
-
-                    {/* Playing indicator */}
-                    {isPlaying && <AudioWave />}
-                </div>
-
-                {/* Bookmark button */}
-                <button
-                    onClick={handleBookmarkClick}
-                    className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                    aria-label={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
-                >
-                    <BookmarkIcon filled={isBookmarked} />
-                </button>
-            </div>
-
-            {/* Arabic Text (Replaced 'arabic-text' class with explicit styles to allow font sizing) */}
-            <div className={`font-arabic text-right leading-[2.5] md:leading-[3.5] text-slate-800 dark:text-slate-100 mb-4 pb-4 border-b border-slate-100 dark:border-slate-700 ${arabicSize}`} dir="rtl">
-                {arabic}
-            </div>
-
-            {/* Translation Content */}
-            <div className={`mb-3 leading-relaxed text-slate-600 dark:text-slate-300 ${translationSize}`}>
-                {translationLang === 'en' ? (
-                    <div>
-                        <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide block mb-1">
-                            English
-                        </span>
-                        {english}
-                    </div>
-                ) : (
-                    <div>
-                        <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide block mb-1">
-                            {hinglish ? 'Hinglish' : 'Hindi'}
-                        </span>
-                        {hinglish ? (
-                            <div className="flex flex-wrap items-center -mx-0.5">
-                                {renderHinglish()}
+            {/* LEFT SIDE: Translation/Commentary Focus */}
+            {!isArabicOnly && (
+                <div className={`w-full ${isDefault ? 'md:w-1/2' : 'md:w-full'} bg-slate-800 p-6 md:p-10 lg:p-14 relative flex flex-col justify-between overflow-hidden transition-colors ${isPlaying ? 'bg-slate-800/90' : ''}`}>
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-400/10 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none" />
+                    <div className="relative z-10 flex flex-col h-full">
+                        {/* Header */}
+                        <div className="flex items-center justify-between mb-10">
+                            <div className="flex items-center gap-4">
+                                <button
+                                    onClick={handlePlayClick}
+                                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${isPlaying
+                                        ? 'bg-cyan-400 text-slate-900 shadow-[0_0_15px_rgba(34,211,238,0.5)]'
+                                        : 'bg-white/10 text-white hover:bg-cyan-400 hover:text-slate-900'
+                                        }`}
+                                >
+                                    {isPlaying ? (
+                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
+                                    ) : (
+                                        <svg className="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                                    )}
+                                </button>
+                                <div className="flex flex-col">
+                                    <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/40">Quran Meaning</span>
+                                    <span className={`font-mono text-xs font-bold transition-colors uppercase tracking-widest mt-0.5 ${isPlaying ? 'text-cyan-400' : 'text-white/60'}`}>Ayah {verseNumber}</span>
+                                </div>
                             </div>
-                        ) : hindi}
-                    </div>
-                )}
-            </div>
+                            {isPlaying && <AudioWave />}
+                        </div>
 
-            {/* AI Generated Meaning / Reflection */}
-            {displayMeaning && (
-                <div className="mt-4 p-4 bg-primary-50/50 dark:bg-primary-900/10 rounded-xl border border-primary-100 dark:border-primary-900/30">
-                    <div className="flex items-center gap-2 mb-2">
-                        <span className="text-base">✨</span>
-                        <span className="text-xs font-bold text-primary-700 dark:text-primary-300 uppercase tracking-wide">
-                            Meaning & Reflection
-                        </span>
+                        {/* Content */}
+                        <div className={`font-sans font-medium text-white leading-[1.6] ${translationSize} flex-grow flex items-center mb-10`}>
+                            <div className="relative">
+                                {renderContent()}
+
+                                {/* Difficult Word Tooltip */}
+                                {activeDifficultWord && (
+                                    <div className="absolute left-0 bottom-full mb-4 z-50 bg-slate-700 p-4 rounded-2xl border border-cyan-400/30 shadow-2xl animate-in fade-in slide-in-from-bottom-2 max-w-xs">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">Meaning</span>
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); setActiveDifficultWord(null); }}
+                                                className="text-white/40 hover:text-white"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
+                                        <p className="text-sm font-bold text-white mb-1">{activeDifficultWord.word} ({activeDifficultWord.transliteration})</p>
+                                        <p className="text-xs text-slate-300 italic">{activeDifficultWord.meaning}</p>
+                                        <div className="absolute left-4 -bottom-2 w-4 h-4 bg-slate-700 border-r border-b border-cyan-400/30 rotate-45" />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
-                    <p className={`leading-relaxed text-slate-700 dark:text-slate-300 ${translationSize}`}>
-                        {displayMeaning}
-                    </p>
+                </div>
+            )}
+
+            {/* RIGHT SIDE: Arabic Focus */}
+            {(isArabicOnly || isDefault) && (
+                <div className={`w-full ${isDefault ? 'md:w-1/2' : 'md:w-full'} bg-white p-6 md:p-10 lg:p-16 relative flex flex-col justify-center border-l-0 md:border-l-[12px] border-cyan-400 min-h-[250px] md:min-h-0`}>
+                    <button
+                        onClick={handleBookmarkClick}
+                        className="absolute top-10 right-10 p-3 rounded-full hover:bg-slate-50 transition-colors z-20 group/bookmark"
+                        title={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
+                    >
+                        <BookmarkIcon filled={isBookmarked} />
+                    </button>
+                    <div
+                        className={`font-arabic text-slate-900 text-right leading-[2] md:leading-[2.4] ${arabicSize}`}
+                        dir="rtl"
+                    >
+                        {arabic}
+                    </div>
                 </div>
             )}
         </div>
@@ -268,5 +308,4 @@ export const VerseCard: React.FC<VerseCardProps> = memo(({
 });
 
 VerseCard.displayName = 'VerseCard';
-
 export default VerseCard;

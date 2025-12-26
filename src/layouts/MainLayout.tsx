@@ -32,7 +32,7 @@ export const MainLayout: React.FC<MainLayoutProps> = memo(({
     className = ''
 }) => {
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+        <div className="min-h-screen bg-[#0f172a]">
             {/* Navigation */}
             <Navbar />
 
@@ -40,8 +40,7 @@ export const MainLayout: React.FC<MainLayoutProps> = memo(({
             <main
                 className={`
           pt-14 pb-20 md:pt-16 md:pb-8
-          px-4 md:px-6 lg:px-8
-          max-w-7xl mx-auto
+          px-2 md:px-6 lg:px-8 max-w-7xl mx-auto
           ${className}
         `.trim()}
             >

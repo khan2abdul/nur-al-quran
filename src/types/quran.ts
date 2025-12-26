@@ -327,3 +327,27 @@ export interface VerseContext {
     /** Related themes or topics */
     readonly themes?: readonly string[];
 }
+
+/**
+ * Detailed metadata for a Surah (Chapter)
+ */
+export interface SurahMetadata {
+    /** Short meaningful statement */
+    readonly significance: string;
+
+    /** Background context in Hinglish */
+    readonly history: string;
+
+    /** Background context in English */
+    readonly historyEn: string;
+
+    /** Key informational badges */
+    readonly contextBullets: readonly {
+        readonly icon: string;
+        readonly label: string;
+        readonly text: string;
+    }[];
+
+    /** Unique Surah title */
+    readonly title: string;
+}

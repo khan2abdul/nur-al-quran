@@ -10,97 +10,9 @@
 import React, { memo, useState, useCallback } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { useAudioPlayer } from '@/context/AudioPlayerContext';
 import { useView } from '@/context/ViewContext';
-import type { Reciter } from '@/types';
-import { AVAILABLE_RECITERS } from '@/services/quranApi';
+import { useAI } from '@/context/AIContext';
 
-/**
- * Audio Wave Icon for Reciter Cards
- */
-const AudioWaveIcon: React.FC<{ isActive: boolean }> = memo(({ isActive }) => (
-    <div className={`flex items-end gap-0.5 h-5 ${isActive ? 'opacity-100' : 'opacity-30'}`}>
-        {[3, 5, 4, 6, 3].map((h, i) => (
-            <div
-                key={i}
-                className={`w-1 rounded-full transition-all duration-300 ${isActive
-                    ? 'bg-gradient-to-t from-amber-500 to-amber-300 animate-pulse'
-                    : 'bg-slate-600'
-                    }`}
-                style={{
-                    height: `${h * 3}px`,
-                    animationDelay: `${i * 100}ms`
-                }}
-            />
-        ))}
-    </div>
-));
-
-AudioWaveIcon.displayName = 'AudioWaveIcon';
-
-/**
- * Reciter Card Component
- */
-interface ReciterCardProps {
-    readonly reciter: Reciter;
-    readonly isSelected: boolean;
-    readonly onSelect: (reciter: Reciter) => void;
-}
-
-const ReciterCard: React.FC<ReciterCardProps> = memo(({ reciter, isSelected, onSelect }) => {
-    const handleClick = useCallback(() => {
-        onSelect(reciter);
-        if ('vibrate' in navigator) {
-            navigator.vibrate(10);
-        }
-    }, [reciter, onSelect]);
-
-    return (
-        <button
-            onClick={handleClick}
-            className={`
-        relative w-full text-left p-4 rounded-2xl border transition-all duration-300
-        ${isSelected
-                    ? 'bg-gradient-to-r from-amber-500/10 to-orange-500/5 border-amber-500/50 shadow-lg shadow-amber-500/10'
-                    : 'bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600'
-                }
-      `}
-            aria-pressed={isSelected}
-            aria-label={`Select ${reciter.name} as reciter`}
-        >
-            <div className="flex items-center gap-4">
-                {/* Country Flag & Wave */}
-                <div className="flex flex-col items-center gap-1">
-                    <span className="text-2xl">{reciter.country}</span>
-                    <AudioWaveIcon isActive={isSelected} />
-                </div>
-
-                {/* Reciter Info */}
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                        <h3 className={`font-semibold truncate transition-colors ${isSelected ? 'text-amber-600 dark:text-amber-400' : 'text-slate-900 dark:text-white'
-                            }`}>
-                            {reciter.name}
-                        </h3>
-                        {isSelected && (
-                            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center">
-                                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                </svg>
-                            </span>
-                        )}
-                    </div>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 font-arabic mt-0.5">{reciter.arabicName}</p>
-                    <p className={`text-xs mt-1 ${isSelected ? 'text-amber-600/80 dark:text-amber-500/80' : 'text-slate-500'}`}>
-                        {reciter.style}
-                    </p>
-                </div>
-            </div>
-        </button>
-    );
-});
-
-ReciterCard.displayName = 'ReciterCard';
 
 /**
  * Toggle Button Component
@@ -179,18 +91,10 @@ SectionHeader.displayName = 'SectionHeader';
 export const SettingsPage: React.FC = memo(() => {
     const { theme, setTheme } = useTheme();
     const { language, setLanguage } = useLanguage();
-    const { state, actions } = useAudioPlayer();
+
     const { viewMode, setViewMode } = useView();
+    const { selectedModel, setSelectedModel, availableModels } = useAI();
 
-    // Use AVAILABLE_RECITERS from quranApi
-    const [selectedReciter, setSelectedReciter] = useState<Reciter>(
-        AVAILABLE_RECITERS.find(r => r.id === state.selectedReciter?.id) ?? AVAILABLE_RECITERS[0]
-    );
-
-    const handleReciterSelect = useCallback((reciter: Reciter) => {
-        setSelectedReciter(reciter);
-        actions.setReciter(reciter);
-    }, [actions]);
 
     const currentTheme = theme === 'system'
         ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
@@ -212,28 +116,6 @@ export const SettingsPage: React.FC = memo(() => {
             </div>
 
             <div className="space-y-6">
-                {/* Reciter Section */}
-                <SectionCard>
-                    <SectionHeader
-                        title="Reciter"
-                        subtitle="Choose your preferred Qari"
-                        icon={
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                            </svg>
-                        }
-                    />
-                    <div className="space-y-3">
-                        {AVAILABLE_RECITERS.map((reciter) => (
-                            <ReciterCard
-                                key={reciter.id}
-                                reciter={reciter}
-                                isSelected={selectedReciter.id === reciter.id}
-                                onSelect={handleReciterSelect}
-                            />
-                        ))}
-                    </div>
-                </SectionCard>
 
                 {/* Language Section */}
                 <SectionCard>
@@ -257,6 +139,44 @@ export const SettingsPage: React.FC = memo(() => {
                             isSelected={language === 'hi'}
                             onClick={() => setLanguage('hi')}
                         />
+                    </div>
+                </SectionCard>
+
+                {/* AI Model Section */}
+                <SectionCard>
+                    <SectionHeader
+                        title="AI Model"
+                        subtitle="Generative model for meanings"
+                        icon={
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        }
+                    />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {availableModels.map((model) => (
+                            <button
+                                key={model.id}
+                                onClick={() => setSelectedModel(model.id)}
+                                className={`
+                                    p-4 rounded-2xl border text-left transition-all duration-300
+                                    ${selectedModel === model.id
+                                        ? 'bg-amber-500/10 border-amber-500 shadow-lg shadow-amber-500/10'
+                                        : 'bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700/50 hover:border-slate-300'
+                                    }
+                                `}
+                            >
+                                <div className="flex items-center justify-between gap-2">
+                                    <h3 className={`font-semibold truncate ${selectedModel === model.id ? 'text-amber-600 dark:text-amber-400' : 'text-slate-900 dark:text-white'}`}>
+                                        {model.name}
+                                    </h3>
+                                    {selectedModel === model.id && (
+                                        <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+                                    )}
+                                </div>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{model.description}</p>
+                            </button>
+                        ))}
                     </div>
                 </SectionCard>
 

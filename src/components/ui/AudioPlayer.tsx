@@ -8,7 +8,7 @@
  */
 
 import React, { memo, useState, useCallback } from 'react';
-import { useAudioPlayer } from '@/context/AudioPlayerContext';
+import { useAudioSync, useAudioTime, useAudioActions } from '@/context/AudioPlayerContext';
 import { AVAILABLE_RECITERS } from '@/services/quranApi';
 import { formatDuration } from '@/utils/helpers';
 import type { PlaybackSpeed, Reciter } from '@/types';
@@ -74,7 +74,8 @@ const Icons = {
  * Reciter Selector Dropdown
  */
 const ReciterSelector: React.FC = memo(() => {
-    const { state, actions } = useAudioPlayer();
+    const syncState = useAudioSync();
+    const actions = useAudioActions();
     const [isOpen, setIsOpen] = useState(false);
 
     const handleSelect = useCallback((reciter: Reciter) => {
@@ -86,13 +87,13 @@ const ReciterSelector: React.FC = memo(() => {
         <div className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-1 text-xs text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                className="flex items-center gap-2 text-xs font-bold text-white/50 hover:text-cyan-400 transition-colors uppercase tracking-widest"
                 aria-label="Select reciter"
             >
                 <span className="truncate max-w-[120px]">
-                    {state.selectedReciter?.name ?? 'Select Reciter'}
+                    {syncState.selectedReciter?.name ?? 'Select Reciter'}
                 </span>
-                {Icons.chevronDown}
+                <span className="opacity-40">{Icons.chevronDown}</span>
             </button>
 
             {isOpen && (
@@ -101,20 +102,20 @@ const ReciterSelector: React.FC = memo(() => {
                         className="fixed inset-0 z-40"
                         onClick={() => setIsOpen(false)}
                     />
-                    <div className="absolute bottom-full left-0 mb-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 z-50 max-h-64 overflow-y-auto">
-                        {AVAILABLE_RECITERS.map((reciter) => (
+                    <div className="absolute bottom-full left-0 mb-4 w-72 bg-slate-800 rounded-2xl shadow-2xl border border-white/10 z-50 max-h-80 overflow-y-auto backdrop-blur-xl">
+                        {syncState.availableReciters.map((reciter) => (
                             <button
                                 key={reciter.id}
                                 onClick={() => handleSelect(reciter)}
-                                className={`w-full px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors ${state.selectedReciter?.id === reciter.id
-                                    ? 'bg-primary-50 dark:bg-primary-900/20'
+                                className={`w-full px-5 py-4 text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 ${syncState.selectedReciter?.id === reciter.id
+                                    ? 'bg-cyan-400/10'
                                     : ''
                                     }`}
                             >
-                                <div className="font-medium text-sm text-slate-900 dark:text-white">
+                                <div className={`font-bold text-sm ${syncState.selectedReciter?.id === reciter.id ? 'text-cyan-400' : 'text-white'}`}>
                                     {reciter.name}
                                 </div>
-                                <div className="text-xs text-slate-500 dark:text-slate-400">
+                                <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                                     {reciter.style}
                                 </div>
                             </button>
@@ -132,7 +133,8 @@ ReciterSelector.displayName = 'ReciterSelector';
  * Speed Selector
  */
 const SpeedSelector: React.FC = memo(() => {
-    const { state, actions } = useAudioPlayer();
+    const timeState = useAudioTime();
+    const actions = useAudioActions();
     const [isOpen, setIsOpen] = useState(false);
 
     const handleSelect = useCallback((speed: PlaybackSpeed) => {
@@ -144,10 +146,10 @@ const SpeedSelector: React.FC = memo(() => {
         <div className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="px-2 py-1 text-xs font-medium bg-slate-100 dark:bg-slate-700 rounded text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+                className="px-3 py-1.5 text-[10px] font-bold bg-white/5 rounded-lg text-white/50 hover:text-cyan-400 transition-colors uppercase tracking-widest border border-white/10"
                 aria-label="Playback speed"
             >
-                {state.playbackSpeed}x
+                {timeState.playbackSpeed}x
             </button>
 
             {isOpen && (
@@ -156,14 +158,14 @@ const SpeedSelector: React.FC = memo(() => {
                         className="fixed inset-0 z-40"
                         onClick={() => setIsOpen(false)}
                     />
-                    <div className="absolute bottom-full right-0 mb-2 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 z-50 overflow-hidden">
+                    <div className="absolute bottom-full right-0 mb-4 bg-slate-800 rounded-xl shadow-2xl border border-white/10 z-50 overflow-hidden backdrop-blur-xl">
                         {SPEED_OPTIONS.map((speed) => (
                             <button
                                 key={speed}
                                 onClick={() => handleSelect(speed)}
-                                className={`block w-full px-4 py-2 text-sm text-left hover:bg-slate-100 dark:hover:bg-slate-700 ${state.playbackSpeed === speed
-                                    ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300'
-                                    : 'text-slate-700 dark:text-slate-300'
+                                className={`block w-full px-6 py-3 text-xs font-bold text-left hover:bg-white/5 transition-colors ${timeState.playbackSpeed === speed
+                                    ? 'bg-cyan-400/10 text-cyan-400'
+                                    : 'text-white/60'
                                     }`}
                             >
                                 {speed}x
@@ -182,30 +184,31 @@ SpeedSelector.displayName = 'SpeedSelector';
  * Progress Bar
  */
 const ProgressBar: React.FC = memo(() => {
-    const { state, actions } = useAudioPlayer();
-    const progress = state.duration > 0 ? (state.currentTime / state.duration) * 100 : 0;
+    const timeState = useAudioTime();
+    const actions = useAudioActions();
+    const progress = timeState.duration > 0 ? (timeState.currentTime / timeState.duration) * 100 : 0;
 
     const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
         const rect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const percentage = x / rect.width;
-        const newTime = percentage * state.duration;
+        const newTime = percentage * timeState.duration;
         actions.seekTo(newTime);
-    }, [state.duration, actions]);
+    }, [timeState.duration, actions]);
 
     return (
         <div
-            className="relative h-1 bg-slate-200 dark:bg-slate-700 rounded-full cursor-pointer group"
+            className="relative h-1 bg-white/10 rounded-full cursor-pointer group"
             onClick={handleClick}
         >
             {/* Progress fill */}
             <div
-                className="absolute inset-y-0 left-0 bg-primary-500 rounded-full transition-all"
+                className="absolute inset-y-0 left-0 bg-cyan-400 rounded-full transition-all shadow-[0_0_10px_rgba(34,211,238,0.5)]"
                 style={{ width: `${progress}%` }}
             />
             {/* Hover indicator */}
             <div
-                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-primary-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                 style={{ left: `calc(${progress}% - 6px)` }}
             />
         </div>
@@ -218,25 +221,41 @@ ProgressBar.displayName = 'ProgressBar';
  * Main Audio Player Component
  */
 export const AudioPlayer: React.FC = memo(() => {
-    const { state, actions } = useAudioPlayer();
+    const syncState = useAudioSync();
+    const timeState = useAudioTime();
+    const actions = useAudioActions();
 
     // Don't render if no surah is loaded
     const { isMobile } = useView();
 
-    if (!state.currentSurah) {
-        return null;
+    if (!syncState.currentSurah) {
+        // Diagnostic fallback: Render placeholder if layout is correct but data missing
+        return (
+            <div className={`
+                fixed left-0 right-0 z-[100] transition-all duration-300
+                ${isMobile ? 'bottom-[64px]' : 'bottom-0'} 
+                bg-white/95 dark:bg-slate-900/95 backdrop-blur-md
+                border-t border-primary-200 dark:border-primary-800
+                shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)]
+                pb-safe px-4 py-3 flex items-center justify-center
+            `}>
+                <span className="text-sm text-slate-500 animate-pulse">
+                    Initializing Audio Player...
+                </span>
+            </div>
+        );
     }
 
     return (
         <div className={`
             fixed left-0 right-0 z-[100] transition-all duration-300
             ${isMobile ? 'bottom-[64px]' : 'bottom-0'} 
-            bg-white/95 dark:bg-slate-900/95 backdrop-blur-md
-            border-t border-primary-200 dark:border-primary-800
-            shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)]
+            bg-[#0f172a]/90 backdrop-blur-2xl
+            border-t border-white/5
+            shadow-[0_-8px_40px_-10px_rgba(0,0,0,0.5)]
             pb-safe
         `}>
-            <div className="max-w-4xl mx-auto px-4">
+            <div className="max-w-6xl mx-auto px-4">
                 {/* Progress bar */}
                 <div className="pt-2">
                     <ProgressBar />
@@ -247,17 +266,17 @@ export const AudioPlayer: React.FC = memo(() => {
                     {/* Left: Reciter info */}
                     <div className="flex-1 min-w-0">
                         <ReciterSelector />
-                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            Verse {state.currentVerse}
+                        <div className="text-[10px] font-mono text-cyan-400/40 mt-1 uppercase tracking-widest">
+                            Verse {syncState.currentVerse}
                         </div>
                     </div>
 
                     {/* Center: Main controls */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-4">
                         {/* Skip backward */}
                         <button
                             onClick={actions.skipBackward}
-                            className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                            className="p-2 text-white/40 hover:text-cyan-400 transition-colors"
                             aria-label="Rewind 10 seconds"
                         >
                             {Icons.rewind10}
@@ -266,7 +285,7 @@ export const AudioPlayer: React.FC = memo(() => {
                         {/* Previous verse */}
                         <button
                             onClick={actions.prevVerse}
-                            className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                            className="p-2 text-white/40 hover:text-cyan-400 transition-colors"
                             aria-label="Previous verse"
                         >
                             {Icons.skipBack}
@@ -275,13 +294,13 @@ export const AudioPlayer: React.FC = memo(() => {
                         {/* Play/Pause */}
                         <button
                             onClick={actions.togglePlayPause}
-                            disabled={state.isLoading}
-                            className="w-12 h-12 flex items-center justify-center bg-primary-600 hover:bg-primary-700 text-white rounded-full transition-colors disabled:opacity-50"
-                            aria-label={state.isPlaying ? 'Pause' : 'Play'}
+                            disabled={syncState.isLoading}
+                            className="w-14 h-14 flex items-center justify-center bg-cyan-400 hover:bg-cyan-300 text-slate-900 rounded-full transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:scale-105 active:scale-95 disabled:opacity-50"
+                            aria-label={syncState.isPlaying ? 'Pause' : 'Play'}
                         >
-                            {state.isLoading ? (
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            ) : state.isPlaying ? (
+                            {syncState.isLoading ? (
+                                <div className="w-6 h-6 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin" />
+                            ) : syncState.isPlaying ? (
                                 Icons.pause
                             ) : (
                                 Icons.play
@@ -291,7 +310,7 @@ export const AudioPlayer: React.FC = memo(() => {
                         {/* Next verse */}
                         <button
                             onClick={actions.nextVerse}
-                            className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                            className="p-2 text-white/40 hover:text-cyan-400 transition-colors"
                             aria-label="Next verse"
                         >
                             {Icons.skipForward}
@@ -300,7 +319,7 @@ export const AudioPlayer: React.FC = memo(() => {
                         {/* Skip forward */}
                         <button
                             onClick={actions.skipForward}
-                            className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                            className="p-2 text-white/40 hover:text-cyan-400 transition-colors"
                             aria-label="Forward 10 seconds"
                         >
                             {Icons.forward10}
@@ -308,18 +327,18 @@ export const AudioPlayer: React.FC = memo(() => {
                     </div>
 
                     {/* Right: Time and speed */}
-                    <div className="flex-1 flex items-center justify-end gap-3">
-                        <span className="text-xs text-slate-500 dark:text-slate-400 tabular-nums">
-                            {formatDuration(state.currentTime)} / {formatDuration(state.duration)}
+                    <div className="flex-1 flex items-center justify-end gap-4">
+                        <span className="text-[10px] font-mono text-white/30 tabular-nums uppercase tracking-widest">
+                            {formatDuration(timeState.currentTime)} <span className="text-white/10 mx-1">/</span> {formatDuration(timeState.duration)}
                         </span>
                         <SpeedSelector />
                     </div>
                 </div>
 
                 {/* Error message */}
-                {state.error && (
+                {syncState.error && (
                     <div className="pb-2 text-xs text-red-600 dark:text-red-400 text-center">
-                        {state.error}
+                        {syncState.error}
                     </div>
                 )}
             </div>
