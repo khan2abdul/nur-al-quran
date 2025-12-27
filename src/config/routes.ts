@@ -21,6 +21,10 @@ export const ROUTES = {
     SETTINGS: '/settings',
     SEARCH: '/search',
     AUTH: '/auth',
+    LEARN: '/learn/fundamentals-of-faith',
+    SPIRITUAL: '/spiritual-growth',
+    PROPHETIC: '/prophetic-excellence',
+    THE_QURAN: '/knowledge/the-quran',
 } as const;
 
 /**

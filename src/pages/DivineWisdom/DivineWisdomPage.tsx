@@ -1,12 +1,7 @@
-/**
- * Divine Wisdom Page
- * 
- * A learning hub for Islamic knowledge, focusing on 
- * fundamentals, character, and spiritual growth.
- */
-
 import React, { memo } from 'react';
+import { Link } from 'react-router-dom';
 import { useView } from '@/context/ViewContext';
+import { ROUTES } from '@/config/routes';
 
 interface WisdomCategory {
     id: string;
@@ -15,6 +10,7 @@ interface WisdomCategory {
     icon: string;
     color: string;
     topics: string[];
+    link?: string;
 }
 
 const WISDOM_CATEGORIES: WisdomCategory[] = [
@@ -24,7 +20,8 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         description: 'Explore the core beliefs and practices that form the foundation of Islam.',
         icon: '🌙',
         color: 'from-blue-500/20 to-cyan-500/20',
-        topics: ['The 5 Pillars of Islam', 'The 6 Pillars of Iman', 'The Concept of Tawhid', 'Prophethood in Islam']
+        topics: ['The 5 Pillars of Islam', 'The 6 Pillars of Iman', 'The Concept of Tawhid', 'Prophethood in Islam'],
+        link: ROUTES.LEARN,
     },
     {
         id: 'spiritual',
@@ -32,7 +29,8 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         description: 'Cultivate your inner self through mindfulness, sincerity, and connection with Allah.',
         icon: '✨',
         color: 'from-purple-500/20 to-pink-500/20',
-        topics: ['Dhikir & Mindfulness', 'Patience & Gratitude', 'The Power of Dua', 'Sincerity in Action']
+        topics: ['Dhikir & Mindfulness', 'Patience & Gratitude', 'The Power of Dua', 'Sincerity in Action'],
+        link: ROUTES.SPIRITUAL,
     },
     {
         id: 'character',
@@ -40,7 +38,8 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         description: 'Learn from the beautiful character and manners of the Prophet Muhammad (SAW).',
         icon: '🌿',
         color: 'from-emerald-500/20 to-teal-500/20',
-        topics: ['Kindness to Others', 'Honesty & Integrity', 'Humility & Service', 'Brotherhood & Community']
+        topics: ['Kindness to Others', 'Honesty & Integrity', 'Humility & Service', 'Brotherhood & Community'],
+        link: ROUTES.PROPHETIC,
     },
     {
         id: 'quran',
@@ -48,7 +47,8 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         description: 'Understand the depth and miracles of the final revelation to humanity.',
         icon: '📖',
         color: 'from-amber-500/20 to-orange-500/20',
-        topics: ['Miracles of the Quran', 'Themes of Guidance', 'Protection of the Text', 'Applying Verse Wisdom']
+        topics: ['Miracles of the Quran', 'Themes of Guidance', 'Protection of the Text', 'Applying Verse Wisdom'],
+        link: ROUTES.THE_QURAN,
     },
     {
         id: 'history',
@@ -68,40 +68,65 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
     }
 ];
 
-const CategoryCard: React.FC<{ category: WisdomCategory }> = memo(({ category }) => (
-    <div className="group relative overflow-hidden rounded-[2.5rem] bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 hover:border-cyan-400/30 transition-all duration-500 hover:scale-[1.02] shadow-2xl">
-        {/* Decorative Background */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+const CategoryCard: React.FC<{ category: WisdomCategory }> = memo(({ category }) => {
+    const cardContent = (
+        <>
+            {/* Decorative Background */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
 
-        <div className="relative p-8 md:p-10 flex flex-col h-full">
-            <div className="flex items-center justify-between mb-6">
-                <span className="text-5xl group-hover:scale-110 transition-transform duration-500">{category.icon}</span>
-                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/20 group-hover:bg-cyan-400 group-hover:text-slate-900 transition-all">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                </div>
-            </div>
-
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-cyan-400 transition-colors">
-                {category.title}
-            </h3>
-
-            <p className="text-slate-400 text-sm leading-relaxed mb-8">
-                {category.description}
-            </p>
-
-            <div className="mt-auto space-y-2">
-                {category.topics.map((topic, i) => (
-                    <div key={i} className="flex items-center gap-2 text-xs text-slate-500 dark:text-white/40 group-hover:text-slate-700 dark:group-hover:text-white/60 transition-colors">
-                        <span className="w-1 h-1 rounded-full bg-cyan-400/50" />
-                        {topic}
+            <div className="relative p-8 md:p-10 flex flex-col h-full">
+                <div className="flex items-center justify-between mb-6">
+                    <span className="text-5xl group-hover:scale-110 transition-transform duration-500">{category.icon}</span>
+                    <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/20 group-hover:bg-cyan-400 group-hover:text-slate-900 transition-all">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
                     </div>
-                ))}
+                </div>
+
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-cyan-400 transition-colors">
+                    {category.title}
+                </h3>
+
+                <p className="text-slate-400 text-sm leading-relaxed mb-8">
+                    {category.description}
+                </p>
+
+                <div className="mt-auto space-y-2">
+                    {category.topics.map((topic, i) => (
+                        <div key={i} className="flex items-center gap-2 text-xs text-slate-500 dark:text-white/40 group-hover:text-slate-700 dark:group-hover:text-white/60 transition-colors">
+                            <span className="w-1 h-1 rounded-full bg-cyan-400/50" />
+                            {topic}
+                        </div>
+                    ))}
+                </div>
+
+                {/* Ready Badge for clickable cards */}
+                {category.link && (
+                    <div className="absolute top-4 right-4 px-2 py-1 rounded-full bg-emerald-400 text-slate-900 text-[10px] font-bold uppercase tracking-wider">
+                        Ready
+                    </div>
+                )}
             </div>
+        </>
+    );
+
+    const baseClasses = "group relative overflow-hidden rounded-[2.5rem] bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 hover:border-cyan-400/30 transition-all duration-500 hover:scale-[1.02] shadow-2xl";
+
+    if (category.link) {
+        return (
+            <Link to={category.link} className={baseClasses}>
+                {cardContent}
+            </Link>
+        );
+    }
+
+    return (
+        <div className={`${baseClasses} cursor-not-allowed opacity-75`}>
+            {cardContent}
         </div>
-    </div>
-));
+    );
+});
 
 CategoryCard.displayName = 'CategoryCard';
 

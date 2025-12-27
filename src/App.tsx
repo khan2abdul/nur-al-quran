@@ -25,6 +25,10 @@ const SettingsPage = lazy(() => import('@/pages/Settings/SettingsPage'));
 const BookmarksPage = lazy(() => import('@/pages/Bookmarks/BookmarksPage'));
 const DivineWisdomPage = lazy(() => import('@/pages/DivineWisdom/DivineWisdomPage'));
 const AuthPage = lazy(() => import('@/pages/Auth/AuthPage'));
+const FundamentalsPage = lazy(() => import('@/pages/Learn/FundamentalsPage'));
+const SpiritualGrowthPage = lazy(() => import('@/pages/SpiritualGrowth/SpiritualGrowthPage'));
+const PropheticExcellencePage = lazy(() => import('@/pages/PropheticExcellence/PropheticExcellencePage'));
+const TheQuranPage = lazy(() => import('@/pages/TheQuran/TheQuranPage'));
 
 /**
  * Loading Spinner for Suspense fallback
@@ -120,6 +124,22 @@ const App: React.FC = () => {
                                             <Route
                                                 path={ROUTES.AUTH}
                                                 element={<MainLayout><AuthPage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.LEARN}
+                                                element={<MainLayout><FundamentalsPage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.SPIRITUAL}
+                                                element={<MainLayout><SpiritualGrowthPage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.PROPHETIC}
+                                                element={<MainLayout><PropheticExcellencePage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.THE_QURAN}
+                                                element={<MainLayout><TheQuranPage /></MainLayout>}
                                             />
 
                                             {/* 404 Not Found */}

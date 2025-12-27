@@ -151,7 +151,7 @@ export const HomePage: React.FC = memo(() => {
             {/* Premium Theme-Aware Hero Section */}
             <section className="relative min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center overflow-hidden -mt-16 sm:-mt-20">
                 {/* Layer 1: Atmospheric Background (Theme-Aware) */}
-                <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950">
+                <div className="absolute inset-0 bg-slate-50 dark:bg-slate-900">
                     <div className="absolute inset-0 bg-mesh opacity-20 dark:opacity-30" />
                     {/* Floating Luminous Blobs - Softer in light mode */}
                     <div className="absolute top-[20%] left-[10%] w-[40rem] h-[40rem] bg-cyan-400/10 dark:bg-cyan-500/10 rounded-full blur-[120px] animate-pulse-soft" />
