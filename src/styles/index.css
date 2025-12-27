@@ -22,10 +22,17 @@
   }
 
   /* Base body styles */
-  html,
+  html {
+    @apply bg-slate-50 text-slate-900;
+  }
+
+  html.dark {
+    @apply bg-slate-900 text-slate-50;
+  }
+
   body,
   #root {
-    @apply bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50 transition-colors duration-300;
+    @apply transition-colors duration-300;
     min-height: 100vh;
     width: 100%;
     margin: 0;
@@ -210,5 +217,79 @@
 
   .animation-delay-300 {
     animation-delay: 300ms;
+  }
+
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+
+  .animation-delay-700 {
+    animation-delay: 700ms;
+  }
+
+  /* Premium Animations */
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0) rotate(0);
+    }
+
+    50% {
+      transform: translateY(-20px) rotate(2deg);
+    }
+  }
+
+  @keyframes pulse-soft {
+
+    0%,
+    100% {
+      opacity: 0.1;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 0.2;
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes shine {
+    0% {
+      transform: translateX(-100%) rotate(45deg);
+    }
+
+    100% {
+      transform: translateX(100%) rotate(45deg);
+    }
+  }
+
+  .animate-float {
+    animation: float 8s ease-in-out infinite;
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 10s ease-in-out infinite;
+  }
+
+  .animate-shine {
+    animation: shine 4s linear infinite;
+  }
+
+  /* Overlay Mesh Utility */
+  .bg-mesh {
+    background-image:
+      radial-gradient(at 0% 0%, hsla(199, 89%, 48%, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(187, 86%, 43%, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(199, 89%, 48%, 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsla(187, 86%, 43%, 0.1) 0px, transparent 50%);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+  }
+
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
   }
 }

@@ -1,8 +1,8 @@
 /**
  * useBookmarks Hook for Nur-Al-Quran
  * 
- * Manages bookmark state with localStorage persistence.
- * Provides add, remove, toggle, and check operations.
+ * Manages bookmark state with cloud sync for authenticated users
+ * and localStorage persistence for guests.
  * 
  * @module hooks/useBookmarks
  */
@@ -12,6 +12,14 @@ import type { Bookmark } from '@/types';
 import { STORAGE_KEYS } from '@/config/appConfig';
 import { getStorageItem, setStorageItem } from '@/services/localStorageService';
 import { generateId } from '@/utils/helpers';
+import { useAuth } from '@/context/AuthContext';
+import {
+    fetchCloudBookmarks,
+    saveCloudBookmark,
+    deleteCloudBookmark,
+    syncLocalToCloud,
+    clearCloudBookmarks,
+} from '@/services/bookmarkService';
 
 /**
  * Bookmark with additional display info
@@ -55,6 +63,12 @@ interface UseBookmarksReturn {
 
     /** Total bookmark count */
     count: number;
+
+    /** Loading state */
+    isLoading: boolean;
+
+    /** Whether using cloud sync */
+    isCloudSynced: boolean;
 }
 
 /**
@@ -78,10 +92,42 @@ const createVerseId = (surahId: number, verseNumber: number): string =>
  * toggleBookmark(1, 5);
  */
 export function useBookmarks(): UseBookmarksReturn {
+    const { user } = useAuth();
+    const [isLoading, setIsLoading] = useState(false);
+
     // Load bookmarks from localStorage on initialization
     const [bookmarks, setBookmarks] = useState<Bookmark[]>(() => {
         return getStorageItem<Bookmark[]>(STORAGE_KEYS.BOOKMARKS, []);
     });
+
+    // Sync with cloud when user changes (sign in/out)
+    useEffect(() => {
+        const syncBookmarks = async () => {
+            if (user) {
+                setIsLoading(true);
+                try {
+                    // Get local bookmarks
+                    const localBookmarks = getStorageItem<Bookmark[]>(STORAGE_KEYS.BOOKMARKS, []);
+
+                    // Sync local to cloud and get merged result
+                    const mergedBookmarks = await syncLocalToCloud(user.uid, localBookmarks);
+
+                    // Update state and localStorage with merged bookmarks
+                    setBookmarks(mergedBookmarks);
+                    setStorageItem(STORAGE_KEYS.BOOKMARKS, mergedBookmarks);
+                } catch (error) {
+                    console.error('Failed to sync bookmarks:', error);
+                    // Fallback to cloud-only on error
+                    const cloudBookmarks = await fetchCloudBookmarks(user.uid);
+                    setBookmarks(cloudBookmarks);
+                } finally {
+                    setIsLoading(false);
+                }
+            }
+        };
+
+        syncBookmarks();
+    }, [user?.uid]);
 
     // Save bookmarks to localStorage whenever they change
     useEffect(() => {
@@ -115,15 +161,25 @@ export function useBookmarks(): UseBookmarksReturn {
             return [...prev, newBookmark];
         });
 
+        // Sync to cloud if authenticated
+        if (user) {
+            saveCloudBookmark(user.uid, newBookmark).catch(console.error);
+        }
+
         return newBookmark;
-    }, []);
+    }, [user]);
 
     /**
      * Remove a bookmark by verse ID
      */
     const removeBookmark = useCallback((verseId: string) => {
         setBookmarks(prev => prev.filter(b => b.verseId !== verseId));
-    }, []);
+
+        // Sync to cloud if authenticated
+        if (user) {
+            deleteCloudBookmark(user.uid, verseId).catch(console.error);
+        }
+    }, [user]);
 
     /**
      * Toggle bookmark for a verse
@@ -134,6 +190,10 @@ export function useBookmarks(): UseBookmarksReturn {
         setBookmarks(prev => {
             const exists = prev.find(b => b.verseId === verseId);
             if (exists) {
+                // Remove from cloud if authenticated
+                if (user) {
+                    deleteCloudBookmark(user.uid, verseId).catch(console.error);
+                }
                 return prev.filter(b => b.verseId !== verseId);
             }
 
@@ -144,9 +204,15 @@ export function useBookmarks(): UseBookmarksReturn {
                 verseNumber,
                 createdAt: Date.now(),
             };
+
+            // Save to cloud if authenticated
+            if (user) {
+                saveCloudBookmark(user.uid, newBookmark).catch(console.error);
+            }
+
             return [...prev, newBookmark];
         });
-    }, []);
+    }, [user]);
 
     /**
      * Check if a verse is bookmarked
@@ -169,7 +235,12 @@ export function useBookmarks(): UseBookmarksReturn {
      */
     const clearAllBookmarks = useCallback(() => {
         setBookmarks([]);
-    }, []);
+
+        // Clear from cloud if authenticated
+        if (user) {
+            clearCloudBookmarks(user.uid).catch(console.error);
+        }
+    }, [user]);
 
     /**
      * Get bookmarks for a specific surah
@@ -183,6 +254,11 @@ export function useBookmarks(): UseBookmarksReturn {
      */
     const count = useMemo(() => bookmarks.length, [bookmarks]);
 
+    /**
+     * Whether using cloud sync
+     */
+    const isCloudSynced = useMemo(() => !!user, [user]);
+
     return {
         bookmarks,
         addBookmark,
@@ -193,6 +269,8 @@ export function useBookmarks(): UseBookmarksReturn {
         clearAllBookmarks,
         getBookmarksBySurah,
         count,
+        isLoading,
+        isCloudSynced,
     };
 }
 

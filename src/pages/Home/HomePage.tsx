@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import { ROUTES, getSurahRoute } from '@/config/routes';
 import { QURAN_CONFIG } from '@/config/appConfig';
 import { fetchSurahs } from '@/services/quranApi';
+import { useRecentSurahs } from '@/hooks/useRecentSurahs';
 import type { Surah } from '@/types';
 
 /**
@@ -54,47 +55,61 @@ const QuickAction: React.FC<QuickActionProps> = memo(({
 QuickAction.displayName = 'QuickAction';
 
 /**
- * Featured Surah Card
+ * Recent Surah Card (Divine Wisdom Aesthetic)
  */
-interface FeaturedSurahProps {
+interface RecentSurahProps {
     readonly surah: Surah;
+    readonly index: number;
 }
 
-const FeaturedSurah: React.FC<FeaturedSurahProps> = memo(({ surah }) => {
+const RecentSurah: React.FC<RecentSurahProps> = memo(({ surah, index }) => {
     return (
         <Link
             to={getSurahRoute(surah.id)}
-            className="card p-4 hover:shadow-lg transition-all duration-200 group"
+            className="group relative overflow-hidden rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:border-cyan-400/30 transition-all duration-300 hover:scale-[1.01] shadow-sm"
         >
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="verse-number">{surah.id}</div>
-                    <div>
-                        <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 to-cyan-500/0 group-hover:from-cyan-500/5 group-hover:to-transparent transition-all duration-500" />
+
+            <div className="relative p-5 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                    <div className="relative flex-shrink-0">
+                        <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center font-bold text-slate-400 group-hover:bg-cyan-400 group-hover:text-slate-900 transition-all duration-300">
+                            {surah.id}
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-[8px] flex items-center justify-center font-bold text-cyan-400">
+                            {index + 1}
+                        </div>
+                    </div>
+
+                    <div className="min-w-0">
+                        <h4 className="font-bold text-slate-900 dark:text-white group-hover:text-cyan-400 transition-colors truncate">
                             {surah.name}
                         </h4>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
-                            {surah.englishMeaning} • {surah.totalVerses} verses
+                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                            {surah.englishMeaning} • <span className="font-medium text-cyan-400/70">{surah.totalVerses} verses</span>
                         </p>
                     </div>
                 </div>
-                <div className="text-right">
-                    <p className="font-arabic text-lg text-slate-900 dark:text-white">
+
+                <div className="text-right flex-shrink-0">
+                    <p className="font-arabic text-xl text-slate-900 dark:text-white mb-1 group-hover:scale-110 transition-transform">
                         {surah.arabicName}
                     </p>
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${surah.revelationType === 'makkah'
-                        ? 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300'
-                        : 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300'
-                        }`}>
-                        {surah.revelationType === 'makkah' ? 'Makkah' : 'Madinah'}
-                    </span>
+                    <div className="flex items-center justify-end gap-2">
+                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md ${surah.revelationType === 'makkah'
+                            ? 'bg-amber-400/10 text-amber-500 border border-amber-400/20'
+                            : 'bg-emerald-400/10 text-emerald-500 border border-emerald-400/20'
+                            }`}>
+                            {surah.revelationType}
+                        </span>
+                    </div>
                 </div>
             </div>
         </Link>
     );
 });
 
-FeaturedSurah.displayName = 'FeaturedSurah';
+RecentSurah.displayName = 'RecentSurah';
 
 /**
  * Home Page Component
@@ -103,6 +118,9 @@ export const HomePage: React.FC = memo(() => {
     const [surahs, setSurahs] = useState<Surah[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+
+    const { recentIds } = useRecentSurahs();
 
     useEffect(() => {
         const loadSurahs = async () => {
@@ -117,45 +135,107 @@ export const HomePage: React.FC = memo(() => {
             }
         };
 
+        const handleMouseMove = (e: MouseEvent) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            setMousePos({ x, y });
+        };
+
         loadSurahs();
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
 
-    // Get featured surahs (Al-Fatihah, Al-Baqarah, Yasin, Al-Mulk)
-    const featuredIds = [1, 2, 36, 67];
-    const featuredSurahs = surahs.filter(s => featuredIds.includes(s.id));
-
     return (
-        <div className="py-6 space-y-8">
-            {/* Hero Section */}
-            <section className="text-center py-8 md:py-16">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-400 text-[10px] uppercase tracking-widest font-bold mb-6">
-                    <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
-                    </span>
-                    The Quranic Experience
-                </div>
-                <h1 className="text-4xl md:text-6xl font-bold text-slate-900 dark:text-white mb-6 tracking-tight leading-tight">
-                    Nur <span className="text-cyan-400">Al-Quran</span>
-                </h1>
-                <p className="text-slate-500 dark:text-slate-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-                    Bringing Divine Light to Everyone
-                </p>
+        <div className="space-y-12">
+            {/* Premium Theme-Aware Hero Section */}
+            <section className="relative min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center overflow-hidden -mt-16 sm:-mt-20">
+                {/* Layer 1: Atmospheric Background (Theme-Aware) */}
+                <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950">
+                    <div className="absolute inset-0 bg-mesh opacity-20 dark:opacity-30" />
+                    {/* Floating Luminous Blobs - Softer in light mode */}
+                    <div className="absolute top-[20%] left-[10%] w-[40rem] h-[40rem] bg-cyan-400/10 dark:bg-cyan-500/10 rounded-full blur-[120px] animate-pulse-soft" />
+                    <div className="absolute bottom-[20%] right-[10%] w-[30rem] h-[30rem] bg-blue-400/10 dark:bg-blue-500/10 rounded-full blur-[100px] animate-pulse-soft animation-delay-300" />
 
-                {/* Stats */}
-                <div className="flex items-center justify-center gap-6 mt-6 text-sm text-slate-500 dark:text-slate-400">
-                    <div>
-                        <span className="font-bold text-slate-900 dark:text-white">{QURAN_CONFIG.TOTAL_SURAHS}</span> Surahs
+                    {/* Interactive Cursor Glow - White/Cyan wash in light mode */}
+                    <div
+                        className="absolute inset-0 pointer-events-none opacity-30 dark:opacity-40 transition-opacity duration-1000 group-hover:opacity-100"
+                        style={{
+                            background: `radial-gradient(circle 400px at ${mousePos.x}% ${mousePos.y}%, ${mousePos.x > 0 ? 'rgba(34, 211, 238, 0.1)' : 'transparent'}, transparent 80%)`
+                        }}
+                    />
+                </div>
+
+                {/* Layer 2: Floating Particles (SVG) - Theme-Aware Colors */}
+                <div className="absolute inset-0 pointer-events-none opacity-20 dark:opacity-30">
+                    <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="10%" cy="20%" r="1" fill="currentColor" className="text-slate-400 dark:text-white animate-float" />
+                        <circle cx="85%" cy="35%" r="1.5" fill="currentColor" className="text-slate-400 dark:text-white animate-float animation-delay-300" />
+                        <circle cx="50%" cy="80%" r="1" fill="currentColor" className="text-slate-400 dark:text-white animate-float animation-delay-500" />
+                        <circle cx="20%" cy="60%" r="2" fill="cyan" className="animate-float animation-delay-700" />
+                        <circle cx="70%" cy="15%" r="1.5" fill="cyan" className="animate-float animation-delay-100" />
+                    </svg>
+                </div>
+
+                {/* Layer 3: Main Content */}
+                <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+                    <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full glass-card border-slate-200 dark:border-white/5 text-cyan-600 dark:text-cyan-400 text-[11px] uppercase tracking-[0.4em] font-bold mb-10 transition-all hover:border-cyan-400/30 hover:bg-cyan-400/5 group cursor-default shadow-sm dark:shadow-none">
+                        <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
+                        </span>
+                        Divine Guidance • {QURAN_CONFIG.TOTAL_SURAHS} Chapters
                     </div>
-                    <div className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600" />
-                    <div>
-                        <span className="font-bold text-slate-900 dark:text-white">{QURAN_CONFIG.TOTAL_JUZ}</span> Juz
-                    </div>
-                    <div className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600" />
-                    <div>
-                        <span className="font-bold text-slate-900 dark:text-white">{QURAN_CONFIG.TOTAL_VERSES.toLocaleString()}</span> Verses
+
+                    <h1 className="text-6xl md:text-9xl font-bold tracking-tighter leading-[0.9] mb-10">
+                        <span className="block text-slate-400 dark:text-slate-100/30 font-light italic mb-2 animate-slide-up">Discovery of</span>
+                        <span className="block text-slate-900 dark:text-slate-100 dark:text-glow animate-slide-up animation-delay-100">
+                            Nur <span className="text-cyan-500 dark:text-cyan-400">Al-Quran</span>
+                        </span>
+                    </h1>
+
+                    <p className="text-slate-500 dark:text-slate-400 text-xl md:text-3xl max-w-2xl mx-auto leading-relaxed font-light mb-14 animate-slide-up animation-delay-200 balance">
+                        Experience the <span className="text-slate-900 dark:text-slate-100 font-medium">Infinite Light</span> through beauty, clarity, and modern elegance.
+                    </p>
+
+                    {/* Theme-Aware Stats Glass-Card */}
+                    <div className="inline-flex items-center gap-1 bg-white/40 dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-[2rem] p-2 pr-8 animate-slide-up animation-delay-300 shadow-md dark:shadow-none">
+                        <div className="flex -space-x-3">
+                            <div className="w-12 h-12 rounded-full border-2 border-slate-50 dark:border-slate-900 bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center text-xl">📖</div>
+                            <div className="w-12 h-12 rounded-full border-2 border-slate-50 dark:border-slate-900 bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center text-xl">✨</div>
+                            <div className="w-12 h-12 rounded-full border-2 border-slate-50 dark:border-slate-900 bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center text-xl">🌙</div>
+                        </div>
+                        <div className="flex items-center gap-6 ml-6">
+                            <span className="text-slate-600 dark:text-slate-400 text-sm tracking-wide">
+                                <b className="text-slate-900 dark:text-white">{QURAN_CONFIG.TOTAL_VERSES.toLocaleString()}</b> Precise Verses
+                            </span>
+                            <div className="w-1 h-6 bg-slate-200 dark:bg-white/5" />
+                            <span className="text-slate-600 dark:text-slate-400 text-sm tracking-wide">
+                                <b className="text-slate-900 dark:text-white">{QURAN_CONFIG.TOTAL_SURAHS}</b> Surahs
+                            </span>
+                        </div>
                     </div>
                 </div>
+
+                {/* Enhanced Scroll Indicator */}
+                <button
+                    onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+                    className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 group cursor-pointer opacity-80 hover:opacity-100 transition-all duration-500"
+                >
+                    <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-slate-400 dark:text-white/50 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors">
+                        Scroll to explore
+                    </span>
+                    <div className="relative flex flex-col items-center gap-1">
+                        {/* Bouncing Arrow */}
+                        <div className="animate-bounce">
+                            <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                            </svg>
+                        </div>
+                        {/* Glowing Line */}
+                        <div className="w-[2px] h-12 bg-gradient-to-b from-cyan-400 via-cyan-400/50 to-transparent rounded-full" />
+                    </div>
+                </button>
             </section>
 
             {/* Premium Hub Layout */}
@@ -247,61 +327,59 @@ export const HomePage: React.FC = memo(() => {
                 </Link>
             </div>
 
-            {/* Featured Surahs */}
-            <section>
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                        Popular Surahs
-                    </h2>
+            {/* Recent Surahs */}
+            <section className="mt-8">
+                <div className="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                            <span className="w-8 h-8 rounded-lg bg-cyan-400/10 flex items-center justify-center text-lg">🕒</span>
+                            Recent Surahs
+                        </h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 ml-11">Pick up where you left off</p>
+                    </div>
                     <Link
                         to={ROUTES.SURAHS}
-                        className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
+                        className="text-xs font-bold uppercase tracking-widest text-cyan-400 hover:text-cyan-300 transition-all font-mono"
                     >
-                        View all →
+                        Library →
                     </Link>
                 </div>
 
                 {loading ? (
-                    <div className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {[1, 2, 3, 4].map(i => (
-                            <div key={i} className="card p-4 animate-pulse">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-slate-200 dark:bg-slate-700 rounded-full" />
-                                    <div className="flex-1">
-                                        <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-24 mb-2" />
-                                        <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-32" />
-                                    </div>
-                                </div>
-                            </div>
+                            <div key={i} className="bg-white dark:bg-white/5 rounded-2xl p-5 border border-slate-100 dark:border-white/5 animate-pulse h-[88px]" />
                         ))}
                     </div>
                 ) : error ? (
-                    <div className="card p-6 text-center">
-                        <p className="text-red-600 dark:text-red-400 mb-2">⚠️ {error}</p>
+                    <div className="bg-white dark:bg-slate-800/50 rounded-2xl p-8 text-center border border-red-500/10">
+                        <p className="text-red-600 dark:text-red-400 mb-4 font-medium">⚠️ {error}</p>
                         <button
                             onClick={() => window.location.reload()}
-                            className="btn-primary"
+                            className="px-6 py-2 rounded-xl bg-red-500/10 text-red-500 font-bold text-xs uppercase tracking-widest hover:bg-red-500/20 transition-all"
                         >
                             Retry
                         </button>
                     </div>
                 ) : (
-                    <div className="space-y-3">
-                        {featuredSurahs.map(surah => (
-                            <FeaturedSurah key={surah.id} surah={surah} />
-                        ))}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {recentIds.length > 0 ? (
+                            surahs
+                                .filter(s => recentIds.includes(s.id))
+                                .sort((a, b) => recentIds.indexOf(a.id) - recentIds.indexOf(b.id))
+                                .map((surah, index) => (
+                                    <RecentSurah key={surah.id} surah={surah} index={index} />
+                                ))
+                        ) : (
+                            // Fallback to featured surahs if no recent history
+                            surahs
+                                .filter(s => [1, 2, 36, 67].includes(s.id))
+                                .map((surah, index) => (
+                                    <RecentSurah key={surah.id} surah={surah} index={index} />
+                                ))
+                        )}
                     </div>
                 )}
-            </section>
-
-            {/* Bismillah */}
-            <section className="text-center py-6">
-                <p className="font-arabic text-2xl md:text-3xl text-slate-900 dark:text-white leading-loose">
-                    بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
-                </p>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-                    In the name of Allah, the Most Gracious, the Most Merciful
-                </p>
             </section>
         </div>
     );

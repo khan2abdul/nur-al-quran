@@ -10,6 +10,7 @@ import React, { memo, useEffect, useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { getSurahRoute } from '@/config/routes';
 import { fetchSurahs } from '@/services/quranApi';
+import { useReadSurahs } from '@/hooks/useReadSurahs';
 import type { Surah, RevelationType } from '@/types';
 
 /**
@@ -17,20 +18,36 @@ import type { Surah, RevelationType } from '@/types';
  */
 interface SurahCardProps {
     readonly surah: Surah;
+    readonly isRead?: boolean;
 }
 
-const SurahCard: React.FC<SurahCardProps> = memo(({ surah }) => {
+const SurahCard: React.FC<SurahCardProps> = memo(({ surah, isRead = false }) => {
     return (
         <Link
             to={getSurahRoute(surah.id)}
-            className="group relative overflow-hidden rounded-[2rem] bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 hover:border-emerald-400/30 transition-all duration-500 hover:scale-[1.01] shadow-xl h-full flex flex-col justify-center"
+            className={`group relative overflow-hidden rounded-[2rem] bg-white dark:bg-slate-800/50 border transition-all duration-500 hover:scale-[1.01] shadow-xl h-full flex flex-col justify-center ${isRead
+                    ? 'border-emerald-400/50 ring-2 ring-emerald-400/20'
+                    : 'border-slate-200 dark:border-white/5 hover:border-emerald-400/30'
+                }`}
         >
+            {/* Read Badge */}
+            {isRead && (
+                <div className="absolute top-3 right-3 w-6 h-6 rounded-full bg-emerald-400 flex items-center justify-center text-slate-900 shadow-lg z-20">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                </div>
+            )}
+
             {/* Decorative Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className={`absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 transition-opacity duration-500 ${isRead ? 'opacity-50' : 'opacity-0 group-hover:opacity-100'}`} />
 
             <div className="relative p-5 md:p-6 flex items-center gap-4 md:gap-5">
                 {/* Surah ID Badge */}
-                <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-slate-100 dark:bg-white/5 flex flex-shrink-0 items-center justify-center text-slate-400 group-hover:bg-emerald-400 group-hover:text-slate-900 transition-all font-bold text-lg md:text-xl shadow-inner relative z-10">
+                <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl flex flex-shrink-0 items-center justify-center transition-all font-bold text-lg md:text-xl shadow-inner relative z-10 ${isRead
+                        ? 'bg-emerald-400 text-slate-900'
+                        : 'bg-slate-100 dark:bg-white/5 text-slate-400 group-hover:bg-emerald-400 group-hover:text-slate-900'
+                    }`}>
                     <span className="relative top-[1px]">{surah.id}</span>
                 </div>
 
@@ -85,23 +102,27 @@ interface FilterChipProps {
     readonly label: string;
     readonly active: boolean;
     readonly onClick: () => void;
+    readonly icon?: React.ReactNode;
 }
 
-const FilterChip: React.FC<FilterChipProps> = memo(({ label, active, onClick }) => {
+const FilterChip: React.FC<FilterChipProps> = memo(({ label, active, onClick, icon }) => {
     return (
         <button
             onClick={onClick}
-            className={`px-5 py-2 rounded-2xl text-sm font-bold transition-all border whitespace-nowrap ${active
+            className={`px-5 py-2 rounded-2xl text-sm font-bold transition-all border whitespace-nowrap flex items-center gap-2 ${active
                 ? 'bg-emerald-400 border-emerald-400 text-slate-900 shadow-lg shadow-emerald-400/20'
                 : 'bg-white dark:bg-slate-800/50 border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:border-emerald-400/30'
                 }`}
         >
+            {icon}
             {label}
         </button>
     );
 });
 
 FilterChip.displayName = 'FilterChip';
+
+type FilterType = 'all' | RevelationType | 'read' | 'unread';
 
 /**
  * Surah List Page Component
@@ -111,7 +132,9 @@ export const SurahListPage: React.FC = memo(() => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [filter, setFilter] = useState<'all' | RevelationType>('all');
+    const [filter, setFilter] = useState<FilterType>('all');
+
+    const { isRead, readCount } = useReadSurahs();
 
     useEffect(() => {
         const loadSurahs = async () => {
@@ -133,9 +156,12 @@ export const SurahListPage: React.FC = memo(() => {
     const filteredSurahs = useMemo(() => {
         return surahs.filter(surah => {
             // Filter by revelation type
-            if (filter !== 'all' && surah.revelationType !== filter) {
-                return false;
-            }
+            if (filter === 'makkah' && surah.revelationType !== 'makkah') return false;
+            if (filter === 'madinah' && surah.revelationType !== 'madinah') return false;
+
+            // Filter by read status
+            if (filter === 'read' && !isRead(surah.id)) return false;
+            if (filter === 'unread' && isRead(surah.id)) return false;
 
             // Search query
             if (searchQuery) {
@@ -150,9 +176,9 @@ export const SurahListPage: React.FC = memo(() => {
 
             return true;
         });
-    }, [surahs, filter, searchQuery]);
+    }, [surahs, filter, searchQuery, isRead]);
 
-    const handleFilterChange = useCallback((newFilter: 'all' | RevelationType) => {
+    const handleFilterChange = useCallback((newFilter: FilterType) => {
         setFilter(newFilter);
     }, []);
 
@@ -190,7 +216,7 @@ export const SurahListPage: React.FC = memo(() => {
                     Holy <span className="text-emerald-400">Surahs</span>
                 </h1>
                 <p className="text-slate-500 dark:text-slate-400 text-lg">
-                    Browse all 114 chapters of the final revelation.
+                    Browse all 114 chapters of the final revelation. <span className="text-emerald-400 font-bold">{readCount}</span> completed.
                 </p>
             </div>
 
@@ -224,14 +250,29 @@ export const SurahListPage: React.FC = memo(() => {
                     onClick={() => handleFilterChange('all')}
                 />
                 <FilterChip
-                    label="🕋 Makkah"
+                    label="Makkah"
+                    icon={<span>🕋</span>}
                     active={filter === 'makkah'}
                     onClick={() => handleFilterChange('makkah')}
                 />
                 <FilterChip
-                    label="🕌 Madinah"
+                    label="Madinah"
+                    icon={<span>🕌</span>}
                     active={filter === 'madinah'}
                     onClick={() => handleFilterChange('madinah')}
+                />
+                <div className="w-px h-6 bg-slate-200 dark:bg-white/10 mx-1" />
+                <FilterChip
+                    label="Read"
+                    icon={<span>✅</span>}
+                    active={filter === 'read'}
+                    onClick={() => handleFilterChange('read')}
+                />
+                <FilterChip
+                    label="Unread"
+                    icon={<span>📖</span>}
+                    active={filter === 'unread'}
+                    onClick={() => handleFilterChange('unread')}
                 />
             </div>
 
@@ -254,13 +295,15 @@ export const SurahListPage: React.FC = memo(() => {
                     </div>
                     <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No results found</h3>
                     <p className="text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
-                        We couldn't find any surahs matching <span className="text-emerald-400 font-bold">"{searchQuery}"</span>. Try searching by ID or meaning.
+                        {filter === 'read' ? "You haven't marked any surahs as read yet." :
+                            filter === 'unread' ? "You've read all surahs! Masha'Allah!" :
+                                <>We couldn't find any surahs matching <span className="text-emerald-400 font-bold">"{searchQuery}"</span>.</>}
                     </p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredSurahs.map(surah => (
-                        <SurahCard key={surah.id} surah={surah} />
+                        <SurahCard key={surah.id} surah={surah} isRead={isRead(surah.id)} />
                     ))}
                 </div>
             )}

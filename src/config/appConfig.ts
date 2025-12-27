@@ -69,6 +69,12 @@ export const STORAGE_KEYS = {
 
     /** Cached Surah list */
     SURAH_CACHE: 'nur-al-quran:surahs',
+
+    /** Recently viewed Surahs */
+    RECENT_SURAHS: 'nur-al-quran:recent-surahs',
+
+    /** Completed/Read Surahs */
+    READ_SURAHS: 'nur-al-quran:read-surahs',
 } as const;
 
 /**

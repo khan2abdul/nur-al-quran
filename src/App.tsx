@@ -24,6 +24,7 @@ const VerseViewPage = lazy(() => import('@/pages/VerseView/VerseViewPage'));
 const SettingsPage = lazy(() => import('@/pages/Settings/SettingsPage'));
 const BookmarksPage = lazy(() => import('@/pages/Bookmarks/BookmarksPage'));
 const DivineWisdomPage = lazy(() => import('@/pages/DivineWisdom/DivineWisdomPage'));
+const AuthPage = lazy(() => import('@/pages/Auth/AuthPage'));
 
 /**
  * Loading Spinner for Suspense fallback
@@ -115,6 +116,10 @@ const App: React.FC = () => {
                                             <Route
                                                 path={ROUTES.SETTINGS}
                                                 element={<MainLayout><SettingsPage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.AUTH}
+                                                element={<MainLayout><AuthPage /></MainLayout>}
                                             />
 
                                             {/* 404 Not Found */}

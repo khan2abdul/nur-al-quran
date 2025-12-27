@@ -167,30 +167,22 @@ export const BookmarksPage: React.FC = memo(() => {
         if ('vibrate' in navigator) navigator.vibrate([50, 30, 50]);
     }, [clearAllBookmarks]);
 
-    if (!user) {
-        return (
-            <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
-                <div className="w-24 h-24 bg-cyan-400/10 rounded-[2rem] flex items-center justify-center mb-8">
-                    <svg className="w-12 h-12 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                </div>
-                <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Personalized Library</h1>
-                <p className="text-slate-500 dark:text-slate-400 max-w-sm mb-10 leading-relaxed">
-                    Join Nur Al-Quran to save your favorite verses and access them anytime, anywhere.
-                </p>
-                <button
-                    onClick={signInWithGoogle}
-                    className="px-10 py-4 rounded-2xl bg-cyan-400 hover:bg-cyan-300 text-slate-900 font-bold transition-all shadow-xl shadow-cyan-400/20"
-                >
-                    Sign In to Bookmark
-                </button>
-            </div>
-        );
-    }
-
     return (
         <div className="min-h-screen bg-surface-light dark:bg-slate-900 py-6 px-4">
+            {/* Guest Mode Disclaimer */}
+            {!user && count > 0 && (
+                <div className="max-w-7xl mx-auto mb-6 px-4 py-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-start gap-4 animate-in fade-in slide-in-from-top-2 duration-500">
+                    <span className="text-xl mt-0.5">⚠️</span>
+                    <div className="flex-1">
+                        <h4 className="text-sm font-bold text-amber-800 dark:text-amber-400">Guest Mode Active</h4>
+                        <p className="text-xs text-amber-700/80 dark:text-amber-400/60 mt-0.5 leading-relaxed">
+                            Your bookmarks are saved locally in this browser. They will be deleted if you clear your cache or history.
+                            <button onClick={signInWithGoogle} className="ml-2 underline font-bold hover:text-amber-900 dark:hover:text-amber-200">Sign in</button> for permanent cloud sync.
+                        </p>
+                    </div>
+                </div>
+            )}
+
             {/* Page Header */}
             <div className="flex items-center justify-between mb-6">
                 <div>

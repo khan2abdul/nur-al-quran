@@ -12,10 +12,12 @@ import { useParams, Link, useLocation } from 'react-router-dom';
 import { fetchSurah, fetchVerses, fetchChapterAudio, fetchSurahInfo } from '@/services/quranApi';
 import { useAudioSync, useAudioActions } from '@/context/AudioPlayerContext';
 import { useBookmarks } from '@/hooks/useBookmarks';
+import { useRecentSurahs } from '@/hooks/useRecentSurahs';
 import { SurahHeader } from '@/components/quran/SurahHeader';
 import { VerseCard } from '@/components/quran/VerseCard';
 import { AudioPlayer } from '@/components/ui/AudioPlayer';
 import { ROUTES } from '@/config/routes';
+import { useReadSurahs } from '@/hooks/useReadSurahs';
 import type { Surah, Verse } from '@/types';
 import { getVerseMeaning, loadSurahMeanings } from '@/data/meanings';
 
@@ -105,6 +107,8 @@ export const VerseViewPage: React.FC = memo(() => {
     const syncState = useAudioSync();
     const actions = useAudioActions();
     const { isBookmarked, toggleBookmark } = useBookmarks();
+    const { addRecentSurah } = useRecentSurahs();
+    const { isRead, toggleReadStatus } = useReadSurahs();
     const versesContainerRef = useRef<HTMLDivElement>(null);
 
     // Load surah data and verses
@@ -112,6 +116,11 @@ export const VerseViewPage: React.FC = memo(() => {
         const loadData = async () => {
             try {
                 setLoading(true);
+
+                // Add to recently viewed
+                if (surahNumber) {
+                    addRecentSurah(surahNumber);
+                }
                 setError(null);
 
                 // Fetch surah info, verses and metadata in parallel
@@ -334,6 +343,80 @@ export const VerseViewPage: React.FC = memo(() => {
                         })
                     )}
                 </div>
+
+                {/* Mark as Read/Unread Button + Navigation */}
+                {!loading && surah && (
+                    <div className="mt-16 mb-8 flex flex-col items-center gap-6">
+                        <div className="w-20 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent rounded-full" />
+                        <p className="text-slate-400 text-sm">You've reached the end of {surah.name}</p>
+
+                        {/* Mark as Read Button */}
+                        <button
+                            onClick={() => toggleReadStatus(surahNumber)}
+                            className={`px-8 py-4 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all flex items-center gap-3 ${isRead(surahNumber)
+                                ? 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/10 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30'
+                                : 'bg-emerald-400 text-slate-900 shadow-xl shadow-emerald-400/20 hover:bg-emerald-300'
+                                }`}
+                        >
+                            {isRead(surahNumber) ? (
+                                <>
+                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                                    </svg>
+                                    Completed — Mark as Unread
+                                </>
+                            ) : (
+                                <>
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    Mark as Read
+                                </>
+                            )}
+                        </button>
+
+                        {/* Previous / Library / Next Navigation */}
+                        <div className="flex items-center gap-3 mt-4">
+                            <Link
+                                to={surahNumber > 1 ? `/surah/${surahNumber - 1}` : '#'}
+                                className={`px-5 py-3 rounded-xl font-bold text-sm uppercase tracking-widest transition-all flex items-center gap-2 ${surahNumber === 1
+                                    ? 'bg-slate-100 dark:bg-white/5 text-slate-300 dark:text-slate-600 cursor-not-allowed pointer-events-none'
+                                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:border-cyan-400/50 hover:text-cyan-400'
+                                    }`}
+                                aria-disabled={surahNumber === 1}
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                </svg>
+                                Previous
+                            </Link>
+
+                            <Link
+                                to={ROUTES.SURAHS}
+                                className="px-5 py-3 rounded-xl font-bold text-sm uppercase tracking-widest transition-all flex items-center gap-2 bg-emerald-400/10 text-emerald-500 border border-emerald-400/20 hover:bg-emerald-400 hover:text-slate-900"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                </svg>
+                                Library
+                            </Link>
+
+                            <Link
+                                to={surahNumber < 114 ? `/surah/${surahNumber + 1}` : '#'}
+                                className={`px-5 py-3 rounded-xl font-bold text-sm uppercase tracking-widest transition-all flex items-center gap-2 ${surahNumber === 114
+                                    ? 'bg-slate-100 dark:bg-white/5 text-slate-300 dark:text-slate-600 cursor-not-allowed pointer-events-none'
+                                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:border-cyan-400/50 hover:text-cyan-400'
+                                    }`}
+                                aria-disabled={surahNumber === 114}
+                            >
+                                Next
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </Link>
+                        </div>
+                    </div>
+                )}
 
                 <AudioPlayer />
             </div>

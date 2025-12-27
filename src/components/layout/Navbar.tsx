@@ -9,6 +9,7 @@
 
 import React, { memo, useState, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useLanguage, LANGUAGES } from '@/context/LanguageContext';
 import { NAV_ITEMS, ROUTES } from '@/config/routes';
@@ -67,6 +68,11 @@ const Icons = {
     x: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    ),
+    logout: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
         </svg>
     ),
 } as const;
@@ -132,10 +138,96 @@ const LanguageSwitcher: React.FC = memo(() => {
 LanguageSwitcher.displayName = 'LanguageSwitcher';
 
 /**
+ * Profile Dropdown Component
+ */
+const ProfileDropdown: React.FC = memo(() => {
+    const { user, signOut, signInWithGoogle } = useAuth();
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleLogout = useCallback(async () => {
+        await signOut();
+        setIsOpen(false);
+    }, [signOut]);
+
+    if (!user) {
+        return (
+            <Link
+                to={ROUTES.AUTH}
+                className="px-5 py-2 rounded-xl bg-cyan-400 text-slate-900 font-bold text-xs uppercase tracking-widest shadow-[0_0_15px_rgba(34,211,238,0.4)] hover:bg-cyan-300 transition-all"
+            >
+                Sign In
+            </Link>
+        );
+    }
+
+    return (
+        <div className="relative">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center gap-2 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 transition-all border border-transparent hover:border-slate-200 dark:hover:border-white/10"
+                aria-label="User profile"
+            >
+                <img
+                    src={user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}&background=random`}
+                    alt={user.displayName || 'User'}
+                    className="w-8 h-8 rounded-full object-cover border border-cyan-400/50"
+                />
+            </button>
+
+            {isOpen && (
+                <>
+                    <div
+                        className="fixed inset-0 z-10"
+                        onClick={() => setIsOpen(false)}
+                    />
+                    <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 z-20 overflow-hidden backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-200">
+                        {/* User Info Header */}
+                        <div className="px-5 py-4 border-b border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/5">
+                            <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                                {user.displayName}
+                            </p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                                {user.email}
+                            </p>
+                        </div>
+
+                        {/* Dropdown Items */}
+                        <div className="p-2 space-y-1">
+                            <Link
+                                to={ROUTES.SETTINGS}
+                                onClick={() => setIsOpen(false)}
+                                className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-cyan-400 transition-all"
+                            >
+                                <span className="flex-shrink-0 text-slate-400 group-hover:text-cyan-400 transition-colors">
+                                    {getIcon('settings')}
+                                </span>
+                                Settings
+                            </Link>
+                            <button
+                                onClick={handleLogout}
+                                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all text-left"
+                            >
+                                <span className="flex-shrink-0 text-red-500/70">
+                                    {getIcon('logout')}
+                                </span>
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                </>
+            )}
+        </div>
+    );
+});
+
+ProfileDropdown.displayName = 'ProfileDropdown';
+
+/**
  * Desktop Navigation Bar
  */
 const DesktopNav: React.FC = memo(() => {
     const location = useLocation();
+    const { theme, toggleTheme } = useTheme();
 
     return (
         <header className="hidden md:block fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5">
@@ -148,27 +240,39 @@ const DesktopNav: React.FC = memo(() => {
                     </span>
                 </Link>
 
-                {/* Navigation Links */}
-                <nav className="flex items-center gap-2">
-                    {NAV_ITEMS.filter(item => item.showInNav).map((item) => {
-                        const isActive = location.pathname === item.path;
-                        return (
-                            <Link
-                                key={item.path}
-                                to={item.path}
-                                className={`flex items-center gap-2 px-5 py-2 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${isActive
-                                    ? 'bg-cyan-400 text-slate-900 shadow-[0_0_15px_rgba(34,211,238,0.4)]'
-                                    : 'text-slate-500 dark:text-white/40 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
-                                    }`}
-                            >
-                                {item.name}
-                            </Link>
-                        );
-                    })}
-                </nav>
+                {/* Navigation Links and Actions */}
+                <div className="flex items-center gap-6">
+                    <nav className="flex items-center gap-2">
+                        {NAV_ITEMS.filter(item => item.showInNav && item.path !== ROUTES.SETTINGS).map((item) => {
+                            const isActive = location.pathname === item.path;
+                            return (
+                                <Link
+                                    key={item.path}
+                                    to={item.path}
+                                    className={`flex items-center gap-2 px-5 py-2 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${isActive
+                                        ? 'bg-cyan-400 text-slate-900 shadow-[0_0_15px_rgba(34,211,238,0.4)]'
+                                        : 'text-slate-500 dark:text-white/40 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
+                                        }`}
+                                >
+                                    {item.name}
+                                </Link>
+                            );
+                        })}
+                    </nav>
 
-                {/* Actions removed (theme toggle now in settings) */}
-                <div className="flex items-center gap-2">
+                    <div className="h-6 w-px bg-slate-200 dark:bg-white/10" />
+
+                    {/* Theme Toggle (Accessible to everyone) */}
+                    <button
+                        onClick={toggleTheme}
+                        className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 hover:text-cyan-400 transition-all"
+                        aria-label="Toggle theme"
+                        title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+                    >
+                        {getIcon(theme === 'light' ? 'moon' : 'sun')}
+                    </button>
+
+                    <ProfileDropdown />
                 </div>
             </div>
         </header>
@@ -232,6 +336,8 @@ MobileNav.displayName = 'MobileNav';
  * Mobile Header (Top bar)
  */
 const MobileHeader: React.FC = memo(() => {
+    const { theme, toggleTheme } = useTheme();
+
     return (
         <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-2">
             <div className="flex items-center justify-between h-14 px-4">
@@ -244,6 +350,13 @@ const MobileHeader: React.FC = memo(() => {
 
                 {/* Actions removed (theme toggle now in settings) */}
                 <div className="flex items-center gap-1">
+                    <button
+                        onClick={toggleTheme}
+                        className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 hover:text-cyan-400 transition-all"
+                        aria-label="Toggle theme"
+                    >
+                        {getIcon(theme === 'light' ? 'moon' : 'sun')}
+                    </button>
                 </div>
             </div>
         </header>

@@ -211,12 +211,8 @@ export const VerseCard: React.FC<VerseCardProps> = memo(({
 
     const handleBookmarkClick = useCallback((e: React.MouseEvent) => {
         e.stopPropagation();
-        if (!user) {
-            alert('Please log in to save bookmarks');
-            return;
-        }
         onBookmarkToggle?.(verseNumber);
-    }, [verseNumber, onBookmarkToggle, user]);
+    }, [verseNumber, onBookmarkToggle]);
 
     return (
         <div

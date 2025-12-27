@@ -20,6 +20,7 @@ export const ROUTES = {
     BOOKMARKS: '/bookmarks',
     SETTINGS: '/settings',
     SEARCH: '/search',
+    AUTH: '/auth',
 } as const;
 
 /**

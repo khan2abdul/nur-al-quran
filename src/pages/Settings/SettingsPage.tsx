@@ -8,6 +8,7 @@
 import React, { memo } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { useView } from '@/context/ViewContext';
 
 /**
  * Section Card Component
@@ -29,6 +30,7 @@ SectionCard.displayName = 'SectionCard';
 export const SettingsPage: React.FC = memo(() => {
     const { user, signInWithGoogle, signOut } = useAuth();
     const { isDark, toggleTheme } = useTheme();
+    const { viewMode, setViewMode } = useView();
 
     return (
         <div className="min-h-screen py-8 pb-32 md:pb-12">
@@ -98,41 +100,28 @@ export const SettingsPage: React.FC = memo(() => {
                     </SectionCard>
 
                     {/* App Preferences */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-                        {/* Theme Section */}
+                    <div className="max-w-md mx-auto md:mx-0">
+                        {/* View Mode Section */}
                         <SectionCard>
                             <div className="flex items-center justify-between gap-4">
                                 <div className="min-w-0">
-                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1 truncate">Appearance</h3>
-                                    <p className="text-slate-500 text-sm">Light or dark mode.</p>
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1 truncate">View Mode</h3>
+                                    <p className="text-slate-500 text-sm">{viewMode === 'mobile' ? 'Simulated Mobile' : 'Responsive Desktop'}</p>
                                 </div>
                                 <button
-                                    onClick={toggleTheme}
+                                    onClick={() => setViewMode(viewMode === 'mobile' ? 'desktop' : 'mobile')}
                                     className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-slate-100 dark:bg-white/5 hover:bg-cyan-400/10 text-cyan-400 flex flex-shrink-0 items-center justify-center transition-all border border-slate-200 dark:border-white/5"
                                 >
-                                    {isDark ? (
+                                    {viewMode === 'mobile' ? (
                                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                         </svg>
                                     ) : (
                                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                         </svg>
                                     )}
                                 </button>
-                            </div>
-                        </SectionCard>
-
-                        {/* App Info */}
-                        <SectionCard>
-                            <div className="flex items-center gap-4 h-full">
-                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-cyan-400/10 flex flex-shrink-0 items-center justify-center text-2xl shadow-inner">
-                                    🌙
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-0.5 truncate leading-none">Nur Al-Quran</h3>
-                                    <p className="text-slate-500 text-sm truncate leading-none">v1.2.0 • Light of Quran</p>
-                                </div>
                             </div>
                         </SectionCard>
                     </div>
