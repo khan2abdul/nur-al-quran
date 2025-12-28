@@ -56,16 +56,115 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         description: 'Discover the rich history and contributions of Islamic civilization to the world.',
         icon: '🕌',
         color: 'from-indigo-500/20 to-blue-500/20',
-        topics: ['Lives of the Prophets', 'Golden Age of Science', 'Spread of Knowledge', 'Lessons from History']
+        topics: ['History of Prophets', 'Golden Age of Science', 'Islamic Empires', 'Lessons from History'],
+        link: ROUTES.ISLAMIC_LEGACY,
     },
     {
-        id: 'daily',
+        id: 'living',
         title: 'Living Islam Daily',
-        description: 'Practical guidance for integrating Islamic values into your modern daily life.',
-        icon: '☀️',
-        color: 'from-rose-500/20 to-orange-500/20',
-        topics: ['Islamic Ethics in Work', 'Family Relationships', 'Modern Challenges', 'Seeking Useful Knowledge']
-    }
+        description: 'Practical guidance for navigating modern life, work, family, and challenges.',
+        icon: '🌿',
+        color: 'from-teal-500/20 to-emerald-500/20',
+        topics: ['Work & Ethics', 'Family Harmony', 'Modern Challenges', 'Personal Growth'],
+        link: ROUTES.LIVING_ISLAM,
+    },
+    {
+        id: 'women',
+        title: 'Women in Islam',
+        description: 'Celebrating the honored role, rights, and contributions of Muslim women throughout history.',
+        icon: '🧕',
+        color: 'from-pink-500/20 to-rose-500/20',
+        topics: ['Rights & History', 'Hijab & Modesty', 'Female Scholars', 'Motherhood', 'Health & Wellness', 'Career Balance'],
+        link: ROUTES.WOMEN_IN_ISLAM,
+    },
+    {
+        id: 'youth',
+        title: 'Youth & Students',
+        description: 'Guidance for the next generation on identity, success, and navigating modern challenges.',
+        icon: '🎓',
+        color: 'from-indigo-500/20 to-violet-500/20',
+        topics: ['Islamic Identity', 'Academic Success', 'Peer Pressure', 'Halal Careers', 'Social Life', 'Mental Health'],
+    },
+    {
+        id: 'marriage',
+        title: 'Marriage & Relationships',
+        description: 'Building blessed families, strong bonds, and harmonious homes.',
+        icon: '💍',
+        color: 'from-rose-500/20 to-red-500/20',
+        topics: ['Finding a Spouse', 'Pre-Marriage Prep', 'Rights & Duties', 'Conflict Resolution', 'Intimacy', 'Divorce Guidelines'],
+    },
+    {
+        id: 'health',
+        title: 'Health & Wellness',
+        description: 'Honoring your body as an amanah (trust) from Allah through holistic wellbeing.',
+        icon: '❤️',
+        color: 'from-green-500/20 to-emerald-500/20',
+        topics: ['Prophetic Medicine', 'Halal Nutrition', 'Fitness', 'Mental Health', 'Addiction Recovery', 'Sleep Sunnah'],
+    },
+    {
+        id: 'calendar',
+        title: 'Islamic Calendar & Events',
+        description: 'Marking the sacred times, blessed days, and significant events of the Islamic year.',
+        icon: '📅',
+        color: 'from-amber-500/20 to-yellow-500/20',
+        topics: ['Ramadan Guide', 'Hajj & Umrah', 'Sacred Months', 'Eid Celebrations', 'Jumu\'ah', 'Blessed Nights'],
+    },
+    {
+        id: 'death',
+        title: 'Death & Afterlife',
+        description: 'Preparing for the eternal journey and understanding the stages of the hereafter.',
+        icon: '🕊️',
+        color: 'from-slate-500/20 to-gray-500/20',
+        topics: ['Understanding Mortality', 'Janazah Guide', 'Life in the Grave', 'Day of Judgment', 'Jannah & Jahannam', 'Grief & Loss'],
+    },
+    {
+        id: 'converts',
+        title: 'Converts & New Muslims',
+        description: 'A welcoming guide for those starting their journey in Islam.',
+        icon: '🌱',
+        color: 'from-teal-500/20 to-cyan-500/20',
+        topics: ['Shahada Guide', 'Islam Basics', 'Learning Salah', 'Family Relations', 'Finding Community', 'FAQs'],
+    },
+    {
+        id: 'fiqh',
+        title: 'Islamic Law (Fiqh)',
+        description: 'Understanding the practical rules and jurisprudence that govern daily Muslim life.',
+        icon: '⚖️',
+        color: 'from-blue-600/20 to-indigo-600/20',
+        topics: ['4 Schools of Thought', 'Halal & Haram', 'Modern Issues', 'Islamic Courts', 'Family Law', 'Fatwas'],
+    },
+    {
+        id: 'art',
+        title: 'Islamic Art & Culture',
+        description: 'Appreciating the beauty, aesthetics, and creative legacy of Islamic civilization.',
+        icon: '🎨',
+        color: 'from-fuchsia-500/20 to-purple-500/20',
+        topics: ['Calligraphy', 'Architecture', 'Halal Arts', 'Literature & Poetry', 'Crafts', 'Modest Fashion'],
+    },
+    {
+        id: 'dawah',
+        title: "Da'wah & Outreach",
+        description: 'Sharing the message of Islam with wisdom, compassion, and beautiful preaching.',
+        icon: '🤝',
+        color: 'from-cyan-500/20 to-sky-500/20',
+        topics: ['How to Give Da\'wah', 'Answering Misconceptions', 'Interfaith Dialogue', 'Public Speaking', 'Digital Da\'wah', 'Q&A Skills'],
+    },
+    {
+        id: 'timeline',
+        title: 'Islamic History Timeline',
+        description: 'A chronological journey through 1400+ years of Islamic history and civilization.',
+        icon: '📜',
+        color: 'from-orange-500/20 to-amber-600/20',
+        topics: ['Prophetic Era', 'Caliphate', 'Islamic Empires', 'Crusades & Mongols', 'Colonial Era', 'Modern Movements'],
+    },
+    {
+        id: 'justice',
+        title: 'Social Justice & Activism',
+        description: 'Standing for truth, justice, and the rights of the oppressed.',
+        icon: '📢',
+        color: 'from-red-500/20 to-orange-500/20',
+        topics: ['Justice in Islam', 'Human Rights', 'Poverty', 'Environment', 'Civic Engagement', 'Global Struggles'],
+    },
 ];
 
 const CategoryCard: React.FC<{ category: WisdomCategory }> = memo(({ category }) => {
@@ -162,25 +261,7 @@ export const DivineWisdomPage: React.FC = memo(() => {
                     ))}
                 </div>
 
-                {/* Bottom CTA */}
-                <div className="mt-16 md:mt-24 p-10 md:p-16 rounded-[3rem] bg-white dark:bg-gradient-to-br dark:from-slate-800 dark:to-slate-900 border border-slate-200 dark:border-white/5 relative overflow-hidden group shadow-xl">
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-400/5 rounded-full blur-[100px] -mr-48 -mt-48 transition-all duration-700 group-hover:bg-cyan-400/10" />
 
-                    <div className="relative flex flex-col md:flex-row items-center justify-between gap-10">
-                        <div className="max-w-xl text-center md:text-left">
-                            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-                                Continue Your Journey
-                            </h2>
-                            <p className="text-slate-400 leading-relaxed">
-                                Our knowledge base is constantly expanding with fresh insights and lessons. Stay curious and keep seeking the light of knowledge.
-                            </p>
-                        </div>
-
-                        <button className="px-10 py-5 rounded-2xl bg-cyan-400 hover:bg-cyan-300 text-slate-900 font-bold transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(34,211,238,0.3)]">
-                            Coming Soon: Full Topics
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     );

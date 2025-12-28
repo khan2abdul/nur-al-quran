@@ -168,7 +168,7 @@ export const BookmarksPage: React.FC = memo(() => {
     }, [clearAllBookmarks]);
 
     return (
-        <div className="min-h-screen bg-surface-light dark:bg-slate-900 py-6 px-4">
+        <div className="min-h-screen bg-surface-light dark:bg-slate-950 py-6 px-4">
             {/* Guest Mode Disclaimer */}
             {!user && count > 0 && (
                 <div className="max-w-7xl mx-auto mb-6 px-4 py-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-start gap-4 animate-in fade-in slide-in-from-top-2 duration-500">

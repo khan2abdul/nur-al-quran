@@ -25,6 +25,9 @@ export const ROUTES = {
     SPIRITUAL: '/spiritual-growth',
     PROPHETIC: '/prophetic-excellence',
     THE_QURAN: '/knowledge/the-quran',
+    ISLAMIC_LEGACY: '/knowledge/islamic-legacy',
+    LIVING_ISLAM: '/living-islam-daily-modern-life',
+    WOMEN_IN_ISLAM: '/women-in-islam-rights-empowerment',
 } as const;
 
 /**

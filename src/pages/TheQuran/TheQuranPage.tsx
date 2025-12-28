@@ -171,6 +171,7 @@ const IntroductionSection: React.FC = memo(() => (
 
 const MiraclesLab: React.FC = memo(() => {
     const [selectedCategory, setSelectedCategory] = useState<'All' | 'Scientific' | 'Linguistic' | 'Historical'>('All');
+    const [expandedMiracle, setExpandedMiracle] = useState<string | null>(null);
 
     // Filter logic
     const displayedMiracles = selectedCategory === 'All'
@@ -203,7 +204,11 @@ const MiraclesLab: React.FC = memo(() => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                 {displayedMiracles.map(miracle => (
-                    <div key={miracle.id} className="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200 dark:border-white/5 hover:border-emerald-500/30 transition-all hover:scale-[1.01] shadow-lg group">
+                    <div
+                        key={miracle.id}
+                        onClick={() => setExpandedMiracle(expandedMiracle === miracle.id ? null : miracle.id)}
+                        className="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200 dark:border-white/5 hover:border-emerald-500/30 transition-all hover:scale-[1.01] shadow-lg group cursor-pointer"
+                    >
                         <div className="flex items-start justify-between mb-4">
                             <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-500 dark:text-slate-300">
                                 {miracle.category}
@@ -213,54 +218,150 @@ const MiraclesLab: React.FC = memo(() => {
                         <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">{miracle.title}</h3>
                         <p className="text-slate-600 dark:text-slate-400 text-sm mb-6">{miracle.description}</p>
 
-                        <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 text-sm text-slate-700 dark:text-slate-300 italic">
-                            "{miracle.details}"
+                        <div className={`overflow-hidden transition-all duration-500 ${expandedMiracle === miracle.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+                            <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 text-sm text-slate-700 dark:text-slate-300 italic mb-4">
+                                "{miracle.details}"
+                            </div>
+                            <div className="flex gap-2">
+                                <span className="px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold">
+                                    📖 View Verses
+                                </span>
+                                <span className="px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-bold">
+                                    🔬 Scientific Source
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Expand Indicator */}
+                        <div className="flex items-center justify-center mt-4 text-slate-400 text-xs">
+                            <span>{expandedMiracle === miracle.id ? '▲ Collapse' : '▼ Tap to Explore'}</span>
                         </div>
                     </div>
                 ))}
             </div>
 
-            <div className="mt-8 text-center bg-gradient-to-r from-emerald-500/10 to-teal-500/10 p-8 rounded-3xl border border-emerald-500/20">
-                <h4 className="text-xl font-bold text-emerald-800 dark:text-emerald-300 mb-2">Interactive Miracles Lab</h4>
-                <p className="text-slate-600 dark:text-slate-400 mb-4">
-                    Explore 3D models and detailed scientific analysis in the full lab experience.
-                </p>
-                <button className="px-6 py-2 rounded-full bg-emerald-500 text-white font-bold text-sm hover:bg-emerald-600 transition-colors">
-                    Coming in Phase 2
-                </button>
+            {/* Mathematical Miracles Section */}
+            <div className="bg-gradient-to-br from-purple-500/10 to-indigo-500/10 rounded-3xl p-8 border border-purple-500/20">
+                <div className="flex flex-col md:flex-row items-center gap-8">
+                    <div className="w-24 h-24 rounded-2xl bg-purple-500/20 flex items-center justify-center text-5xl">
+                        🔢
+                    </div>
+                    <div className="flex-1 text-center md:text-left">
+                        <h4 className="text-xl font-bold text-purple-800 dark:text-purple-300 mb-2">Mathematical Patterns</h4>
+                        <p className="text-slate-600 dark:text-slate-400 mb-4 text-sm">
+                            The Quran contains remarkable numerical patterns. The word "day" appears 365 times. "Month" appears 12 times.
+                            The ratio of "land" to "sea" matches Earth's actual ratio.
+                        </p>
+                        <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                            <div className="px-4 py-2 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-sm font-bold">
+                                <span className="text-lg">365</span> × Day
+                            </div>
+                            <div className="px-4 py-2 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-sm font-bold">
+                                <span className="text-lg">12</span> × Month
+                            </div>
+                            <div className="px-4 py-2 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-sm font-bold">
+                                <span className="text-lg">29%</span> Land : <span className="text-lg">71%</span> Sea
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
 });
 
-const ThemesNavigator: React.FC = memo(() => (
-    <div className="animate-fade-in space-y-12">
-        <div className="text-center max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Universal Themes</h2>
-            <p className="text-slate-600 dark:text-slate-400">
-                The Quran is not just a book of laws, but a comprehensive guide for the human soul, society, and existence.
-            </p>
-        </div>
+const ThemesNavigator: React.FC = memo(() => {
+    const [activeStory, setActiveStory] = useState(0);
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {THEMES.map(theme => (
-                <div key={theme.id} className="group p-8 rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 hover:border-amber-500/30 transition-all hover:-translate-y-1 hover:shadow-xl">
-                    <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
-                        {theme.icon}
+    const STORIES = [
+        { id: 'yusuf', title: 'Prophet Yusuf (Joseph)', theme: 'Patience & Trust', summary: 'From a well to the throne of Egypt—a story of betrayal, temptation, and ultimate triumph through faith.', verse: 'Surah 12' },
+        { id: 'musa', title: 'Prophet Musa (Moses)', theme: 'Courage & Liberation', summary: 'The confrontation with Pharaoh, the parting of the sea, and the guidance of an entire nation.', verse: 'Surah 20, 26, 28' },
+        { id: 'maryam', title: 'Maryam (Mary)', theme: 'Purity & Miracle', summary: 'The miraculous birth of Isa (Jesus) and the strength of a woman who trusted Allah completely.', verse: 'Surah 19' },
+        { id: 'kahf', title: 'People of the Cave', theme: 'Faith Under Oppression', summary: "Young believers who fled persecution and were put to sleep for 300 years by Allah's mercy.", verse: 'Surah 18' },
+    ];
+
+    return (
+        <div className="animate-fade-in space-y-12">
+            <div className="text-center max-w-2xl mx-auto">
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Universal Themes</h2>
+                <p className="text-slate-600 dark:text-slate-400">
+                    The Quran is not just a book of laws, but a comprehensive guide for the human soul, society, and existence.
+                </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {THEMES.map(theme => (
+                    <div key={theme.id} className="group p-8 rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 hover:border-amber-500/30 transition-all hover:-translate-y-1 hover:shadow-xl">
+                        <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            {theme.icon}
+                        </div>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{theme.title}</h3>
+                        <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 leading-relaxed">
+                            {theme.desc}
+                        </p>
+                        <div className="flex items-center text-amber-600 dark:text-amber-400 text-xs font-bold uppercase tracking-wider">
+                            <span>Read Verses ({theme.verses})</span>
+                            <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                        </div>
                     </div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{theme.title}</h3>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm mb-4 leading-relaxed">
-                        {theme.desc}
-                    </p>
-                    <div className="flex items-center text-amber-600 dark:text-amber-400 text-xs font-bold uppercase tracking-wider">
-                        <span>Read Verses ({theme.verses})</span>
-                        <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                ))}
+            </div>
+
+            {/* Interactive Stories Carousel */}
+            <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-3xl p-8 border border-indigo-500/20">
+                <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-bold text-indigo-800 dark:text-indigo-300 flex items-center gap-2">
+                        <span>📖</span> Stories of the Quran
+                    </h3>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => setActiveStory(Math.max(0, activeStory - 1))}
+                            className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-indigo-500 transition-colors"
+                        >
+                            ←
+                        </button>
+                        <button
+                            onClick={() => setActiveStory(Math.min(STORIES.length - 1, activeStory + 1))}
+                            className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-indigo-500 transition-colors"
+                        >
+                            →
+                        </button>
                     </div>
                 </div>
-            ))}
+
+                <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg">
+                    <div className="flex items-start gap-4">
+                        <div className="w-16 h-16 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-3xl shrink-0">
+                            📜
+                        </div>
+                        <div className="flex-1">
+                            <span className="text-xs font-bold text-indigo-500 uppercase tracking-wider">{STORIES[activeStory].theme}</span>
+                            <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{STORIES[activeStory].title}</h4>
+                            <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">{STORIES[activeStory].summary}</p>
+                            <div className="flex items-center gap-2">
+                                <span className="px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs font-bold">
+                                    {STORIES[activeStory].verse}
+                                </span>
+                                <button className="text-indigo-500 text-xs font-bold hover:underline">Read Full Story →</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Story Dots */}
+                <div className="flex justify-center gap-2 mt-4">
+                    {STORIES.map((_, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => setActiveStory(idx)}
+                            className={`w-2 h-2 rounded-full transition-all ${activeStory === idx ? 'bg-indigo-500 w-6' : 'bg-slate-300 dark:bg-slate-600'}`}
+                        />
+                    ))}
+                </div>
+            </div>
         </div>
-    </div>
-));
+    )
+});
 
 const PreservationTimeline: React.FC = memo(() => (
     <div className="animate-fade-in">
@@ -446,6 +547,79 @@ const EmotionMatcher: React.FC = memo(() => {
     );
 });
 
+const ReadingPlanTracker: React.FC = memo(() => {
+    const [selectedPlan, setSelectedPlan] = useState<'7' | '30' | '60'>('30');
+    const [currentDay, setCurrentDay] = useState(5); // Mock progress
+
+    const plans = {
+        '7': { label: '7 Days', desc: 'Intensive short Surahs', daily: '~16 pages/day' },
+        '30': { label: '30 Days', desc: 'Complete Quran in a Month', daily: '~20 pages/day' },
+        '60': { label: '60 Days', desc: 'Relaxed Pace', daily: '~10 pages/day' },
+    };
+
+    const progress = Math.round((currentDay / parseInt(selectedPlan)) * 100);
+
+    return (
+        <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200 dark:border-white/5 shadow-lg">
+            <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>📅</span> Reading Plan
+                </h3>
+
+                <div className="flex bg-slate-100 dark:bg-slate-900 rounded-full p-1">
+                    {Object.entries(plans).map(([key, plan]) => (
+                        <button
+                            key={key}
+                            onClick={() => { setSelectedPlan(key as any); setCurrentDay(1); }}
+                            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${selectedPlan === key
+                                ? 'bg-emerald-500 text-white'
+                                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                                }`}
+                        >
+                            {plan.label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">
+                {plans[selectedPlan].desc} • <span className="font-bold text-emerald-600">{plans[selectedPlan].daily}</span>
+            </p>
+
+            {/* Progress Bar */}
+            <div className="mb-6">
+                <div className="flex justify-between text-xs font-bold text-slate-500 mb-2">
+                    <span>Day {currentDay} of {selectedPlan}</span>
+                    <span>{progress}% Complete</span>
+                </div>
+                <div className="h-3 bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden">
+                    <div
+                        className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full transition-all duration-500"
+                        style={{ width: `${progress}%` }}
+                    ></div>
+                </div>
+            </div>
+
+            {/* Today's Reading */}
+            <div className="bg-emerald-50 dark:bg-emerald-900/10 rounded-2xl p-6 border border-emerald-100 dark:border-emerald-500/20">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Today's Reading</span>
+                        <h4 className="text-lg font-bold text-slate-900 dark:text-white">Juz {currentDay} • Surah Al-Baqarah</h4>
+                        <p className="text-sm text-slate-500">Pages 21-40</p>
+                    </div>
+                    <button
+                        onClick={() => setCurrentDay(Math.min(parseInt(selectedPlan), currentDay + 1))}
+                        className="px-6 py-3 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-colors"
+                    >
+                        ✓ Mark Complete
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+});
+
 // --- Phase 4 Data ---
 const FATIHA_VERSES = [
     { arabic: "بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ", trans: "Bismillah hir-Rahman nir-Rahim", mean: "In the name of Allah, the Entirely Merciful, the Especially Merciful." },
@@ -495,8 +669,8 @@ const MemorizationStudio: React.FC = memo(() => {
                             key={mode}
                             onClick={() => setLevel(idx as 0 | 1 | 2)}
                             className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${level === idx
-                                    ? 'bg-amber-500 text-white shadow-md'
-                                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                                ? 'bg-amber-500 text-white shadow-md'
+                                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                                 }`}
                         >
                             {mode}
@@ -511,8 +685,8 @@ const MemorizationStudio: React.FC = memo(() => {
                         key={index}
                         onClick={() => level > 0 && toggleReveal(index)}
                         className={`p-4 rounded-xl border transition-all cursor-pointer relative group ${level > 0 && !revealed.includes(index)
-                                ? 'bg-slate-50 dark:bg-slate-900/50 border-dashed border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
-                                : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-white/5'
+                            ? 'bg-slate-50 dark:bg-slate-900/50 border-dashed border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
+                            : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-white/5'
                             }`}
                     >
                         {/* Verse Number Bubble */}
@@ -568,8 +742,8 @@ const RecitationLab: React.FC = memo(() => {
                         <div
                             key={i}
                             className={`w-2 rounded-full transition-all duration-300 ${isRecording || isPlaying
-                                    ? 'bg-emerald-500 animate-pulse' // Simple pulse for activity
-                                    : 'bg-slate-700'
+                                ? 'bg-emerald-500 animate-pulse' // Simple pulse for activity
+                                : 'bg-slate-700'
                                 }`}
                             style={{ height: (isRecording || isPlaying) ? `${Math.random() * 80 + 20}%` : `${h}%` }}
                         ></div>
@@ -586,8 +760,8 @@ const RecitationLab: React.FC = memo(() => {
                     <button
                         onClick={() => { setIsPlaying(!isPlaying); setIsRecording(false); }}
                         className={`w-14 h-14 rounded-full flex items-center justify-center text-xl transition-all ${isPlaying
-                                ? 'bg-amber-500 text-white shadow-[0_0_20px_rgba(245,158,11,0.5)]'
-                                : 'bg-slate-800 text-amber-500 hover:bg-slate-700'
+                            ? 'bg-amber-500 text-white shadow-[0_0_20px_rgba(245,158,11,0.5)]'
+                            : 'bg-slate-800 text-amber-500 hover:bg-slate-700'
                             }`}
                     >
                         {isPlaying ? '⏸' : '▶'}
@@ -596,8 +770,8 @@ const RecitationLab: React.FC = memo(() => {
                     <button
                         onClick={() => { setIsRecording(!isRecording); setIsPlaying(false); }}
                         className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all border-4 ${isRecording
-                                ? 'bg-red-500 border-red-900 text-white shadow-[0_0_30px_rgba(239,68,68,0.6)] animate-pulse'
-                                : 'bg-white border-slate-200 text-red-500 hover:bg-red-50 hover:border-red-100'
+                            ? 'bg-red-500 border-red-900 text-white shadow-[0_0_30px_rgba(239,68,68,0.6)] animate-pulse'
+                            : 'bg-white border-slate-200 text-red-500 hover:bg-red-50 hover:border-red-100'
                             }`}
                     >
                         {isRecording ? '⏹' : '●'}
@@ -612,6 +786,342 @@ const RecitationLab: React.FC = memo(() => {
     );
 });
 
+// --- Phase 6 Components ---
+
+const TajweedGuide: React.FC = memo(() => {
+    const [selectedRule, setSelectedRule] = useState<number | null>(null);
+
+    const TAJWEED_RULES = [
+        { id: 1, name: 'Idgham', arabic: 'إدغام', color: 'bg-green-500', desc: 'Merging of a noon saakin or tanween with certain letters', example: 'مِن يَّقُولُ', letters: 'ي ن م و ل ر' },
+        { id: 2, name: 'Ikhfa', arabic: 'إخفاء', color: 'bg-orange-500', desc: 'Hiding the noon saakin with a light nasalization', example: 'مِنْ قَبْلِ', letters: '15 letters' },
+        { id: 3, name: 'Iqlab', arabic: 'إقلاب', color: 'bg-pink-500', desc: 'Converting noon saakin to meem when followed by Ba', example: 'مِنْ بَعْدِ', letters: 'ب' },
+        { id: 4, name: 'Izhar', arabic: 'إظهار', color: 'bg-blue-500', desc: 'Clear pronunciation of noon saakin', example: 'مِنْ عِلْمٍ', letters: 'ء ه ع ح غ خ' },
+        { id: 5, name: 'Qalqalah', arabic: 'قلقلة', color: 'bg-purple-500', desc: 'Echoing sound on sukoon letters', example: 'خَلَقْ', letters: 'ق ط ب ج د' },
+        { id: 6, name: 'Madd', arabic: 'مد', color: 'bg-red-500', desc: 'Elongation of vowel sounds', example: 'قَالَ', letters: 'ا و ي' },
+    ];
+
+    return (
+        <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200 dark:border-white/5 shadow-xl">
+            <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center justify-center gap-2">
+                    <span>🎵</span> Tajweed Rules
+                </h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">Master the art of Quranic pronunciation</p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
+                {TAJWEED_RULES.map(rule => (
+                    <button
+                        key={rule.id}
+                        onClick={() => setSelectedRule(selectedRule === rule.id ? null : rule.id)}
+                        className={`p-4 rounded-2xl border transition-all text-center ${selectedRule === rule.id
+                            ? 'border-2 border-slate-900 dark:border-white shadow-lg scale-105'
+                            : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                            }`}
+                    >
+                        <div className={`w-4 h-4 rounded-full ${rule.color} mx-auto mb-2`}></div>
+                        <span className="block text-lg font-bold text-slate-900 dark:text-white">{rule.arabic}</span>
+                        <span className="block text-xs text-slate-500">{rule.name}</span>
+                    </button>
+                ))}
+            </div>
+
+            {selectedRule && (
+                <div className="animate-fade-in bg-slate-50 dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+                    {(() => {
+                        const rule = TAJWEED_RULES.find(r => r.id === selectedRule);
+                        if (!rule) return null;
+                        return (
+                            <div className="flex flex-col md:flex-row gap-6 items-center">
+                                <div className={`w-16 h-16 rounded-2xl ${rule.color} flex items-center justify-center text-white text-2xl font-bold shrink-0`}>
+                                    {rule.arabic.charAt(0)}
+                                </div>
+                                <div className="flex-1 text-center md:text-left">
+                                    <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-1">{rule.name} ({rule.arabic})</h4>
+                                    <p className="text-slate-600 dark:text-slate-400 text-sm mb-3">{rule.desc}</p>
+                                    <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                                        <span className="px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-xs font-bold">Example: {rule.example}</span>
+                                        <span className="px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-xs font-bold">Letters: {rule.letters}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })()}
+                </div>
+            )}
+        </div>
+    );
+});
+
+const CommentaryViewer: React.FC = memo(() => {
+    const [activeScholar, setActiveScholar] = useState('tafsir-ibn-kathir');
+
+    const SCHOLARS = [
+        { id: 'tafsir-ibn-kathir', name: 'Ibn Kathir', era: '14th Century', style: 'Classical' },
+        { id: 'tafsir-saadi', name: 'As-Saadi', era: '20th Century', style: 'Simplified' },
+        { id: 'tafsir-qurtubi', name: 'Al-Qurtubi', era: '13th Century', style: 'Legal/Fiqh' },
+    ];
+
+    const SAMPLE_COMMENTARY = {
+        'tafsir-ibn-kathir': "Ibn Kathir explains that 'Bismillah' means seeking Allah's blessing before any action. The Prophet ﷺ said: 'Any important matter that does not begin with Bismillah is cut off from blessings.'",
+        'tafsir-saadi': "As-Saadi says: Beginning with Allah's name is an acknowledgment that all success comes from Him alone. It reminds the reader of their dependency on the Creator.",
+        'tafsir-qurtubi': "Al-Qurtubi notes the legal implications: Scholars agree that saying Bismillah before eating is Sunnah, and some consider it obligatory before slaughtering.",
+    };
+
+    return (
+        <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200 dark:border-white/5 shadow-xl">
+            <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center justify-center gap-2">
+                    <span>📚</span> Verse Commentary (Tafsir)
+                </h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">Compare interpretations from renowned scholars</p>
+            </div>
+
+            <div className="bg-amber-50 dark:bg-amber-900/10 rounded-2xl p-6 mb-6 text-center border border-amber-100 dark:border-amber-500/20">
+                <p className="text-2xl font-quran text-slate-900 dark:text-white mb-2">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Surah Al-Fatiha 1:1</p>
+            </div>
+
+            <div className="flex justify-center gap-2 mb-6">
+                {SCHOLARS.map(scholar => (
+                    <button
+                        key={scholar.id}
+                        onClick={() => setActiveScholar(scholar.id)}
+                        className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${activeScholar === scholar.id
+                            ? 'bg-amber-500 text-white'
+                            : 'bg-slate-100 dark:bg-slate-900 text-slate-500 hover:bg-slate-200'
+                            }`}
+                    >
+                        {scholar.name}
+                    </button>
+                ))}
+            </div>
+
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-6 border-l-4 border-amber-500">
+                <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-xl shrink-0">
+                        📖
+                    </div>
+                    <div>
+                        <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
+                            {SAMPLE_COMMENTARY[activeScholar as keyof typeof SAMPLE_COMMENTARY]}
+                        </p>
+                        <p className="text-xs text-slate-400 mt-4">
+                            — {SCHOLARS.find(s => s.id === activeScholar)?.name} ({SCHOLARS.find(s => s.id === activeScholar)?.era})
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+});
+
+const ManuscriptViewer: React.FC = memo(() => {
+    const [compareMode, setCompareMode] = useState(false);
+
+    return (
+        <div className="bg-slate-900 text-white rounded-3xl p-8 shadow-xl relative overflow-hidden">
+            <div className="absolute inset-0 bg-[url('/patterns/paper-texture.png')] opacity-5"></div>
+
+            <div className="relative z-10">
+                <div className="flex items-center justify-between mb-8">
+                    <div>
+                        <h3 className="text-2xl font-bold flex items-center gap-2">
+                            <span>🏛️</span> Manuscript Heritage
+                        </h3>
+                        <p className="text-slate-400 text-sm">1400 years of unchanged preservation</p>
+                    </div>
+                    <button
+                        onClick={() => setCompareMode(!compareMode)}
+                        className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${compareMode ? 'bg-amber-500 text-slate-900' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                            }`}
+                    >
+                        {compareMode ? '✓ Compare Mode' : 'Compare'}
+                    </button>
+                </div>
+
+                <div className={`grid gap-6 ${compareMode ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
+                    {/* Ancient Manuscript */}
+                    <div className="bg-slate-800/50 rounded-2xl p-6 border border-white/10">
+                        <div className="flex items-center gap-2 mb-4">
+                            <span className="w-3 h-3 rounded-full bg-amber-500"></span>
+                            <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">Birmingham Manuscript (645 CE)</span>
+                        </div>
+                        <div className="bg-amber-900/20 rounded-xl p-6 text-center border border-amber-500/20">
+                            <p className="text-3xl font-quran text-amber-200 leading-loose">
+                                بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
+                            </p>
+                            <p className="text-xs text-amber-400/60 mt-2">Parchment, Hijazi Script</p>
+                        </div>
+                    </div>
+
+                    {/* Modern Text */}
+                    {compareMode && (
+                        <div className="bg-slate-800/50 rounded-2xl p-6 border border-white/10 animate-fade-in">
+                            <div className="flex items-center gap-2 mb-4">
+                                <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
+                                <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Modern Print (2024)</span>
+                            </div>
+                            <div className="bg-emerald-900/20 rounded-xl p-6 text-center border border-emerald-500/20">
+                                <p className="text-3xl font-quran text-emerald-200 leading-loose">
+                                    بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
+                                </p>
+                                <p className="text-xs text-emerald-400/60 mt-2">Digital Uthmani Script</p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {compareMode && (
+                    <div className="mt-6 text-center animate-fade-in">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/20 text-emerald-400 text-sm font-bold">
+                            <span>✓</span> 100% Match - Zero Alterations
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+});
+
+// --- Phase 7 Components: Gamification ---
+
+const AchievementBadges: React.FC = memo(() => {
+    const BADGES = [
+        { id: 'first-read', name: 'First Steps', icon: '🌱', desc: 'Read your first verse', unlocked: true },
+        { id: 'week-streak', name: '7-Day Streak', icon: '🔥', desc: 'Read daily for a week', unlocked: true },
+        { id: 'fatiha-memorized', name: 'Al-Fatiha Master', icon: '🧠', desc: 'Memorized Surah Al-Fatiha', unlocked: true },
+        { id: 'themes-explorer', name: 'Theme Explorer', icon: '🧭', desc: 'Explored all 6 themes', unlocked: false },
+        { id: 'tajweed-learner', name: 'Tajweed Student', icon: '🎵', desc: 'Learned 3 Tajweed rules', unlocked: false },
+        { id: 'month-streak', name: '30-Day Champion', icon: '🏆', desc: 'Read daily for a month', unlocked: false },
+        { id: 'juz-complete', name: 'Juz Completed', icon: '📖', desc: 'Finished one Juz', unlocked: false },
+        { id: 'reflection-writer', name: 'Deep Thinker', icon: '✍️', desc: 'Wrote 5 reflections', unlocked: false },
+    ];
+
+    const unlockedCount = BADGES.filter(b => b.unlocked).length;
+
+    return (
+        <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200 dark:border-white/5 shadow-xl">
+            <div className="flex items-center justify-between mb-6">
+                <div>
+                    <h3 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <span>🏅</span> Your Achievements
+                    </h3>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">Celebrate your Quranic journey milestones</p>
+                </div>
+                <div className="text-right">
+                    <span className="text-3xl font-bold text-amber-500">{unlockedCount}</span>
+                    <span className="text-slate-400">/{BADGES.length}</span>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {BADGES.map(badge => (
+                    <div
+                        key={badge.id}
+                        className={`p-4 rounded-2xl border text-center transition-all ${badge.unlocked
+                            ? 'bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-500/30'
+                            : 'bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700 opacity-50'
+                            }`}
+                    >
+                        <span className={`text-4xl block mb-2 ${badge.unlocked ? '' : 'grayscale'}`}>{badge.icon}</span>
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-1">{badge.name}</h4>
+                        <p className="text-xs text-slate-500">{badge.desc}</p>
+                        {badge.unlocked && (
+                            <span className="inline-block mt-2 px-2 py-0.5 rounded-full bg-amber-500 text-white text-xs font-bold">
+                                ✓ Unlocked
+                            </span>
+                        )}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+});
+
+const CelebrationBanner: React.FC = memo(() => {
+    const [dismissed, setDismissed] = useState(false);
+
+    if (dismissed) return null;
+
+    return (
+        <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden animate-fade-in">
+            <div className="absolute inset-0 bg-[url('/patterns/confetti.svg')] opacity-20"></div>
+
+            <div className="relative z-10 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-4xl animate-bounce">
+                        🎉
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-bold mb-1">Congratulations!</h3>
+                        <p className="text-white/80 text-sm">You've completed your 7-day reading streak! Keep going!</p>
+                    </div>
+                </div>
+                <button
+                    onClick={() => setDismissed(true)}
+                    className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                >
+                    ✕
+                </button>
+            </div>
+        </div>
+    );
+});
+
+const CommunityInspiration: React.FC = memo(() => {
+    const REFLECTIONS = [
+        { id: 1, user: 'Abdullah M.', location: 'Malaysia', text: "Surah Ar-Rahman always brings tears to my eyes. The repetition of 'Which of the favors of your Lord will you deny?' is so powerful.", likes: 42, verse: '55:13' },
+        { id: 2, user: 'Fatima K.', location: 'Egypt', text: "When I was going through hardship, Surah Ad-Duha reminded me that Allah never abandons us.", likes: 87, verse: '93:3' },
+        { id: 3, user: 'Omar S.', location: 'USA', text: "The story of Prophet Yusuf taught me true patience. No matter how long it takes, Allah's plan is always better.", likes: 156, verse: '12:87' },
+    ];
+
+    return (
+        <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-slate-200 dark:border-white/5 shadow-xl">
+            <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center justify-center gap-2">
+                    <span>💬</span> Community Reflections
+                </h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">See how the Quran touches hearts around the world</p>
+            </div>
+
+            <div className="space-y-4">
+                {REFLECTIONS.map(reflection => (
+                    <div key={reflection.id} className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-6 border border-slate-100 dark:border-white/5">
+                        <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold text-lg shrink-0">
+                                {reflection.user.charAt(0)}
+                            </div>
+                            <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="font-bold text-slate-900 dark:text-white">{reflection.user}</span>
+                                    <span className="text-xs text-slate-400">• {reflection.location}</span>
+                                </div>
+                                <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mb-3">
+                                    "{reflection.text}"
+                                </p>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs text-amber-600 dark:text-amber-400 font-bold">Verse {reflection.verse}</span>
+                                    <button className="flex items-center gap-1 text-slate-400 hover:text-rose-500 transition-colors text-sm">
+                                        <span>❤️</span> {reflection.likes}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            <div className="mt-6 text-center">
+                <button className="px-6 py-3 rounded-xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 transition-colors">
+                    Share Your Reflection
+                </button>
+            </div>
+        </div>
+    );
+});
+
+
 /**
  * The Quran's Message Page
  */
@@ -619,11 +1129,11 @@ const TheQuranPage: React.FC = memo(() => {
     const [activeTab, setActiveTab] = useState<TabId | 'studio'>('intro');
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-20 overflow-x-hidden">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20 overflow-x-hidden">
             {/* Hero Section Updated Inline for Tab Logic */}
-            <div className="relative bg-gradient-to-br from-slate-900 to-slate-800 text-white overflow-hidden pb-16">
+            <div className="relative bg-gradient-to-br from-slate-950 to-slate-900 text-white overflow-hidden pb-16">
                 <div className="absolute inset-0 bg-[url('/patterns/islamic-pattern.svg')] opacity-10 animate-spin-slow"></div>
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-slate-900/90"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-slate-950/90"></div>
 
                 <div className="relative z-10 container mx-auto px-6 pt-12 text-center">
                     <Link to={ROUTES.WISDOM} className="inline-flex items-center gap-2 text-slate-300 hover:text-white mb-8 transition-colors">
@@ -651,8 +1161,8 @@ const TheQuranPage: React.FC = memo(() => {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id as any)}
                                 className={`px-4 py-2 rounded-full font-bold transition-all text-sm md:text-base ${activeTab === tab.id
-                                        ? 'bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/30'
-                                        : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                    ? 'bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/30'
+                                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                                     }`}
                             >
                                 {tab.label}
@@ -669,8 +1179,12 @@ const TheQuranPage: React.FC = memo(() => {
                 {activeTab === 'preservation' && <PreservationTimeline />}
                 {activeTab === 'application' && (
                     <div className="space-y-8 animate-fade-in">
+                        <CelebrationBanner />
                         <DailyWisdomTool />
                         <EmotionMatcher />
+                        <ReadingPlanTracker />
+                        <AchievementBadges />
+                        <CommunityInspiration />
                     </div>
                 )}
                 {activeTab === 'studio' && (
@@ -679,6 +1193,9 @@ const TheQuranPage: React.FC = memo(() => {
                         <div className="max-w-2xl mx-auto">
                             <RecitationLab />
                         </div>
+                        <TajweedGuide />
+                        <CommentaryViewer />
+                        <ManuscriptViewer />
                     </div>
                 )}
             </div>

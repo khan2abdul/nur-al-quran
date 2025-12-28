@@ -29,6 +29,9 @@ const FundamentalsPage = lazy(() => import('@/pages/Learn/FundamentalsPage'));
 const SpiritualGrowthPage = lazy(() => import('@/pages/SpiritualGrowth/SpiritualGrowthPage'));
 const PropheticExcellencePage = lazy(() => import('@/pages/PropheticExcellence/PropheticExcellencePage'));
 const TheQuranPage = lazy(() => import('@/pages/TheQuran/TheQuranPage'));
+const IslamicLegacyPage = lazy(() => import('@/pages/IslamicLegacy/IslamicLegacyPage'));
+const LivingIslamPage = lazy(() => import('@/pages/LivingIslam/LivingIslamPage'));
+const WomenInIslamPage = lazy(() => import('@/pages/WomenInIslam/WomenInIslamPage'));
 
 /**
  * Loading Spinner for Suspense fallback
@@ -107,7 +110,7 @@ const App: React.FC = () => {
                                     <Suspense fallback={<LoadingSpinner />}>
                                         <Routes>
                                             {/* Main Routes */}
-                                            <Route path={ROUTES.HOME} element={<MainLayout><HomePage /></MainLayout>} />
+                                            <Route path={ROUTES.HOME} element={<MainLayout isFullWidth><HomePage /></MainLayout>} />
                                             <Route path={ROUTES.SURAHS} element={<MainLayout><SurahListPage /></MainLayout>} />
                                             <Route path={ROUTES.SURAH} element={<MainLayout isFullWidth><VerseViewPage /></MainLayout>} />
                                             <Route path={ROUTES.WISDOM} element={<MainLayout><DivineWisdomPage /></MainLayout>} />
@@ -140,6 +143,18 @@ const App: React.FC = () => {
                                             <Route
                                                 path={ROUTES.THE_QURAN}
                                                 element={<MainLayout><TheQuranPage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.ISLAMIC_LEGACY}
+                                                element={<MainLayout><IslamicLegacyPage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.LIVING_ISLAM}
+                                                element={<MainLayout><LivingIslamPage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.WOMEN_IN_ISLAM}
+                                                element={<MainLayout><WomenInIslamPage /></MainLayout>}
                                             />
 
                                             {/* 404 Not Found */}

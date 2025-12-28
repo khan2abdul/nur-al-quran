@@ -225,7 +225,7 @@ export const VerseViewPage: React.FC = memo(() => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-6 md:py-10 pb-40 px-0 transition-colors duration-300">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-6 md:py-10 pb-40 px-0 transition-colors duration-300">
             <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
                 {/* Navigation & Controls */}
                 <div className="mb-8 flex flex-col md:flex-row items-center justify-between gap-4">

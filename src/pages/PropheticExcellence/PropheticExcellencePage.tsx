@@ -263,7 +263,7 @@ const PropheticRoutine: React.FC = memo(() => {
 
 const CharacterRoadmap: React.FC = memo(() => {
     return (
-        <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden mb-12">
+        <div className="bg-gradient-to-r from-slate-950 to-slate-900 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden mb-12">
             <div className="absolute top-0 left-0 w-full h-full bg-[url('/patterns/islamic-pattern.svg')] opacity-5"></div>
 
             <h3 className="text-2xl font-bold mb-2 relative z-10">🗺️ Your Character Journey</h3>
@@ -366,7 +366,7 @@ const StoryLibrary: React.FC = memo(() => {
 
 const WisdomVault: React.FC = memo(() => {
     return (
-        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-8 relative overflow-hidden text-white">
+        <div className="bg-gradient-to-br from-slate-950 to-slate-900 rounded-3xl p-8 relative overflow-hidden text-white">
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
 
             <h3 className="text-2xl font-bold mb-8 relative z-10">Pearls of Prophetic Wisdom</h3>
@@ -492,10 +492,10 @@ const DailyCharacterChallenge: React.FC = memo(() => {
                                 key={day}
                                 onClick={() => setCurrentDay(day)}
                                 className={`w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold transition-all ${currentDay === day
-                                        ? 'bg-white text-indigo-600 scale-110 shadow-lg'
-                                        : completedDays.includes(day)
-                                            ? 'bg-emerald-500 text-white border border-emerald-400'
-                                            : 'bg-indigo-800/50 text-indigo-300 border border-indigo-700'
+                                    ? 'bg-white text-indigo-600 scale-110 shadow-lg'
+                                    : completedDays.includes(day)
+                                        ? 'bg-emerald-500 text-white border border-emerald-400'
+                                        : 'bg-indigo-800/50 text-indigo-300 border border-indigo-700'
                                     }`}
                             >
                                 {completedDays.includes(day) && currentDay !== day ? '✓' : day}
@@ -506,8 +506,8 @@ const DailyCharacterChallenge: React.FC = memo(() => {
                     <button
                         onClick={toggleComplete}
                         className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold transition-all shadow-lg hover:-translate-y-1 ${isCompleted
-                                ? 'bg-emerald-500 text-white shadow-emerald-500/30'
-                                : 'bg-white text-indigo-600 hover:bg-indigo-50 shadow-black/20'
+                            ? 'bg-emerald-500 text-white shadow-emerald-500/30'
+                            : 'bg-white text-indigo-600 hover:bg-indigo-50 shadow-black/20'
                             }`}
                     >
                         {isCompleted ? (
@@ -743,11 +743,11 @@ const PropheticExcellencePage: React.FC = memo(() => {
     }, []);
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-20 overflow-x-hidden">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20 overflow-x-hidden">
             {/* Hero Section */}
-            <div className="relative bg-gradient-to-br from-slate-900 to-slate-800 text-white overflow-hidden pb-16">
+            <div className="relative bg-gradient-to-br from-slate-950 to-slate-900 text-white overflow-hidden pb-16">
                 <div className="absolute inset-0 bg-[url('/patterns/islamic-pattern.svg')] opacity-10 animate-spin-slow"></div>
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-slate-900/90"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-slate-950/90"></div>
 
                 <div className="relative z-10 container mx-auto px-6 pt-12 text-center">
                     <Link to={ROUTES.WISDOM} className="inline-flex items-center gap-2 text-slate-300 hover:text-white mb-8 transition-colors">
@@ -769,8 +769,8 @@ const PropheticExcellencePage: React.FC = memo(() => {
                         <button
                             onClick={() => setActiveTab('overview')}
                             className={`px-6 py-3 rounded-full font-bold transition-all ${activeTab === 'overview'
-                                    ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
-                                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
+                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                                 }`}
                         >
                             Overview
@@ -778,8 +778,8 @@ const PropheticExcellencePage: React.FC = memo(() => {
                         <button
                             onClick={() => setActiveTab('stories')}
                             className={`px-6 py-3 rounded-full font-bold transition-all ${activeTab === 'stories'
-                                    ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
-                                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
+                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                                 }`}
                         >
                             Stories & Wisdom
@@ -787,8 +787,8 @@ const PropheticExcellencePage: React.FC = memo(() => {
                         <button
                             onClick={() => setActiveTab('practice')}
                             className={`px-6 py-3 rounded-full font-bold transition-all ${activeTab === 'practice'
-                                    ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
-                                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
+                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                                 }`}
                         >
                             Daily Practice
@@ -796,8 +796,8 @@ const PropheticExcellencePage: React.FC = memo(() => {
                         <button
                             onClick={() => setActiveTab('labs')}
                             className={`px-6 py-3 rounded-full font-bold transition-all ${activeTab === 'labs'
-                                    ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
-                                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
+                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                                 }`}
                         >
                             Labs
@@ -805,8 +805,8 @@ const PropheticExcellencePage: React.FC = memo(() => {
                         <button
                             onClick={() => setActiveTab('assessment')}
                             className={`px-6 py-3 rounded-full font-bold transition-all ${activeTab === 'assessment'
-                                    ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
-                                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
+                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
                                 }`}
                         >
                             Self Assessment

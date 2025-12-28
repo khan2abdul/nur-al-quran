@@ -37,7 +37,7 @@ export const MainLayout: React.FC<MainLayoutProps> = memo(({
     isFullWidth = false
 }) => {
     return (
-        <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+        <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
             {/* Navigation */}
             <Navbar />
 
