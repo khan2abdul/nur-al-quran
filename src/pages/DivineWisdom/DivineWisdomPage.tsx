@@ -176,7 +176,7 @@ const CategoryCard: React.FC<{ category: WisdomCategory }> = memo(({ category })
             <div className="relative p-8 md:p-10 flex flex-col h-full">
                 <div className="flex items-center justify-between mb-6">
                     <span className="text-5xl group-hover:scale-110 transition-transform duration-500">{category.icon}</span>
-                    <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/20 group-hover:bg-cyan-400 group-hover:text-slate-900 transition-all">
+                    <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-300 dark:text-white/20 group-hover:bg-cyan-400 group-hover:text-slate-900 transition-all">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>

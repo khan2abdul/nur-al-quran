@@ -87,13 +87,13 @@ const ReciterSelector: React.FC = memo(() => {
         <div className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 text-xs font-bold text-white/50 hover:text-cyan-400 transition-colors uppercase tracking-widest"
+                className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-white/50 hover:text-cyan-400 transition-colors uppercase tracking-widest"
                 aria-label="Select reciter"
             >
                 <span className="truncate max-w-[120px]">
                     {syncState.selectedReciter?.name ?? 'Select Reciter'}
                 </span>
-                <span className="opacity-40">{Icons.chevronDown}</span>
+                <span className="text-slate-400 dark:opacity-40">{Icons.chevronDown}</span>
             </button>
 
             {isOpen && (
@@ -102,17 +102,17 @@ const ReciterSelector: React.FC = memo(() => {
                         className="fixed inset-0 z-40"
                         onClick={() => setIsOpen(false)}
                     />
-                    <div className="absolute bottom-full left-0 mb-4 w-72 bg-slate-800 rounded-2xl shadow-2xl border border-white/10 z-50 max-h-80 overflow-y-auto backdrop-blur-xl">
+                    <div className="absolute bottom-full left-0 mb-4 w-72 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 z-50 max-h-80 overflow-y-auto backdrop-blur-xl">
                         {syncState.availableReciters.map((reciter) => (
                             <button
                                 key={reciter.id}
                                 onClick={() => handleSelect(reciter)}
-                                className={`w-full px-5 py-4 text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 ${syncState.selectedReciter?.id === reciter.id
+                                className={`w-full px-5 py-4 text-left hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border-b border-slate-100 dark:border-white/5 last:border-0 ${syncState.selectedReciter?.id === reciter.id
                                     ? 'bg-cyan-400/10'
                                     : ''
                                     }`}
                             >
-                                <div className={`font-bold text-sm ${syncState.selectedReciter?.id === reciter.id ? 'text-cyan-400' : 'text-white'}`}>
+                                <div className={`font-bold text-sm ${syncState.selectedReciter?.id === reciter.id ? 'text-cyan-400' : 'text-slate-900 dark:text-white'}`}>
                                     {reciter.name}
                                 </div>
                                 <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -146,7 +146,7 @@ const SpeedSelector: React.FC = memo(() => {
         <div className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="px-3 py-1.5 text-[10px] font-bold bg-white/5 rounded-lg text-white/50 hover:text-cyan-400 transition-colors uppercase tracking-widest border border-white/10"
+                className="px-3 py-1.5 text-[10px] font-bold bg-slate-100 dark:bg-white/5 rounded-lg text-slate-500 dark:text-white/50 hover:text-cyan-400 transition-colors uppercase tracking-widest border border-slate-200 dark:border-white/10"
                 aria-label="Playback speed"
             >
                 {timeState.playbackSpeed}x
@@ -158,14 +158,14 @@ const SpeedSelector: React.FC = memo(() => {
                         className="fixed inset-0 z-40"
                         onClick={() => setIsOpen(false)}
                     />
-                    <div className="absolute bottom-full right-0 mb-4 bg-slate-800 rounded-xl shadow-2xl border border-white/10 z-50 overflow-hidden backdrop-blur-xl">
+                    <div className="absolute bottom-full right-0 mb-4 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-white/10 z-50 overflow-hidden backdrop-blur-xl">
                         {SPEED_OPTIONS.map((speed) => (
                             <button
                                 key={speed}
                                 onClick={() => handleSelect(speed)}
-                                className={`block w-full px-6 py-3 text-xs font-bold text-left hover:bg-white/5 transition-colors ${timeState.playbackSpeed === speed
+                                className={`block w-full px-6 py-3 text-xs font-bold text-left hover:bg-slate-50 dark:hover:bg-white/5 transition-colors ${timeState.playbackSpeed === speed
                                     ? 'bg-cyan-400/10 text-cyan-400'
-                                    : 'text-white/60'
+                                    : 'text-slate-600 dark:text-white/60'
                                     }`}
                             >
                                 {speed}x
@@ -198,7 +198,7 @@ const ProgressBar: React.FC = memo(() => {
 
     return (
         <div
-            className="relative h-1 bg-white/10 rounded-full cursor-pointer group"
+            className="relative h-1 bg-slate-200 dark:bg-white/10 rounded-full cursor-pointer group"
             onClick={handleClick}
         >
             {/* Progress fill */}
@@ -250,9 +250,9 @@ export const AudioPlayer: React.FC = memo(() => {
         <div className={`
             fixed left-0 right-0 z-[100] transition-all duration-300
             ${isMobile ? 'bottom-[64px]' : 'bottom-0'} 
-            bg-[#0f172a]/90 backdrop-blur-2xl
-            border-t border-white/5
-            shadow-[0_-8px_40px_-10px_rgba(0,0,0,0.5)]
+            bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl
+            border-t border-slate-200 dark:border-white/5
+            shadow-[0_-8px_40px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_-8px_40px_-10px_rgba(0,0,0,0.5)]
             pb-safe
         `}>
             <div className="max-w-6xl mx-auto px-4">
@@ -276,7 +276,7 @@ export const AudioPlayer: React.FC = memo(() => {
                         {/* Skip backward */}
                         <button
                             onClick={actions.skipBackward}
-                            className="hidden md:flex p-2 text-white/40 hover:text-cyan-400 transition-colors"
+                            className="hidden md:flex p-2 text-slate-400 dark:text-white/40 hover:text-cyan-400 transition-colors"
                             aria-label="Rewind 10 seconds"
                         >
                             {Icons.rewind10}
@@ -285,7 +285,7 @@ export const AudioPlayer: React.FC = memo(() => {
                         {/* Previous verse */}
                         <button
                             onClick={actions.prevVerse}
-                            className="p-2 text-white/40 hover:text-cyan-400 transition-colors"
+                            className="p-2 text-slate-400 dark:text-white/40 hover:text-cyan-400 transition-colors"
                             aria-label="Previous verse"
                         >
                             {Icons.skipBack}
@@ -310,7 +310,7 @@ export const AudioPlayer: React.FC = memo(() => {
                         {/* Next verse */}
                         <button
                             onClick={actions.nextVerse}
-                            className="p-2 text-white/40 hover:text-cyan-400 transition-colors"
+                            className="p-2 text-slate-400 dark:text-white/40 hover:text-cyan-400 transition-colors"
                             aria-label="Next verse"
                         >
                             {Icons.skipForward}
@@ -319,7 +319,7 @@ export const AudioPlayer: React.FC = memo(() => {
                         {/* Skip forward */}
                         <button
                             onClick={actions.skipForward}
-                            className="hidden md:flex p-2 text-white/40 hover:text-cyan-400 transition-colors"
+                            className="hidden md:flex p-2 text-slate-400 dark:text-white/40 hover:text-cyan-400 transition-colors"
                             aria-label="Forward 10 seconds"
                         >
                             {Icons.forward10}
@@ -328,8 +328,8 @@ export const AudioPlayer: React.FC = memo(() => {
 
                     {/* Right: Time and speed */}
                     <div className="flex-1 flex items-center justify-end gap-2 md:gap-4 min-w-0">
-                        <span className="text-[10px] font-mono text-white/30 tabular-nums uppercase tracking-widest truncate">
-                            {formatDuration(timeState.currentTime)} <span className="text-white/10 mx-0.5">/</span> {formatDuration(timeState.duration)}
+                        <span className="text-[10px] font-mono text-slate-400 dark:text-white/30 tabular-nums uppercase tracking-widest truncate">
+                            {formatDuration(timeState.currentTime)} <span className="text-slate-200 dark:text-white/10 mx-0.5">/</span> {formatDuration(timeState.duration)}
                         </span>
                         <SpeedSelector />
                     </div>

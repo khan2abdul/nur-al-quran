@@ -107,7 +107,7 @@ const LanguageSwitcher: React.FC = memo(() => {
         <div className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 text-white/40 hover:text-cyan-400 transition-all font-bold text-[10px] uppercase tracking-widest"
+                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 dark:text-white/40 hover:text-cyan-400 transition-all font-bold text-[10px] uppercase tracking-widest"
                 aria-label="Select language"
                 aria-expanded={isOpen}
             >
@@ -291,6 +291,7 @@ DesktopNav.displayName = 'DesktopNav';
  */
 const MobileNav: React.FC = memo(() => {
     const location = useLocation();
+    const { user } = useAuth();
 
     // Only show main nav items on mobile
     const mobileItems = NAV_ITEMS.filter(item =>
@@ -298,7 +299,7 @@ const MobileNav: React.FC = memo(() => {
     ).slice(0, 4);
 
     return (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-t border-slate-200 dark:border-white/5 safe-area-bottom">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-t border-slate-200 dark:border-white/5 pb-safe pb-[env(safe-area-inset-bottom)]">
             <div className="flex items-center justify-around h-16 px-4">
                 {mobileItems.map((item) => {
                     const isActive = location.pathname === item.path;
@@ -319,16 +320,16 @@ const MobileNav: React.FC = memo(() => {
                     );
                 })}
 
-                {/* Settings with theme indicator */}
+                {/* Dynamic Auth/Settings Item */}
                 <Link
-                    to={ROUTES.SETTINGS}
-                    className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors ${location.pathname === ROUTES.SETTINGS
-                        ? 'text-primary-600 dark:text-primary-400'
+                    to={user ? ROUTES.SETTINGS : ROUTES.AUTH}
+                    className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors ${location.pathname === (user ? ROUTES.SETTINGS : ROUTES.AUTH)
+                        ? 'text-cyan-400'
                         : 'text-slate-500 dark:text-slate-400'
                         }`}
                 >
-                    {getIcon('settings')}
-                    <span className="text-[10px] font-medium">Settings</span>
+                    {user ? getIcon('settings') : <span className="text-xl">🔑</span>}
+                    <span className="text-[10px] font-bold uppercase tracking-widest mt-1">{user ? 'Settings' : 'Sign In'}</span>
                 </Link>
             </div>
         </nav>
@@ -354,7 +355,7 @@ const MobileHeader: React.FC = memo(() => {
                 </Link>
 
                 {/* Actions removed (theme toggle now in settings) */}
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-3">
                     <button
                         onClick={toggleTheme}
                         className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 hover:text-cyan-400 transition-all"
@@ -362,6 +363,7 @@ const MobileHeader: React.FC = memo(() => {
                     >
                         {getIcon(theme === 'light' ? 'moon' : 'sun')}
                     </button>
+                    <ProfileDropdown />
                 </div>
             </div>
         </header>

@@ -50,28 +50,28 @@ const SurahSelector: React.FC<SurahSelectorProps> = memo(({ currentSurahId }) =>
         <div className="flex items-center gap-3 text-xs font-mono uppercase tracking-[0.2em]">
             <Link
                 to={ROUTES.SURAHS}
-                className="text-cyan-400/60 hover:text-cyan-400 transition-colors"
+                className="text-cyan-600 dark:text-cyan-400/60 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors"
             >
                 ← Library
             </Link>
-            <span className="text-white/10">|</span>
+            <span className="text-slate-200 dark:text-white/10">|</span>
             <div className="flex items-center gap-4">
                 {currentSurahId > 1 && (
                     <Link
                         to={`/surah/${currentSurahId - 1}`}
-                        className="text-white/40 hover:text-cyan-400 transition-colors"
+                        className="text-slate-400 dark:text-white/40 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors"
                         aria-label="Previous Surah"
                     >
                         PREV
                     </Link>
                 )}
-                <span className="text-white/80 font-bold">
+                <span className="text-slate-800 dark:text-white/80 font-bold">
                     Surah {currentSurahId}
                 </span>
                 {currentSurahId < 114 && (
                     <Link
                         to={`/surah/${currentSurahId + 1}`}
-                        className="text-white/40 hover:text-cyan-400 transition-colors"
+                        className="text-slate-400 dark:text-white/40 hover:text-cyan-500 dark:hover:text-cyan-400 transition-colors"
                         aria-label="Next Surah"
                     >
                         NEXT

@@ -44,7 +44,7 @@ export const MainLayout: React.FC<MainLayoutProps> = memo(({
             {/* Main Content */}
             <main
                 className={`
-                    pt-14 pb-14 md:pt-16 md:pb-8 flex-grow
+                    pt-14 pb-20 md:pt-16 md:pb-8 flex-grow
                     ${isFullWidth ? '' : 'px-2 md:px-6 lg:px-8 max-w-7xl mx-auto w-full'}
                     ${className}
                 `.trim()}
