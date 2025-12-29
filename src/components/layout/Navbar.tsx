@@ -199,14 +199,16 @@ const ProfileDropdown: React.FC = memo(() => {
                         {/* Dropdown Items */}
                         <div className="p-2 space-y-1">
                             <Link
-                                to={ROUTES.SETTINGS}
+                                to="/notes"
                                 onClick={() => setIsOpen(false)}
-                                className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-cyan-400 transition-all"
+                                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-emerald-50 dark:hover:bg-emerald-400/10 transition-all"
                             >
-                                <span className="flex-shrink-0 text-slate-400 group-hover:text-cyan-400 transition-colors">
-                                    {getIcon('settings')}
+                                <span className="flex-shrink-0 text-emerald-500">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
                                 </span>
-                                Settings
+                                My Notes
                             </Link>
                             <button
                                 onClick={handleLogout}
@@ -248,7 +250,7 @@ const DesktopNav: React.FC = memo(() => {
                 {/* Navigation Links and Actions */}
                 <div className="flex items-center gap-6">
                     <nav className="flex items-center gap-2">
-                        {NAV_ITEMS.filter(item => item.showInNav && item.path !== ROUTES.SETTINGS).map((item) => {
+                        {NAV_ITEMS.filter(item => item.showInNav).map((item) => {
                             const isActive = location.pathname === item.path;
                             return (
                                 <Link
@@ -295,7 +297,7 @@ const MobileNav: React.FC = memo(() => {
 
     // Only show main nav items on mobile
     const mobileItems = NAV_ITEMS.filter(item =>
-        item.showInNav && item.path !== ROUTES.SETTINGS
+        item.showInNav
     ).slice(0, 4);
 
     return (
@@ -320,17 +322,19 @@ const MobileNav: React.FC = memo(() => {
                     );
                 })}
 
-                {/* Dynamic Auth/Settings Item */}
-                <Link
-                    to={user ? ROUTES.SETTINGS : ROUTES.AUTH}
-                    className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors ${location.pathname === (user ? ROUTES.SETTINGS : ROUTES.AUTH)
-                        ? 'text-cyan-400'
-                        : 'text-slate-500 dark:text-slate-400'
-                        }`}
-                >
-                    {user ? getIcon('settings') : <span className="text-xl">🔑</span>}
-                    <span className="text-[10px] font-bold uppercase tracking-widest mt-1">{user ? 'Settings' : 'Sign In'}</span>
-                </Link>
+                {/* Dynamic Auth Item (Settings removed) */}
+                {!user && (
+                    <Link
+                        to={ROUTES.AUTH}
+                        className={`flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors ${location.pathname === ROUTES.AUTH
+                            ? 'text-cyan-400'
+                            : 'text-slate-500 dark:text-slate-400'
+                            }`}
+                    >
+                        <span className="text-xl">🔑</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest mt-1">Sign In</span>
+                    </Link>
+                )}
             </div>
         </nav>
     );

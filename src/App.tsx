@@ -21,7 +21,6 @@ import { ROUTES } from '@/config/routes';
 const HomePage = lazy(() => import('@/pages/Home/HomePage'));
 const SurahListPage = lazy(() => import('@/pages/SurahList/SurahListPage'));
 const VerseViewPage = lazy(() => import('@/pages/VerseView/VerseViewPage'));
-const SettingsPage = lazy(() => import('@/pages/Settings/SettingsPage'));
 const BookmarksPage = lazy(() => import('@/pages/Bookmarks/BookmarksPage'));
 const DivineWisdomPage = lazy(() => import('@/pages/DivineWisdom/DivineWisdomPage'));
 const AuthPage = lazy(() => import('@/pages/Auth/AuthPage'));
@@ -32,6 +31,7 @@ const TheQuranPage = lazy(() => import('@/pages/TheQuran/TheQuranPage'));
 const IslamicLegacyPage = lazy(() => import('@/pages/IslamicLegacy/IslamicLegacyPage'));
 const LivingIslamPage = lazy(() => import('@/pages/LivingIslam/LivingIslamPage'));
 const WomenInIslamPage = lazy(() => import('@/pages/WomenInIslam/WomenInIslamPage'));
+const NotesPage = lazy(() => import('@/pages/Notes/NotesPage'));
 
 /**
  * Loading Spinner for Suspense fallback
@@ -121,10 +121,6 @@ const App: React.FC = () => {
                                                 element={<MainLayout><BookmarksPage /></MainLayout>}
                                             />
                                             <Route
-                                                path={ROUTES.SETTINGS}
-                                                element={<MainLayout><SettingsPage /></MainLayout>}
-                                            />
-                                            <Route
                                                 path={ROUTES.AUTH}
                                                 element={<MainLayout><AuthPage /></MainLayout>}
                                             />
@@ -155,6 +151,10 @@ const App: React.FC = () => {
                                             <Route
                                                 path={ROUTES.WOMEN_IN_ISLAM}
                                                 element={<MainLayout><WomenInIslamPage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path="/notes"
+                                                element={<MainLayout><NotesPage /></MainLayout>}
                                             />
 
                                             {/* 404 Not Found */}

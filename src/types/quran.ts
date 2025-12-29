@@ -182,6 +182,32 @@ export interface Bookmark {
 }
 
 /**
+ * User note for a verse
+ */
+export interface Note {
+    /** Unique note ID */
+    readonly id: string;
+
+    /** Verse identifier (surahId:verseNumber) */
+    readonly verseId: string;
+
+    /** Surah ID for quick filtering */
+    readonly surahId: number;
+
+    /** Verse number for display */
+    readonly verseNumber: number;
+
+    /** User's note text */
+    readonly text: string;
+
+    /** Timestamp when note was created */
+    readonly createdAt: number;
+
+    /** Timestamp when note was last updated */
+    readonly updatedAt: number;
+}
+
+/**
  * Reading progress tracking
  */
 export interface ReadingProgress {

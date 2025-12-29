@@ -178,6 +178,7 @@ export const HomePage: React.FC = memo(() => {
                 </div>
 
                 {/* Layer 3: Main Content */}
+                <div className="h-20 md:h-32" />
                 <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
                     <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full glass-card border-slate-200 dark:border-white/5 text-cyan-600 dark:text-cyan-400 text-[11px] uppercase tracking-[0.4em] font-bold mb-10 transition-all hover:border-cyan-400/30 hover:bg-cyan-400/5 group cursor-default shadow-sm dark:shadow-none">
                         <span className="relative flex h-2 w-2">
@@ -199,7 +200,7 @@ export const HomePage: React.FC = memo(() => {
                     </p>
 
                     {/* Theme-Aware Stats Glass-Card */}
-                    <div className="inline-flex items-center gap-1 bg-white/40 dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-[2rem] p-2 pr-8 animate-slide-up animation-delay-300 shadow-md dark:shadow-none">
+                    <div className="inline-flex items-center gap-1 bg-white/40 dark:bg-white/5 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-[2rem] p-2 animate-slide-up animation-delay-300 shadow-md dark:shadow-none">
                         <div className="flex -space-x-3">
                             <div className="w-12 h-12 rounded-full border-2 border-slate-50 dark:border-slate-900 bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center text-xl">📖</div>
                             <div className="w-12 h-12 rounded-full border-2 border-slate-50 dark:border-slate-900 bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center text-xl">✨</div>
@@ -213,12 +214,22 @@ export const HomePage: React.FC = memo(() => {
                             <span className="text-slate-600 dark:text-slate-400 text-sm tracking-wide">
                                 <b className="text-slate-900 dark:text-white">{QURAN_CONFIG.TOTAL_SURAHS}</b> Surahs
                             </span>
+                            <div className="w-1 h-6 bg-slate-200 dark:bg-white/10" />
+                            <button
+                                onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+                                className="w-10 h-10 rounded-full bg-cyan-400/10 hover:bg-cyan-400/20 text-cyan-500 transition-all flex items-center justify-center group"
+                                title="Scroll to explore"
+                            >
+                                <svg className="w-5 h-5 group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 14l-7 7m0 0l-7-7" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Spacer: Shift content block upwards in the flex center */}
-                <div className="h-32 md:h-48" />
+                <div className="h-12 md:h-16" />
 
                 {/* Enhanced Scroll Indicator */}
                 <button

@@ -647,6 +647,38 @@ export async function fetchSurahMeanings(surahId: number): Promise<Record<number
 }
 
 /**
+ * Fetch ALL surah meanings from Firestore (for bulk search)
+ */
+export async function fetchAllSurahMeanings(): Promise<Record<number, Record<number, VerseMeaning>>> {
+    console.log(`🔍 [Firestore] Attempting to fetch ALL meanings for search`);
+    try {
+        const colRef = collection(db, 'quran_meanings');
+        const querySnapshot = await getDocs(colRef);
+
+        const allMeanings: Record<number, Record<number, VerseMeaning>> = {};
+
+        querySnapshot.forEach(docSnap => {
+            const surahId = parseInt(docSnap.id);
+            const data = docSnap.data();
+            const versesArray = data.verses as VerseMeaning[];
+
+            const meaningsRecord: Record<number, VerseMeaning> = {};
+            versesArray.forEach(v => {
+                meaningsRecord[v.verse] = v;
+            });
+
+            allMeanings[surahId] = meaningsRecord;
+        });
+
+        console.log(`✅ [Firestore] Found meanings for ${Object.keys(allMeanings).length} Surahs`);
+        return allMeanings;
+    } catch (error) {
+        console.error(`❌ [Firestore] fetchAllSurahMeanings failed:`, error);
+        return {};
+    }
+}
+
+/**
  * Fetch surah info (Significance, Background) from Firestore
  * @param surahId - Chapter number
  */

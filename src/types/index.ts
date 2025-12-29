@@ -20,6 +20,7 @@ export type {
     Verse,
     Juz,
     Bookmark,
+    Note,
     ReadingProgress,
     Reciter,
     VerseTiming,

@@ -18,7 +18,6 @@ export const ROUTES = {
     WISDOM: '/wisdom',
     SURAH: '/surah/:surahId',
     BOOKMARKS: '/bookmarks',
-    SETTINGS: '/settings',
     SEARCH: '/search',
     AUTH: '/auth',
     LEARN: '/learn/fundamentals-of-faith',
@@ -70,12 +69,6 @@ export const NAV_ITEMS: readonly RouteDefinition[] = [
         path: ROUTES.BOOKMARKS,
         name: 'Bookmarks',
         icon: 'bookmark',
-        showInNav: true,
-    },
-    {
-        path: ROUTES.SETTINGS,
-        name: 'Settings',
-        icon: 'settings',
         showInNav: true,
     },
 ] as const;

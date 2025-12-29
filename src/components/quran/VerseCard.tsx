@@ -61,6 +61,12 @@ interface VerseCardProps {
 
     /** Callback when verse is clicked */
     readonly onClick?: (verseNumber: number) => void;
+
+    /** Whether this verse has a note */
+    readonly hasNote?: boolean;
+
+    /** Callback when note is clicked */
+    readonly onNoteClick?: (verseNumber: number) => void;
 }
 
 /**
@@ -81,6 +87,28 @@ const BookmarkIcon: React.FC<{ filled: boolean }> = ({ filled }) => (
             strokeLinejoin="round"
             strokeWidth={1.5}
             d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+        />
+    </svg>
+);
+
+/**
+ * Note Icon
+ */
+const NoteIcon: React.FC<{ hasNote: boolean }> = ({ hasNote }) => (
+    <svg
+        className={`w-5 h-5 transition-all ${hasNote
+            ? 'text-emerald-400'
+            : 'text-slate-400 hover:text-emerald-400'
+            }`}
+        fill={hasNote ? 'currentColor' : 'none'}
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
         />
     </svg>
 );
@@ -126,6 +154,8 @@ export const VerseCard: React.FC<VerseCardProps> = memo(({
     isBookmarked = false,
     onBookmarkToggle,
     onClick,
+    hasNote = false,
+    onNoteClick,
 }) => {
     const actions = useAudioActions();
     const { user } = useAuth();
@@ -214,6 +244,11 @@ export const VerseCard: React.FC<VerseCardProps> = memo(({
         onBookmarkToggle?.(verseNumber);
     }, [verseNumber, onBookmarkToggle]);
 
+    const handleNoteClick = useCallback((e: React.MouseEvent) => {
+        e.stopPropagation();
+        onNoteClick?.(verseNumber);
+    }, [verseNumber, onNoteClick]);
+
     return (
         <div
             id={`verse-${verseNumber}`}
@@ -290,13 +325,26 @@ export const VerseCard: React.FC<VerseCardProps> = memo(({
             {/* RIGHT SIDE: Arabic Focus */}
             {(isArabicOnly || isDefault) && (
                 <div className={`w-full ${isDefault ? 'md:w-1/2' : 'md:w-full'} bg-white dark:bg-slate-800 p-6 md:p-10 lg:p-16 relative flex flex-col justify-center border-l-0 md:border-l-[12px] border-emerald-400 min-h-[250px] md:min-h-0 transition-colors ${isPlaying ? 'bg-emerald-50/30 dark:bg-slate-700' : ''}`}>
-                    <button
-                        onClick={handleBookmarkClick}
-                        className="absolute top-4 right-4 md:top-8 md:right-8 lg:top-10 lg:right-10 p-2 md:p-3 rounded-full hover:bg-slate-50 dark:hover:bg-white/5 transition-colors z-20 group/bookmark"
-                        title={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
-                    >
-                        <BookmarkIcon filled={isBookmarked} />
-                    </button>
+                    <div className="absolute top-4 left-4 md:top-8 md:left-auto md:right-8 lg:top-10 lg:right-10 flex items-center gap-2 z-20">
+                        {/* Notes Button - Only for logged-in users */}
+                        {user && onNoteClick && (
+                            <button
+                                onClick={handleNoteClick}
+                                className="p-2 md:p-2.5 rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-400/10 transition-colors"
+                                title={hasNote ? 'View/Edit note' : 'Add note'}
+                            >
+                                <NoteIcon hasNote={hasNote} />
+                            </button>
+                        )}
+                        {/* Bookmark Button */}
+                        <button
+                            onClick={handleBookmarkClick}
+                            className="p-2 md:p-3 rounded-full hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
+                            title={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
+                        >
+                            <BookmarkIcon filled={isBookmarked} />
+                        </button>
+                    </div>
                     <div
                         className={`font-arabic text-slate-900 dark:text-white text-right leading-[2] md:leading-[2.4] ${arabicSize} transition-colors`}
                         dir="rtl"
