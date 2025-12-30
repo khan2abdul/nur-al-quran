@@ -180,7 +180,7 @@ export const HomePage: React.FC = memo(() => {
                 {/* Layer 3: Main Content */}
                 <div className="h-20 md:h-32" />
                 <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
-                    <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full glass-card border-slate-200 dark:border-white/5 text-cyan-600 dark:text-cyan-400 text-[11px] uppercase tracking-[0.4em] font-bold mb-10 transition-all hover:border-cyan-400/30 hover:bg-cyan-400/5 group cursor-default shadow-sm dark:shadow-none">
+                    <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full glass-card border-slate-200 dark:border-white/5 text-cyan-600 dark:text-cyan-400 text-[9px] sm:text-[11px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold mb-10 transition-all hover:border-cyan-400/30 hover:bg-cyan-400/5 group cursor-default shadow-sm dark:shadow-none">
                         <span className="relative flex h-2 w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
@@ -188,14 +188,14 @@ export const HomePage: React.FC = memo(() => {
                         Divine Guidance • {QURAN_CONFIG.TOTAL_SURAHS} Chapters
                     </div>
 
-                    <h1 className="text-6xl md:text-9xl font-bold tracking-tighter leading-[0.9] mb-10">
+                    <h1 className="text-4xl sm:text-6xl md:text-9xl font-bold tracking-tighter leading-[0.9] mb-8 md:mb-10">
                         <span className="block text-slate-400 dark:text-slate-100/30 font-light italic mb-2 animate-slide-up">Discovery of</span>
                         <span className="block text-slate-900 dark:text-slate-100 dark:text-glow animate-slide-up animation-delay-100">
                             Nur <span className="text-cyan-500 dark:text-cyan-400">Al-Quran</span>
                         </span>
                     </h1>
 
-                    <p className="text-slate-500 dark:text-slate-400 text-xl md:text-3xl max-w-2xl mx-auto leading-relaxed font-light mb-8 animate-slide-up animation-delay-200 balance">
+                    <p className="text-slate-500 dark:text-slate-400 text-base sm:text-xl md:text-3xl max-w-2xl mx-auto leading-relaxed font-light mb-8 animate-slide-up animation-delay-200 balance">
                         Experience the <span className="text-slate-900 dark:text-slate-100 font-medium">Infinite Light</span> through beauty, clarity, and modern elegance.
                     </p>
 
@@ -206,12 +206,12 @@ export const HomePage: React.FC = memo(() => {
                             <div className="w-12 h-12 rounded-full border-2 border-slate-50 dark:border-slate-900 bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center text-xl">✨</div>
                             <div className="w-12 h-12 rounded-full border-2 border-slate-50 dark:border-slate-900 bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center text-xl">🌙</div>
                         </div>
-                        <div className="flex items-center gap-6 ml-6">
-                            <span className="text-slate-600 dark:text-slate-400 text-sm tracking-wide">
+                        <div className="flex items-center gap-3 sm:gap-6 ml-3 sm:ml-6">
+                            <span className="text-slate-600 dark:text-slate-400 text-[10px] sm:text-sm tracking-wide">
                                 <b className="text-slate-900 dark:text-white">{QURAN_CONFIG.TOTAL_VERSES.toLocaleString()}</b> Precise Verses
                             </span>
                             <div className="w-1 h-6 bg-slate-200 dark:bg-white/5" />
-                            <span className="text-slate-600 dark:text-slate-400 text-sm tracking-wide">
+                            <span className="text-slate-600 dark:text-slate-400 text-[10px] sm:text-sm tracking-wide">
                                 <b className="text-slate-900 dark:text-white">{QURAN_CONFIG.TOTAL_SURAHS}</b> Surahs
                             </span>
                             <div className="w-1 h-6 bg-slate-200 dark:bg-white/10" />
