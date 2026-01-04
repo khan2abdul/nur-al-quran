@@ -137,16 +137,17 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         description: 'Understanding the practical rules and jurisprudence that govern daily Muslim life.',
         icon: '⚖️',
         color: 'from-blue-600/20 to-indigo-600/20',
-        topics: ['4 Schools of Thought', 'Halal & Haram', 'Modern Issues', 'Islamic Courts', 'Family Law', 'Fatwas'],
+        topics: ['Madhab Navigator', 'Halal & Haram', 'Modern Issues', 'Family Law', 'Historical Timeline', 'Legal Classifier'],
+        link: ROUTES.FIQH,
     },
-
     {
         id: 'dawah',
         title: "Da'wah & Outreach",
-        description: 'Sharing the message of Islam with wisdom, compassion, and beautiful preaching.',
+        description: 'The art of beautiful preaching and sharing Islam with wisdom and compassion.',
         icon: '🤝',
-        color: 'from-cyan-500/20 to-sky-500/20',
-        topics: ['How to Give Da\'wah', 'Answering Misconceptions', 'Interfaith Dialogue', 'Public Speaking', 'Digital Da\'wah', 'Q&A Skills'],
+        color: 'from-blue-400/20 to-emerald-400/20',
+        topics: ['Psychology of Belief', 'The BRIDGE Method', 'Misconception Hub', 'Dialogue Frameworks', 'Public Speaking', 'Digital Da\'wah Lab'],
+        link: ROUTES.DAWAH
     },
 
 
@@ -186,11 +187,6 @@ const CategoryCard: React.FC<{ category: WisdomCategory }> = memo(({ category })
                 </div>
 
                 {/* Ready Badge for clickable cards */}
-                {category.link && (
-                    <div className="absolute top-4 right-4 px-2 py-1 rounded-full bg-emerald-400 text-slate-900 text-[10px] font-bold uppercase tracking-wider">
-                        Ready
-                    </div>
-                )}
             </div>
         </>
     );

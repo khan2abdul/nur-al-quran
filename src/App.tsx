@@ -37,6 +37,8 @@ const HealthWellnessPage = lazy(() => import('@/pages/HealthWellness/HealthWelln
 const SacredTimesPage = lazy(() => import('@/pages/SacredTimes/SacredTimesPage'));
 const DeathAndAfterlifePage = lazy(() => import('@/pages/DivineWisdom/DeathAndAfterlifePage'));
 const NewMuslimsPage = lazy(() => import('@/pages/DivineWisdom/NewMuslimsPage'));
+const FiqhPage = lazy(() => import('@/pages/LivingIslam/FiqhPage'));
+const DawahPage = lazy(() => import('@/pages/LivingIslam/DawahPage'));
 const NotesPage = lazy(() => import('@/pages/Notes/NotesPage'));
 
 /**
@@ -181,6 +183,14 @@ const App: React.FC = () => {
                                             <Route
                                                 path={ROUTES.NEW_MUSLIMS}
                                                 element={<MainLayout isFullWidth><NewMuslimsPage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.FIQH}
+                                                element={<MainLayout isFullWidth><FiqhPage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.DAWAH}
+                                                element={<MainLayout isFullWidth><DawahPage /></MainLayout>}
                                             />
                                             <Route
                                                 path="/notes"

@@ -33,6 +33,8 @@ export const ROUTES = {
     CALENDAR: '/islamic-calendar-events-interactive',
     DEATH_AND_AFTERLIFE: '/wisdom/death-and-afterlife',
     NEW_MUSLIMS: '/wisdom/new-muslims',
+    FIQH: '/living-islam/fiqh',
+    DAWAH: '/living-islam/dawah',
 } as const;
 
 /**

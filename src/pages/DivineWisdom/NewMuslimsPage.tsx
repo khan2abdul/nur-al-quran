@@ -2,6 +2,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/config/routes';
+import { ArrowLeft } from 'lucide-react';
 import { SHAHADA_CONTENT, ISLAM_BASICS, PRAYER_STEPS, FAMILY_SCRIPTS, COMMON_FAQS, WUDU_STEPS, COMMON_FEARS, MYTHS_REALITY, RAKAH_GUIDE, COMMUNITY_TIPS, FIRST_VISIT_CHECKLIST, EMERGENCY_RESOURCES } from '@/data/newMuslimsData';
 
 // ============================================================================
@@ -20,7 +21,7 @@ const HeroSection: React.FC = memo(() => (
         <div className="relative z-10 container mx-auto px-6 text-center">
             <div className="flex justify-center mb-6">
                 <Link to={ROUTES.WISDOM} className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    <ArrowLeft size={16} />
                     Back to Divine Wisdom
                 </Link>
             </div>
