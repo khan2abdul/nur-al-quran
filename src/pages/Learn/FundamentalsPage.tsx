@@ -1235,17 +1235,97 @@ const AchievementBadges: React.FC<AchievementBadgesProps> = memo(({ readSections
 AchievementBadges.displayName = 'AchievementBadges';
 
 // ============================================================================
+// NEW LAYOUT COMPONENTS
+// ============================================================================
+
+const HeroSection: React.FC = memo(() => (
+    <div className="relative bg-gradient-to-br from-emerald-900 via-slate-900 to-slate-800 overflow-hidden pb-16">
+        {/* Decorative Pattern */}
+        <div className="absolute inset-0 bg-[url('/patterns/islamic-pattern.svg')] opacity-10"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-slate-900/90"></div>
+
+        {/* Floating Icons */}
+        <div className="absolute top-20 left-10 text-6xl opacity-20 animate-float">🕌</div>
+        <div className="absolute top-40 right-20 text-5xl opacity-20 animate-float-delayed">📖</div>
+        <div className="absolute bottom-20 left-1/4 text-4xl opacity-20 animate-float">🤲</div>
+
+        <div className="relative z-10 container mx-auto px-6 pt-12 text-center">
+            <div className="flex justify-center mb-6">
+                <Link to={ROUTES.WISDOM} className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    Back to Divine Wisdom
+                </Link>
+            </div>
+
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/30 border border-emerald-400/50 text-emerald-300 text-sm font-bold mb-6 backdrop-blur-sm">
+                <span>🎓</span> Comprehensive Guide
+            </div>
+
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight text-white">
+                Fundamentals of <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-300">Faith</span>
+            </h1>
+            <p className="text-xl text-white/90 max-w-3xl mx-auto mb-4 leading-relaxed">
+                An interactive journey through the core beliefs and practices of Islam.
+            </p>
+            <p className="text-lg text-white/70 max-w-2xl mx-auto mb-10">
+                Explore the Five Pillars of Islam, the Six Articles of Faith, and the concept of Tawhid in a simple, engaging way.
+            </p>
+
+            {/* Quick Stats */}
+            <div className="flex flex-wrap justify-center gap-6 mb-10">
+                <div className="px-6 py-3 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-sm">
+                    <span className="text-2xl font-bold text-emerald-400">5</span>
+                    <span className="text-white/80 ml-2">Pillars of Islam</span>
+                </div>
+                <div className="px-6 py-3 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-sm">
+                    <span className="text-2xl font-bold text-cyan-400">6</span>
+                    <span className="text-white/80 ml-2">Articles of Faith</span>
+                </div>
+                <div className="px-6 py-3 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-sm">
+                    <span className="text-2xl font-bold text-amber-400">100%</span>
+                    <span className="text-white/80 ml-2">Interactive</span>
+                </div>
+            </div>
+        </div>
+    </div>
+));
+
+type TabId = 'intro' | 'islam' | 'iman' | 'quiz';
+
+const TabNavigation: React.FC<{ activeTab: TabId; onTabChange: (id: TabId) => void }> = memo(({ activeTab, onTabChange }) => (
+    <div className="grid grid-cols-2 md:flex md:justify-center gap-3 -mt-6 relative z-20 px-4">
+        {[
+            { id: 'intro' as TabId, label: 'Overview', icon: '📚' },
+            { id: 'islam' as TabId, label: '5 Pillars of Islam', icon: '🕌' },
+            { id: 'iman' as TabId, label: '6 Pillars of Iman', icon: '✨' },
+            { id: 'quiz' as TabId, label: 'Quiz & Rewards', icon: '🏆' },
+        ].map((tab) => (
+            <button
+                key={tab.id}
+                onClick={() => onTabChange(tab.id)}
+                className={`w-full md:w-auto px-5 py-3 rounded-xl font-bold transition-all text-sm md:text-base flex items-center justify-center gap-2 ${activeTab === tab.id
+                    ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
+                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
+                    }`}
+            >
+                <span>{tab.icon}</span>
+                {tab.label}
+            </button>
+        ))}
+    </div>
+));
+
+// ============================================================================
 // MAIN PAGE COMPONENT
 // ============================================================================
 
 export const FundamentalsPage: React.FC = memo(() => {
     // State
+    const [activeTab, setActiveTab] = useState<TabId>('intro');
     const [expandedPillars, setExpandedPillars] = useState<Set<string>>(new Set());
     const [readSections, setReadSections] = useState<Record<string, boolean>>(() =>
         getStorageItem(STORAGE_KEY, {})
     );
-    const [scrollProgress, setScrollProgress] = useState(0);
-    const [activeSection, setActiveSection] = useState('intro');
 
     // Load saved progress
     useEffect(() => {
@@ -1257,18 +1337,6 @@ export const FundamentalsPage: React.FC = memo(() => {
     useEffect(() => {
         setStorageItem(STORAGE_KEY, readSections);
     }, [readSections]);
-
-    // Scroll progress tracking
-    useEffect(() => {
-        const handleScroll = () => {
-            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = (window.scrollY / scrollHeight) * 100;
-            setScrollProgress(progress);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     // Toggle pillar expansion
     const togglePillar = useCallback((id: string) => {
@@ -1296,271 +1364,201 @@ export const FundamentalsPage: React.FC = memo(() => {
         setExpandedPillars(new Set());
     }, []);
 
-    // Navigation sections
-    const navSections = useMemo(() => [
-        { id: 'intro', title: 'Introduction', icon: '📚' },
-        { id: 'five-pillars', title: '5 Pillars of Islam', icon: '🕌' },
-        { id: 'six-pillars', title: '6 Pillars of Iman', icon: '✨' },
-        { id: 'tawhid', title: 'Concept of Tawhid', icon: '☝️' },
-        { id: 'prophethood', title: 'Prophethood', icon: '🕊️' },
-    ], []);
-
-    // Calculate overall progress
+    // Calculate overall progress for achievements
     const totalItems = FIVE_PILLARS.length + SIX_PILLARS_IMAN.length;
     const completedItems = Object.values(readSections).filter(Boolean).length;
-    const completionPercent = Math.round((completedItems / totalItems) * 100);
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 relative">
-            {/* Progress Bar */}
-            <ProgressBar progress={scrollProgress} />
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-20">
+            {/* New Hero Section */}
+            <HeroSection />
 
-            {/* Sidebar Navigation */}
-            <Sidebar sections={navSections} activeSection={activeSection} progress={readSections} />
+            {/* Tab Navigation */}
+            <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-            {/* Main Content */}
-            <div className="max-w-4xl mx-auto px-4 py-12 lg:py-20">
-                {/* Header */}
-                <header className="text-center mb-16">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-400/10 border border-emerald-400/20 text-emerald-500 text-xs uppercase tracking-widest font-bold mb-6">
-                        <span>📖</span> Educational Guide
-                    </div>
-                    <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-                        Fundamentals of <span className="text-emerald-500">Faith</span> in Islam
-                    </h1>
-                    <p className="text-slate-500 dark:text-slate-400 text-lg max-w-2xl mx-auto">
-                        An interactive guide to understanding the core beliefs and practices of Islam. Perfect for beginners.
-                    </p>
+            {/* Main Content Area */}
+            <div className="max-w-5xl mx-auto px-4 py-12">
 
-                    {/* Progress Ring */}
-                    <div className="mt-8 inline-flex items-center gap-4 px-6 py-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 shadow-lg">
-                        <div className="relative w-12 h-12">
-                            <svg className="w-full h-full transform -rotate-90">
-                                <circle
-                                    cx="24"
-                                    cy="24"
-                                    r="20"
-                                    stroke="currentColor"
-                                    strokeWidth="4"
-                                    fill="none"
-                                    className="text-slate-100 dark:text-slate-700"
-                                />
-                                <circle
-                                    cx="24"
-                                    cy="24"
-                                    r="20"
-                                    stroke="currentColor"
-                                    strokeWidth="4"
-                                    fill="none"
-                                    strokeDasharray={`${completionPercent * 1.26} 126`}
-                                    className="text-emerald-400 transition-all duration-500"
-                                />
-                            </svg>
-                            <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">
-                                {completionPercent}%
-                            </span>
-                        </div>
-                        <div className="text-left">
-                            <p className="text-sm font-bold text-slate-900 dark:text-white">Your Progress</p>
-                            <p className="text-xs text-slate-500">{completedItems} of {totalItems} sections read</p>
-                        </div>
-                    </div>
-                </header>
-
-                {/* Introduction Section */}
-                <section id="intro" className="mb-16">
-                    <div className="p-8 rounded-3xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-400/20">
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Welcome</h2>
-                        <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                            Islam is a way of life based on the belief in One God (Allah) and the guidance of His final prophet, Muhammad (peace be upon him).
-                            This page will walk you through the essential beliefs and practices that form the foundation of the Islamic faith.
-                        </p>
-                        <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            Whether you're exploring Islam for the first time or seeking to strengthen your understanding,
-                            this interactive guide will help you learn at your own pace.
-                        </p>
-                    </div>
-                </section>
-
-                {/* Five Pillars of Islam */}
-                <section id="five-pillars" className="mb-16">
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-                                🕌 The 5 Pillars of Islam
+                {/* INTRO TAB */}
+                {activeTab === 'intro' && (
+                    <div className="animate-fade-in space-y-8">
+                        <div className="p-8 md:p-12 rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 shadow-xl">
+                            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-6 text-center">
+                                Welcome to Islamic Fundamentals
                             </h2>
-                            <p className="text-slate-500 text-sm mt-1">The five core practices every Muslim follows</p>
-                        </div>
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => expandAll(FIVE_PILLARS)}
-                                className="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 hover:bg-emerald-400/20 hover:text-emerald-500 transition-all"
-                            >
-                                Expand All
-                            </button>
-                            <button
-                                onClick={collapseAll}
-                                className="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10 transition-all"
-                            >
-                                Collapse All
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="space-y-3">
-                        {FIVE_PILLARS.map((pillar) => (
-                            <PillarCard
-                                key={pillar.id}
-                                pillar={pillar}
-                                isExpanded={expandedPillars.has(pillar.id)}
-                                isRead={readSections[pillar.id] || false}
-                                onToggle={() => togglePillar(pillar.id)}
-                                colorScheme="emerald"
-                            />
-                        ))}
-                    </div>
-
-                    {/* Zakat Calculator */}
-                    <div className="mt-8">
-                        <ZakatCalculator />
-                    </div>
-
-                    {/* Prayer Times Timeline */}
-                    <PrayerTimeline />
-
-                    {/* Hajj Journey Interactive */}
-                    <HajjJourneyMap />
-
-                    {/* Ramadan Fasting Simulator */}
-                    <RamadanSimulator />
-                </section>
-
-                {/* Six Pillars of Iman */}
-                <section id="six-pillars" className="mb-16">
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
-                                ✨ The 6 Pillars of Iman (Belief)
-                            </h2>
-                            <p className="text-slate-500 text-sm mt-1">The six articles of faith every Muslim believes in</p>
-                        </div>
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => expandAll(SIX_PILLARS_IMAN)}
-                                className="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 hover:bg-blue-400/20 hover:text-blue-500 transition-all"
-                            >
-                                Expand All
-                            </button>
-                            <button
-                                onClick={collapseAll}
-                                className="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10 transition-all"
-                            >
-                                Collapse All
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="space-y-3">
-                        {SIX_PILLARS_IMAN.map((pillar) => (
-                            <PillarCard
-                                key={pillar.id}
-                                pillar={pillar}
-                                isExpanded={expandedPillars.has(pillar.id)}
-                                isRead={readSections[pillar.id] || false}
-                                onToggle={() => togglePillar(pillar.id)}
-                                colorScheme="blue"
-                            />
-                        ))}
-                    </div>
-
-                    {/* Comparison Table */}
-                    <ComparisonTable />
-                </section>
-
-                {/* Tawhid Section */}
-                <section id="tawhid" className="mb-16">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3 mb-6">
-                        ☝️ The Concept of Tawhid
-                    </h2>
-                    <div className="p-8 rounded-3xl bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 shadow-xl">
-                        <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                            <strong className="text-amber-500">Tawhid</strong> is the most fundamental concept in Islam.
-                            It means believing in the absolute oneness of Allah – that He alone is worthy of worship,
-                            that He has no partners, and that nothing is comparable to Him.
-                        </p>
-                        <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                            This belief shapes every aspect of a Muslim's life, from prayer to ethics to daily decisions.
-                        </p>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                            <div className="p-4 rounded-xl bg-amber-400/10 border border-amber-400/20">
-                                <h4 className="font-bold text-amber-500 mb-2">Tawhid ar-Rububiyyah</h4>
-                                <p className="text-sm text-slate-600 dark:text-slate-300">Oneness of Lordship – Allah is the sole Creator and Sustainer.</p>
-                            </div>
-                            <div className="p-4 rounded-xl bg-amber-400/10 border border-amber-400/20">
-                                <h4 className="font-bold text-amber-500 mb-2">Tawhid al-Uluhiyyah</h4>
-                                <p className="text-sm text-slate-600 dark:text-slate-300">Oneness of Worship – Only Allah deserves worship.</p>
-                            </div>
-                            <div className="p-4 rounded-xl bg-amber-400/10 border border-amber-400/20">
-                                <h4 className="font-bold text-amber-500 mb-2">Tawhid al-Asma wa Sifat</h4>
-                                <p className="text-sm text-slate-600 dark:text-slate-300">Oneness of Names & Attributes – Allah's names and qualities are unique.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Prophethood Section */}
-                <section id="prophethood" className="mb-16">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3 mb-6">
-                        🕊️ Prophethood in Islam
-                    </h2>
-                    <div className="p-8 rounded-3xl bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 shadow-xl">
-                        <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                            Allah sent prophets throughout history to guide humanity. Muslims believe in all prophets,
-                            from Adam (the first human) to Muhammad (the final messenger).
-                        </p>
-                        <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-                            Each prophet brought the same core message: worship Allah alone and live righteously.
-                            The Quran mentions 25 prophets by name, including Adam, Noah, Abraham, Moses, Jesus, and Muhammad.
-                        </p>
-
-                        {/* Simple Prophet List */}
-                        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                            {['Adam', 'Noah', 'Abraham', 'Moses', 'Jesus', 'Muhammad ﷺ'].map((prophet) => (
-                                <div key={prophet} className="p-3 rounded-xl bg-cyan-400/10 border border-cyan-400/20 text-center">
-                                    <span className="text-sm font-bold text-cyan-500">{prophet}</span>
+                            <div className="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 leading-relaxed text-lg">
+                                <p className="mb-6">
+                                    Islam is a complete way of life based on the belief in One God (Allah) and the guidance of His final prophet, Muhammad (peace be upon him).
+                                    This interactive guide is designed to take you through the essential beliefs and practices that form the unshakeable foundation of the Islamic faith.
+                                </p>
+                                <div className="grid md:grid-cols-2 gap-6 my-8">
+                                    <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl p-6 border border-emerald-100 dark:border-emerald-500/20">
+                                        <h3 className="text-lg font-bold text-emerald-800 dark:text-emerald-300 mb-3 flex items-center gap-2">
+                                            <span>🕌</span> The 5 Pillars
+                                        </h3>
+                                        <p className="text-sm">
+                                            The practical actions that every Muslim performs, from daily prayers to charity and pilgrimage. These are the framework of a Muslim's life.
+                                        </p>
+                                    </div>
+                                    <div className="bg-cyan-50 dark:bg-cyan-900/20 rounded-2xl p-6 border border-cyan-100 dark:border-cyan-500/20">
+                                        <h3 className="text-lg font-bold text-cyan-800 dark:text-cyan-300 mb-3 flex items-center gap-2">
+                                            <span>✨</span> The 6 Beliefs
+                                        </h3>
+                                        <p className="text-sm">
+                                            The articles of faith (Iman) that reside in the heart, defining a Muslim's worldview and connection to the Divine.
+                                        </p>
+                                    </div>
                                 </div>
+                                <p>
+                                    Use the tabs above to navigate through each section. Complete the readings and interactive modules to unlock achievements and test your knowledge!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* ISLAM TAB (5 Pillars) */}
+                {activeTab === 'islam' && (
+                    <div className="animate-fade-in space-y-12">
+                        <div className="text-center mb-8">
+                            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">The 5 Pillars of Islam</h2>
+                            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                                The five core practices every Muslim follows to build a life of devotion and discipline.
+                            </p>
+                        </div>
+
+                        {/* Controls */}
+                        <div className="flex justify-end gap-2">
+                            <button onClick={() => expandAll(FIVE_PILLARS)} className="btn-secondary text-xs py-1.5">Expand All</button>
+                            <button onClick={collapseAll} className="btn-secondary text-xs py-1.5">Collapse All</button>
+                        </div>
+
+                        <div className="space-y-4">
+                            {FIVE_PILLARS.map((pillar) => (
+                                <PillarCard
+                                    key={pillar.id}
+                                    pillar={pillar}
+                                    isExpanded={expandedPillars.has(pillar.id)}
+                                    isRead={readSections[pillar.id] || false}
+                                    onToggle={() => togglePillar(pillar.id)}
+                                    colorScheme="emerald"
+                                />
                             ))}
                         </div>
+
+                        <div className="border-t border-slate-200 dark:border-white/10 pt-12 space-y-12">
+                            <h3 className="text-2xl font-bold text-center text-slate-900 dark:text-white">Interactive Tools & Guides</h3>
+
+                            {/* Zakat */}
+                            <div>
+                                <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-4 px-2">💰 Zakat (Charity) Calculator</h4>
+                                <ZakatCalculator />
+                            </div>
+
+                            {/* Prayer */}
+                            <div>
+                                <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-4 px-2">🕌 Daily Prayer Times</h4>
+                                <PrayerTimeline />
+                            </div>
+
+                            {/* Ramadan */}
+                            <div>
+                                <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-4 px-2">🌙 Ramadan Fasting Guide</h4>
+                                <RamadanSimulator />
+                            </div>
+
+                            {/* Hajj */}
+                            <div>
+                                <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-4 px-2">🕋 Hajj Journey</h4>
+                                <HajjJourneyMap />
+                            </div>
+                        </div>
                     </div>
+                )}
 
-                    {/* Interactive Prophet Timeline */}
-                    <ProphetTimeline />
-                </section>
+                {/* IMAN TAB (6 Pillars + Beliefs) */}
+                {activeTab === 'iman' && (
+                    <div className="animate-fade-in space-y-12">
+                        <div className="text-center mb-8">
+                            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">The 6 Pillars of Iman (Faith)</h2>
+                            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                                The essential beliefs that form the spiritual foundation of a Muslim.
+                            </p>
+                        </div>
 
-                {/* Knowledge Quiz */}
-                <section id="quiz" className="mb-16">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3 mb-2">
-                        📝 Test Your Knowledge
-                    </h2>
-                    <p className="text-slate-500 text-sm mb-4">Take a short quiz to check what you've learned</p>
-                    <QuizSection />
+                        {/* Controls */}
+                        <div className="flex justify-end gap-2">
+                            <button onClick={() => expandAll(SIX_PILLARS_IMAN)} className="btn-secondary text-xs py-1.5">Expand All</button>
+                            <button onClick={collapseAll} className="btn-secondary text-xs py-1.5">Collapse All</button>
+                        </div>
 
-                    {/* Achievement Badges */}
-                    <AchievementBadges readSections={readSections} totalSectionsRead={completedItems} />
-                </section>
+                        <div className="space-y-4">
+                            {SIX_PILLARS_IMAN.map((pillar) => (
+                                <PillarCard
+                                    key={pillar.id}
+                                    pillar={pillar}
+                                    isExpanded={expandedPillars.has(pillar.id)}
+                                    isRead={readSections[pillar.id] || false}
+                                    onToggle={() => togglePillar(pillar.id)}
+                                    colorScheme="blue"
+                                />
+                            ))}
+                        </div>
 
-                {/* Back to Home */}
-                <div className="text-center pt-8">
-                    <Link
-                        to={ROUTES.HOME}
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-emerald-400 text-slate-900 font-bold hover:bg-emerald-300 transition-all shadow-lg shadow-emerald-400/20"
-                    >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                        Back to Home
-                    </Link>
-                </div>
+                        {/* Additional Concepts */}
+                        <div className="grid md:grid-cols-2 gap-8 pt-8">
+                            {/* Tawhid */}
+                            <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-white/5 shadow-lg">
+                                <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-4">
+                                    <span>☝️</span> The Concept of Tawhid
+                                </h3>
+                                <p className="text-slate-600 dark:text-slate-300 text-sm mb-4">
+                                    The absolute oneness of Allah. It is the core of the Islamic faith.
+                                </p>
+                                <div className="space-y-3">
+                                    <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-500/20">
+                                        <h4 className="font-bold text-amber-700 dark:text-amber-400 text-sm">Rububiyyah</h4>
+                                        <p className="text-xs text-slate-600 dark:text-slate-400">Oneness of Lordship (Creator)</p>
+                                    </div>
+                                    <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-500/20">
+                                        <h4 className="font-bold text-amber-700 dark:text-amber-400 text-sm">Uluhiyyah</h4>
+                                        <p className="text-xs text-slate-600 dark:text-slate-400">Oneness of Worship</p>
+                                    </div>
+                                    <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-500/20">
+                                        <h4 className="font-bold text-amber-700 dark:text-amber-400 text-sm">Asma wa Sifat</h4>
+                                        <p className="text-xs text-slate-600 dark:text-slate-400">Oneness of Names Attributes</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Comparison */}
+                            <ComparisonTable />
+                        </div>
+
+                        {/* Prophethood */}
+                        <div className="pt-8">
+                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-6">
+                                <span>🕊️</span> The Chain of Prophets
+                            </h3>
+                            <ProphetTimeline />
+                        </div>
+                    </div>
+                )}
+
+                {/* QUIZ TAB */}
+                {activeTab === 'quiz' && (
+                    <div className="animate-fade-in space-y-12">
+                        <div className="text-center mb-8">
+                            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Test Your Knowledge</h2>
+                            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                                Assess your understanding of the pillars and beliefs.
+                            </p>
+                        </div>
+                        <QuizSection />
+                        <AchievementBadges readSections={readSections} totalSectionsRead={completedItems} />
+                    </div>
+                )}
+
             </div>
         </div>
     );

@@ -31,6 +31,12 @@ const TheQuranPage = lazy(() => import('@/pages/TheQuran/TheQuranPage'));
 const IslamicLegacyPage = lazy(() => import('@/pages/IslamicLegacy/IslamicLegacyPage'));
 const LivingIslamPage = lazy(() => import('@/pages/LivingIslam/LivingIslamPage'));
 const WomenInIslamPage = lazy(() => import('@/pages/WomenInIslam/WomenInIslamPage'));
+const YouthGuidePage = lazy(() => import('@/pages/YouthGuide/YouthGuidePage'));
+const MarriageGuidePage = lazy(() => import('@/pages/MarriageGuide/MarriageGuidePage'));
+const HealthWellnessPage = lazy(() => import('@/pages/HealthWellness/HealthWellnessPage'));
+const SacredTimesPage = lazy(() => import('@/pages/SacredTimes/SacredTimesPage'));
+const DeathAndAfterlifePage = lazy(() => import('@/pages/DivineWisdom/DeathAndAfterlifePage'));
+const NewMuslimsPage = lazy(() => import('@/pages/DivineWisdom/NewMuslimsPage'));
 const NotesPage = lazy(() => import('@/pages/Notes/NotesPage'));
 
 /**
@@ -151,6 +157,30 @@ const App: React.FC = () => {
                                             <Route
                                                 path={ROUTES.WOMEN_IN_ISLAM}
                                                 element={<MainLayout><WomenInIslamPage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.YOUTH_GUIDE}
+                                                element={<MainLayout><YouthGuidePage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.MARRIAGE_GUIDE}
+                                                element={<MainLayout><MarriageGuidePage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.HEALTH}
+                                                element={<MainLayout><HealthWellnessPage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.CALENDAR}
+                                                element={<MainLayout><SacredTimesPage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.DEATH_AND_AFTERLIFE}
+                                                element={<MainLayout isFullWidth><DeathAndAfterlifePage /></MainLayout>}
+                                            />
+                                            <Route
+                                                path={ROUTES.NEW_MUSLIMS}
+                                                element={<MainLayout isFullWidth><NewMuslimsPage /></MainLayout>}
                                             />
                                             <Route
                                                 path="/notes"

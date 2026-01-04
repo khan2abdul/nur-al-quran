@@ -14,10 +14,12 @@ const HeroSection: React.FC = memo(() => (
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-slate-950/90"></div>
 
         <div className="relative z-10 container mx-auto px-6 pt-12 text-center">
-            <Link to={ROUTES.WISDOM} className="inline-flex items-center gap-2 text-white/70 hover:text-white mb-8 transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                Back to Divine Wisdom
-            </Link>
+            <div className="flex justify-center mb-6">
+                <Link to={ROUTES.WISDOM} className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    Back to Divine Wisdom
+                </Link>
+            </div>
 
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/20 border border-teal-500/30 text-teal-300 text-sm font-bold mb-6 backdrop-blur-sm">
                 <span>🌿</span> Practical Guidance for Modern Life
@@ -53,7 +55,7 @@ const HeroSection: React.FC = memo(() => (
 ));
 
 const TabNavigation: React.FC<{ activeTab: TabId; onTabChange: (id: TabId) => void }> = memo(({ activeTab, onTabChange }) => (
-    <div className="flex flex-wrap justify-center gap-3 -mt-6 relative z-20 px-4">
+    <div className="grid grid-cols-2 md:flex md:justify-center gap-3 -mt-6 relative z-20 px-4 max-w-4xl mx-auto">
         {[
             { id: 'overview' as TabId, label: 'Overview', icon: '🏠' },
             { id: 'work' as TabId, label: 'Work & Money', icon: '💼' },
@@ -61,14 +63,18 @@ const TabNavigation: React.FC<{ activeTab: TabId; onTabChange: (id: TabId) => vo
             { id: 'modern' as TabId, label: 'Modern Life', icon: '📱' },
             { id: 'knowledge' as TabId, label: 'Knowledge', icon: '📚' },
             { id: 'community' as TabId, label: 'Community', icon: '🤝' },
-        ].map((tab) => (
+        ].map((tab, idx, arr) => (
             <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                className={`px-5 py-3 rounded-xl font-bold transition-all text-sm md:text-base flex items-center gap-2 ${activeTab === tab.id
-                    ? 'bg-teal-600 text-white shadow-lg shadow-teal-500/30'
-                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
-                    }`}
+                className={`
+                    px-5 py-3 rounded-xl font-bold transition-all text-sm md:text-base flex items-center justify-center gap-2
+                    ${idx === arr.length - 1 ? 'col-span-2 md:col-span-1' : ''}
+                    ${activeTab === tab.id
+                        ? 'bg-teal-600 text-white shadow-lg shadow-teal-500/30'
+                        : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
+                    }
+                `}
             >
                 <span>{tab.icon}</span>
                 {tab.label}

@@ -84,6 +84,7 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         icon: '🎓',
         color: 'from-indigo-500/20 to-violet-500/20',
         topics: ['Islamic Identity', 'Academic Success', 'Peer Pressure', 'Halal Careers', 'Social Life', 'Mental Health'],
+        link: ROUTES.YOUTH_GUIDE,
     },
     {
         id: 'marriage',
@@ -92,6 +93,7 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         icon: '💍',
         color: 'from-rose-500/20 to-red-500/20',
         topics: ['Finding a Spouse', 'Pre-Marriage Prep', 'Rights & Duties', 'Conflict Resolution', 'Intimacy', 'Divorce Guidelines'],
+        link: ROUTES.MARRIAGE_GUIDE,
     },
     {
         id: 'health',
@@ -100,6 +102,7 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         icon: '❤️',
         color: 'from-green-500/20 to-emerald-500/20',
         topics: ['Prophetic Medicine', 'Halal Nutrition', 'Fitness', 'Mental Health', 'Addiction Recovery', 'Sleep Sunnah'],
+        link: ROUTES.HEALTH,
     },
     {
         id: 'calendar',
@@ -107,7 +110,8 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         description: 'Marking the sacred times, blessed days, and significant events of the Islamic year.',
         icon: '📅',
         color: 'from-amber-500/20 to-yellow-500/20',
-        topics: ['Ramadan Guide', 'Hajj & Umrah', 'Sacred Months', 'Eid Celebrations', 'Jumu\'ah', 'Blessed Nights'],
+        topics: ['Hijri Dates', 'Blessed Nights', 'White Days', 'Sacred Months', 'Eid Planner'],
+        link: ROUTES.CALENDAR,
     },
     {
         id: 'death',
@@ -116,6 +120,7 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         icon: '🕊️',
         color: 'from-slate-500/20 to-gray-500/20',
         topics: ['Understanding Mortality', 'Janazah Guide', 'Life in the Grave', 'Day of Judgment', 'Jannah & Jahannam', 'Grief & Loss'],
+        link: ROUTES.DEATH_AND_AFTERLIFE,
     },
     {
         id: 'converts',
@@ -124,6 +129,7 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         icon: '🌱',
         color: 'from-teal-500/20 to-cyan-500/20',
         topics: ['Shahada Guide', 'Islam Basics', 'Learning Salah', 'Family Relations', 'Finding Community', 'FAQs'],
+        link: ROUTES.NEW_MUSLIMS,
     },
     {
         id: 'fiqh',
@@ -133,14 +139,7 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         color: 'from-blue-600/20 to-indigo-600/20',
         topics: ['4 Schools of Thought', 'Halal & Haram', 'Modern Issues', 'Islamic Courts', 'Family Law', 'Fatwas'],
     },
-    {
-        id: 'art',
-        title: 'Islamic Art & Culture',
-        description: 'Appreciating the beauty, aesthetics, and creative legacy of Islamic civilization.',
-        icon: '🎨',
-        color: 'from-fuchsia-500/20 to-purple-500/20',
-        topics: ['Calligraphy', 'Architecture', 'Halal Arts', 'Literature & Poetry', 'Crafts', 'Modest Fashion'],
-    },
+
     {
         id: 'dawah',
         title: "Da'wah & Outreach",
@@ -149,22 +148,8 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         color: 'from-cyan-500/20 to-sky-500/20',
         topics: ['How to Give Da\'wah', 'Answering Misconceptions', 'Interfaith Dialogue', 'Public Speaking', 'Digital Da\'wah', 'Q&A Skills'],
     },
-    {
-        id: 'timeline',
-        title: 'Islamic History Timeline',
-        description: 'A chronological journey through 1400+ years of Islamic history and civilization.',
-        icon: '📜',
-        color: 'from-orange-500/20 to-amber-600/20',
-        topics: ['Prophetic Era', 'Caliphate', 'Islamic Empires', 'Crusades & Mongols', 'Colonial Era', 'Modern Movements'],
-    },
-    {
-        id: 'justice',
-        title: 'Social Justice & Activism',
-        description: 'Standing for truth, justice, and the rights of the oppressed.',
-        icon: '📢',
-        color: 'from-red-500/20 to-orange-500/20',
-        topics: ['Justice in Islam', 'Human Rights', 'Poverty', 'Environment', 'Civic Engagement', 'Global Struggles'],
-    },
+
+
 ];
 
 const CategoryCard: React.FC<{ category: WisdomCategory }> = memo(({ category }) => {

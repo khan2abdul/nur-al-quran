@@ -194,7 +194,7 @@ const STORIES: Story[] = [
         summary: "The Prophet ﷺ would shorten his prayer when he heard a baby crying to ease the mother's heart.",
         fullText: "The Prophet ﷺ said, 'I stand for prayer intending to prolong it. Then I hear the crying of a child, so I shorten my prayer because I know how deeply his mother feels his crying.' This shows his immense sensitivity to the needs and feelings of others, even during the most sacred act of worship.",
         source: "Sahih Bukhari"
-    }
+    },
 ];
 
 const HADITHS: Hadith[] = [
@@ -260,6 +260,7 @@ const PropheticRoutine: React.FC = memo(() => {
         </div>
     );
 });
+PropheticRoutine.displayName = 'PropheticRoutine';
 
 const CharacterRoadmap: React.FC = memo(() => {
     return (
@@ -300,6 +301,7 @@ const CharacterRoadmap: React.FC = memo(() => {
         </div>
     );
 });
+CharacterRoadmap.displayName = 'CharacterRoadmap';
 
 const StoryLibrary: React.FC = memo(() => {
     const [selectedStory, setSelectedStory] = useState<number | null>(null);
@@ -363,6 +365,7 @@ const StoryLibrary: React.FC = memo(() => {
         </div>
     );
 });
+StoryLibrary.displayName = 'StoryLibrary';
 
 const WisdomVault: React.FC = memo(() => {
     return (
@@ -388,6 +391,7 @@ const WisdomVault: React.FC = memo(() => {
         </div>
     );
 });
+WisdomVault.displayName = 'WisdomVault';
 
 const MorningIntention: React.FC = memo(() => {
     const [intention, setIntention] = useState<string | null>(null);
@@ -401,9 +405,9 @@ const MorningIntention: React.FC = memo(() => {
     if (saved) {
         return (
             <div className="bg-emerald-50 dark:bg-emerald-900/10 p-6 rounded-2xl border border-emerald-100 dark:border-emerald-500/20 text-center animate-fade-in h-full flex flex-col justify-center">
-                <p className="text-sm text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider mb-2">Today's Intention Set</p>
+                <p className="text-sm text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider mb-2">Today&apos;s Intention Set</p>
                 <p className="text-xl font-bold text-slate-800 dark:text-white">
-                    "I will embody <span className="text-emerald-500">{intention}</span> today."
+                    &quot;I will embody <span className="text-emerald-500">{intention}</span> today.&quot;
                 </p>
                 <div className="mt-4 text-sm text-slate-500">
                     Come back this evening to reflect on your progress.
@@ -424,7 +428,7 @@ const MorningIntention: React.FC = memo(() => {
                 ☀️ Morning Intention
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-6 text-sm leading-relaxed">
-                The Prophet ﷺ said: "Actions are but by intentions." Set a character goal for today to focus your spiritual energy.
+                The Prophet ﷺ said: &quot;Actions are but by intentions.&quot; Set a character goal for today to focus your spiritual energy.
             </p>
             <div className="flex flex-wrap gap-2">
                 {['Kindness', 'Patience', 'Honesty', 'Humility', 'Generosity'].map(trait => (
@@ -440,6 +444,7 @@ const MorningIntention: React.FC = memo(() => {
         </div>
     );
 });
+MorningIntention.displayName = 'MorningIntention';
 
 const DailyCharacterChallenge: React.FC = memo(() => {
     const [currentDay, setCurrentDay] = useState(1);
@@ -521,6 +526,7 @@ const DailyCharacterChallenge: React.FC = memo(() => {
         </div>
     );
 });
+DailyCharacterChallenge.displayName = 'DailyCharacterChallenge';
 
 const KindnessTracker: React.FC = memo(() => {
     const [acts, setActs] = useState([
@@ -585,6 +591,7 @@ const KindnessTracker: React.FC = memo(() => {
         </div>
     );
 });
+KindnessTracker.displayName = 'KindnessTracker';
 
 const CharacterScenarios: React.FC = memo(() => {
     const [currentScenarioIndex, setCurrentScenarioIndex] = useState(0);
@@ -660,6 +667,7 @@ const CharacterScenarios: React.FC = memo(() => {
         </div>
     );
 });
+CharacterScenarios.displayName = 'CharacterScenarios';
 
 const ForgivenessMercyLab: React.FC = memo(() => {
     const [text, setText] = useState('');
@@ -679,7 +687,7 @@ const ForgivenessMercyLab: React.FC = memo(() => {
         return (
             <div className="bg-emerald-50 dark:bg-emerald-900/10 rounded-3xl p-8 border border-emerald-100 dark:border-emerald-500/20 text-center animate-fade-in h-64 flex flex-col justify-center items-center">
                 <div className="text-4xl mb-4">🕊️</div>
-                <h3 className="text-xl font-bold text-emerald-700 dark:text-emerald-400 mb-2">You've taken a step towards peace.</h3>
+                <h3 className="text-xl font-bold text-emerald-700 dark:text-emerald-400 mb-2">You&apos;ve taken a step towards peace.</h3>
                 <p className="text-emerald-600/80 dark:text-emerald-400/70 text-sm">May Allah replace your hurt with tranquility.</p>
                 <button
                     onClick={() => setCleared(false)}
@@ -714,12 +722,72 @@ const ForgivenessMercyLab: React.FC = memo(() => {
         </div>
     );
 });
+ForgivenessMercyLab.displayName = 'ForgivenessMercyLab';
 
-/**
- * Prophetic Excellence Page
- */
+// --- Main Page Component ---
+
+// Define TabId
+type TabId = 'overview' | 'stories' | 'practice' | 'labs' | 'assessment';
+
+const HeroSection: React.FC = memo(() => (
+    <div className="relative bg-gradient-to-br from-slate-950 to-slate-900 text-white overflow-hidden pb-16">
+        <div className="absolute inset-0 bg-[url('/patterns/islamic-pattern.svg')] opacity-10 animate-spin-slow"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-slate-950/90"></div>
+
+        <div className="relative z-10 container mx-auto px-6 pt-12 text-center">
+            <div className="flex justify-center mb-6">
+                <Link to={ROUTES.WISDOM} className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    Back to Divine Wisdom
+                </Link>
+            </div>
+
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/30 border border-emerald-400/50 text-emerald-300 text-sm font-bold mb-6 backdrop-blur-sm">
+                <span>🌱</span> Prophetic Series
+            </div>
+
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight text-white">
+                Prophetic <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Excellence</span>
+            </h1>
+            <p className="text-xl text-white/90 max-w-3xl mx-auto mb-4 leading-relaxed">
+                &quot;I was sent only to perfect noble character.&quot; <span className="text-emerald-400 block mt-2 text-sm font-bold">— Prophet Muhammad ﷺ</span>
+            </p>
+        </div>
+    </div>
+));
+HeroSection.displayName = 'HeroSection';
+
+const TabNavigation: React.FC<{ activeTab: TabId; onTabChange: (id: TabId) => void }> = memo(({ activeTab, onTabChange }) => (
+    <div className="grid grid-cols-2 md:flex md:justify-center gap-3 -mt-6 relative z-20 px-4 max-w-4xl mx-auto mb-10">
+        {[
+            { id: 'overview' as TabId, label: 'Overview', icon: '✨' },
+            { id: 'stories' as TabId, label: 'Stories', icon: '📚' },
+            { id: 'practice' as TabId, label: 'Practice', icon: '🤲' },
+            { id: 'labs' as TabId, label: 'Labs', icon: '🧪' },
+            { id: 'assessment' as TabId, label: 'Assessment', icon: '📝' },
+        ].map((tab, idx, arr) => (
+            <button
+                key={tab.id}
+                onClick={() => onTabChange(tab.id)}
+                className={`
+                    px-5 py-3 rounded-xl font-bold transition-all text-sm md:text-base flex items-center justify-center gap-2
+                    ${idx === arr.length - 1 ? 'col-span-2 md:col-span-1' : ''}
+                    ${activeTab === tab.id
+                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
+                        : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
+                    }
+                `}
+            >
+                <span>{tab.icon}</span>
+                {tab.label}
+            </button>
+        ))}
+    </div>
+));
+TabNavigation.displayName = 'TabNavigation';
+
 const PropheticExcellencePage: React.FC = memo(() => {
-    const [activeTab, setActiveTab] = useState<'overview' | 'stories' | 'practice' | 'labs' | 'assessment'>('overview');
+    const [activeTab, setActiveTab] = useState<TabId>('overview');
     const [assessmentScores, setAssessmentScores] = useState<Record<string, number>>({});
     const [assessmentCompleted, setAssessmentCompleted] = useState(false);
 
@@ -744,78 +812,11 @@ const PropheticExcellencePage: React.FC = memo(() => {
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20 overflow-x-hidden">
-            {/* Hero Section */}
-            <div className="relative bg-gradient-to-br from-slate-950 to-slate-900 text-white overflow-hidden pb-16">
-                <div className="absolute inset-0 bg-[url('/patterns/islamic-pattern.svg')] opacity-10 animate-spin-slow"></div>
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-slate-950/90"></div>
+            <HeroSection />
 
-                <div className="relative z-10 container mx-auto px-6 pt-12 text-center">
-                    <Link to={ROUTES.WISDOM} className="inline-flex items-center gap-2 text-slate-300 hover:text-white mb-8 transition-colors">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                        Back to Divine Wisdom
-                    </Link>
+            <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-                    <span className="inline-block px-4 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-sm font-bold mb-6 tracking-wide uppercase">
-                        Prophetic Series
-                    </span>
-                    <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-                        Prophetic <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Excellence</span>
-                    </h1>
-                    <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-10 leading-relaxed">
-                        "I was sent only to perfect noble character." <span className="text-emerald-400 block mt-2 text-sm font-bold">— Prophet Muhammad ﷺ</span>
-                    </p>
-
-                    <div className="flex flex-wrap justify-center gap-4">
-                        <button
-                            onClick={() => setActiveTab('overview')}
-                            className={`px-6 py-3 rounded-full font-bold transition-all ${activeTab === 'overview'
-                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
-                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-                                }`}
-                        >
-                            Overview
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('stories')}
-                            className={`px-6 py-3 rounded-full font-bold transition-all ${activeTab === 'stories'
-                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
-                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-                                }`}
-                        >
-                            Stories & Wisdom
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('practice')}
-                            className={`px-6 py-3 rounded-full font-bold transition-all ${activeTab === 'practice'
-                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
-                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-                                }`}
-                        >
-                            Daily Practice
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('labs')}
-                            className={`px-6 py-3 rounded-full font-bold transition-all ${activeTab === 'labs'
-                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
-                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-                                }`}
-                        >
-                            Labs
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('assessment')}
-                            className={`px-6 py-3 rounded-full font-bold transition-all ${activeTab === 'assessment'
-                                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-900'
-                                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-                                }`}
-                        >
-                            Self Assessment
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div className="container mx-auto px-6 -mt-10 relative z-20">
+            <div className="container mx-auto px-6 relative z-20">
                 {/* Introduction - Only show on Overview tab */}
                 {activeTab === 'overview' && (
                     <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-xl border border-slate-200 dark:border-white/5 mb-12">
@@ -824,7 +825,7 @@ const PropheticExcellencePage: React.FC = memo(() => {
                             <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
                                 Even before his prophethood, Muhammad ﷺ was known among his people as <strong>Al-Amin (The Trustworthy)</strong> and <strong>As-Sadiq (The Truthful)</strong>.
                                 His character was not just a set of rules, but a living example of mercy, integrity, and humility.
-                                God Almighty described him in the Quran as having "sublime character."
+                                God Almighty described him in the Quran as having &quot;sublime character.&quot;
                             </p>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                                 <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50">

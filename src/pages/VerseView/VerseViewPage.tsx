@@ -280,7 +280,7 @@ export const VerseViewPage: React.FC = memo(() => {
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-6 md:py-10 pb-40 px-0 transition-colors duration-300">
-            <div className="w-full max-w-7xl mx-auto pl-4 pr-20 md:px-6">
+            <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
                 {/* Navigation & Controls */}
                 <div className="mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
                     <SurahSelector currentSurahId={surahNumber} />
@@ -475,42 +475,19 @@ export const VerseViewPage: React.FC = memo(() => {
                 )}
 
                 {/* Floating Navigation Controls */}
-                <div className="fixed bottom-48 md:bottom-32 right-3 md:right-6 flex flex-col items-center gap-2 md:gap-3 z-40">
-                    {/* FAB Button */}
+                {/* Floating Navigation Controls - Mobile Optimized */}
+                <div className="fixed bottom-48 md:bottom-32 right-4 md:right-8 flex flex-col items-center gap-2 z-40">
+                    {/* Unified Menu Button */}
                     <button
                         onClick={() => setShowFabMenu(!showFabMenu)}
-                        className={`w-10 h-10 md:w-12 md:h-12 rounded-full shadow-2xl flex items-center justify-center transition-all ${showFabMenu
-                            ? 'bg-slate-800 dark:bg-slate-600 text-white rotate-45'
-                            : 'bg-emerald-400 text-slate-900 hover:bg-emerald-300 hover:scale-110'
+                        className={`w-11 h-11 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 ${showFabMenu
+                            ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 rotate-45 scale-110'
+                            : 'bg-emerald-400/90 backdrop-blur-sm text-slate-900 hover:bg-emerald-400 hover:scale-105'
                             }`}
-                        aria-label="Navigation options"
+                        aria-label="Open Surah menu"
                     >
-                        <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-                        </svg>
-                    </button>
-
-                    {/* Scroll Up Button */}
-                    <button
-                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                        className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-emerald-400 shadow-lg flex items-center justify-center text-slate-900 hover:bg-emerald-300 transition-all hover:scale-110"
-                        aria-label="Scroll to top"
-                        title="Scroll to top"
-                    >
-                        <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 15l7-7 7 7" />
-                        </svg>
-                    </button>
-
-                    {/* Scroll Down Button */}
-                    <button
-                        onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-                        className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-emerald-400 shadow-lg flex items-center justify-center text-slate-900 hover:bg-emerald-300 transition-all hover:scale-110"
-                        aria-label="Scroll to bottom"
-                        title="Scroll to bottom"
-                    >
-                        <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d={showFabMenu ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
                         </svg>
                     </button>
 
@@ -596,52 +573,83 @@ export const VerseViewPage: React.FC = memo(() => {
                                         </div>
                                     )}
                                 </div>
+                                {/* Scroll Controls Section */}
+                                <div className="p-4 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/5">
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <button
+                                            onClick={() => {
+                                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                setShowFabMenu(false);
+                                            }}
+                                            className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-white/10 hover:border-emerald-400/50 transition-all"
+                                        >
+                                            <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 15l7-7 7 7" />
+                                            </svg>
+                                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Scroll Top</span>
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                                                setShowFabMenu(false);
+                                            }}
+                                            className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-white/10 hover:border-emerald-400/50 transition-all"
+                                        >
+                                            <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">Bottom</span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </>
                     )}
                 </div>
 
                 {/* Note Modal */}
-                {noteModal.isOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                        <div
-                            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-                            onClick={() => setNoteModal({ isOpen: false, verseNumber: 0, text: '' })}
-                        />
-                        <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-lg p-6 animate-in fade-in zoom-in-95">
-                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
-                                Add Note
-                            </h3>
-                            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-                                {surah?.name || 'Surah'} • Verse {noteModal.verseNumber}
-                            </p>
-                            <textarea
-                                value={noteModal.text}
-                                onChange={(e) => setNoteModal(prev => ({ ...prev, text: e.target.value }))}
-                                placeholder="Write your thoughts, reflections, or notes..."
-                                className="w-full h-40 p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                                autoFocus
+                {
+                    noteModal.isOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                            <div
+                                className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                                onClick={() => setNoteModal({ isOpen: false, verseNumber: 0, text: '' })}
                             />
-                            <div className="flex justify-end gap-3 mt-4">
-                                <button
-                                    onClick={() => setNoteModal({ isOpen: false, verseNumber: 0, text: '' })}
-                                    className="px-5 py-2.5 rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleNoteSave}
-                                    className="px-5 py-2.5 rounded-xl font-semibold bg-emerald-400 text-slate-900 hover:bg-emerald-300 transition-colors"
-                                >
-                                    Save Note
-                                </button>
+                            <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-lg p-6 animate-in fade-in zoom-in-95">
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                                    Add Note
+                                </h3>
+                                <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+                                    {surah?.name || 'Surah'} • Verse {noteModal.verseNumber}
+                                </p>
+                                <textarea
+                                    value={noteModal.text}
+                                    onChange={(e) => setNoteModal(prev => ({ ...prev, text: e.target.value }))}
+                                    placeholder="Write your thoughts, reflections, or notes..."
+                                    className="w-full h-40 p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-white resize-none focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                                    autoFocus
+                                />
+                                <div className="flex justify-end gap-3 mt-4">
+                                    <button
+                                        onClick={() => setNoteModal({ isOpen: false, verseNumber: 0, text: '' })}
+                                        className="px-5 py-2.5 rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={handleNoteSave}
+                                        className="px-5 py-2.5 rounded-xl font-semibold bg-emerald-400 text-slate-900 hover:bg-emerald-300 transition-colors"
+                                    >
+                                        Save Note
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )
+                }
                 <AudioPlayer />
-            </div>
-        </div>
+            </div >
+        </div >
     );
 });
 

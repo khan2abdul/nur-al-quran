@@ -56,7 +56,7 @@ const SurahCard: React.FC<SurahCardProps> = memo(({ surah, isRead = false, match
 
                 {/* Info Container */}
                 <div className="flex-1 min-w-0 flex flex-col justify-center h-full">
-                    <div className="flex items-baseline justify-between gap-4 mb-2">
+                    <div className={`flex items-baseline justify-between gap-4 mb-2 ${isRead ? 'pr-7' : ''}`}>
                         <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white truncate transition-colors group-hover:text-emerald-500 leading-tight">
                             {surah.name}
                         </h3>
@@ -152,6 +152,13 @@ const SearchStyles = () => (
         }
         .animate-fade-in {
             animation: fadeIn 0.3s ease-out forwards;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     `}} />
 );
@@ -539,15 +546,15 @@ export const SurahListPage: React.FC = memo(() => {
             <div className="max-w-7xl mx-auto space-y-6 w-full">
                 {/* Header - Title Only */}
                 <div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-400/10 border border-emerald-400/20 text-emerald-400 text-[10px] uppercase tracking-widest font-bold mb-3">
-                        <span className="relative flex h-2 w-2">
+                    <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-400/10 border border-emerald-400/20 text-emerald-400 text-[9px] md:text-[10px] uppercase tracking-wider font-bold mb-3 transition-all">
+                        <span className="relative flex h-1.5 w-1.5 md:h-2 md:w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 md:h-2 md:w-2 bg-emerald-400"></span>
                         </span>
                         The Quranic Revelation
                     </div>
 
-                    <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
+                    <h1 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
                         Holy <span className="text-emerald-400">Surahs</span>
                     </h1>
                 </div>
@@ -631,19 +638,21 @@ export const SurahListPage: React.FC = memo(() => {
                         </div>
                     </div>
 
-                    {/* Topic/Emotion Chips - Wrapped to show all */}
-                    <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mr-2 whitespace-nowrap">Explore Topics:</span>
-                        {TOPICS_ARR.map(topic => (
-                            <EmotionChip
-                                key={topic.id}
-                                id={topic.id}
-                                label={topic.label}
-                                icon={topic.icon}
-                                isSelected={selectedTopics.includes(topic.id)}
-                                onClick={toggleTopic}
-                            />
-                        ))}
+                    {/* Topic/Emotion Chips - Horizontal Scroll on Mobile */}
+                    <div className="flex flex-col gap-3">
+                        <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-1">Explore Topics</span>
+                        <div className="flex overflow-x-auto no-scrollbar items-center gap-2 pb-1 -mx-2 px-2">
+                            {TOPICS_ARR.map(topic => (
+                                <EmotionChip
+                                    key={topic.id}
+                                    id={topic.id}
+                                    label={topic.label}
+                                    icon={topic.icon}
+                                    isSelected={selectedTopics.includes(topic.id)}
+                                    onClick={toggleTopic}
+                                />
+                            ))}
+                        </div>
                     </div>
 
                     {/* Active Filters */}
@@ -675,8 +684,8 @@ export const SurahListPage: React.FC = memo(() => {
                         </div>
                     )}
 
-                    {/* Filters - Wrapped to show all */}
-                    <div className="flex flex-wrap items-center gap-2">
+                    {/* Filters - Horizontal Scroll on Mobile */}
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 -mx-2 px-2">
                         <FilterChip
                             label="All"
                             active={filter === 'all'}
@@ -694,7 +703,7 @@ export const SurahListPage: React.FC = memo(() => {
                             active={filter === 'madinah'}
                             onClick={() => handleFilterChange('madinah')}
                         />
-                        <div className="w-px h-6 bg-slate-200 dark:bg-white/10 mx-1" />
+                        <div className="hidden sm:block w-px h-6 bg-slate-200 dark:bg-white/10 mx-1 flex-shrink-0" />
                         <FilterChip
                             label="Read"
                             icon={<span>✅</span>}

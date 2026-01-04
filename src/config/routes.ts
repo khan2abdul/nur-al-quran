@@ -27,6 +27,12 @@ export const ROUTES = {
     ISLAMIC_LEGACY: '/knowledge/islamic-legacy',
     LIVING_ISLAM: '/living-islam-daily-modern-life',
     WOMEN_IN_ISLAM: '/women-in-islam-rights-empowerment',
+    YOUTH_GUIDE: '/muslim-youth-students-guide',
+    MARRIAGE_GUIDE: '/islamic-marriage-guide',
+    HEALTH: '/islamic-health-wellness',
+    CALENDAR: '/islamic-calendar-events-interactive',
+    DEATH_AND_AFTERLIFE: '/wisdom/death-and-afterlife',
+    NEW_MUSLIMS: '/wisdom/new-muslims',
 } as const;
 
 /**

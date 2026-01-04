@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ROUTES } from '@/config/routes';
 
 // --- Types ---
-type TabId = 'intro' | 'miracles' | 'themes' | 'preservation' | 'application';
+type TabId = 'intro' | 'miracles' | 'themes' | 'preservation' | 'application' | 'studio';
 
 interface MiracleCard {
     id: string;
@@ -87,16 +87,18 @@ const EMOTIONS = [
 
 // --- Components ---
 
-const HeroSection: React.FC<{ activeTab: TabId; onTabChange: (id: TabId) => void }> = memo(({ activeTab, onTabChange }) => (
-    <div className="relative bg-gradient-to-br from-slate-900 to-slate-800 text-white overflow-hidden pb-16">
+const HeroSection: React.FC = memo(() => (
+    <div className="relative bg-gradient-to-br from-slate-950 to-slate-900 text-white overflow-hidden pb-16">
         <div className="absolute inset-0 bg-[url('/patterns/islamic-pattern.svg')] opacity-10 animate-spin-slow"></div>
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-slate-900/90"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-slate-950/90"></div>
 
         <div className="relative z-10 container mx-auto px-6 pt-12 text-center">
-            <Link to={ROUTES.WISDOM} className="inline-flex items-center gap-2 text-slate-300 hover:text-white mb-8 transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                Back to Divine Wisdom
-            </Link>
+            <div className="flex justify-center mb-6">
+                <Link to={ROUTES.WISDOM} className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    Back to Divine Wisdom
+                </Link>
+            </div>
 
             <span className="inline-block px-4 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-sm font-bold mb-6 tracking-wide uppercase">
                 The Final Revelation
@@ -107,30 +109,40 @@ const HeroSection: React.FC<{ activeTab: TabId; onTabChange: (id: TabId) => void
             <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-10 leading-relaxed">
                 Discover the depth, miracles, and timeless wisdom of Allah's words to humanity.
             </p>
-
-            <div className="flex flex-wrap justify-center gap-4">
-                {[
-                    { id: 'intro', label: 'Introduction' },
-                    { id: 'miracles', label: 'Miracles' },
-                    { id: 'themes', label: 'Themes' },
-                    { id: 'preservation', label: 'Preservation' },
-                    { id: 'application', label: 'Application' },
-                ].map((tab) => (
-                    <button
-                        key={tab.id}
-                        onClick={() => onTabChange(tab.id as TabId)}
-                        className={`px-6 py-3 rounded-full font-bold transition-all ${activeTab === tab.id
-                            ? 'bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/30 ring-2 ring-amber-400 ring-offset-2 ring-offset-slate-900'
-                            : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-                            }`}
-                    >
-                        {tab.label}
-                    </button>
-                ))}
-            </div>
         </div>
     </div>
 ));
+HeroSection.displayName = 'HeroSection';
+
+const TabNavigation: React.FC<{ activeTab: TabId; onTabChange: (id: TabId) => void }> = memo(({ activeTab, onTabChange }) => (
+    <div className="grid grid-cols-2 md:flex md:justify-center gap-3 -mt-6 relative z-20 px-4 max-w-4xl mx-auto mb-12">
+        {[
+            { id: 'intro', label: 'Introduction', icon: '✨' },
+            { id: 'miracles', label: 'Miracles', icon: '🔬' },
+            { id: 'themes', label: 'Themes', icon: '🌍' },
+            { id: 'preservation', label: 'Preservation', icon: '🛡️' },
+            { id: 'application', label: 'Application', icon: '🤲' },
+            { id: 'studio', label: 'Studio', icon: '🎙️' },
+        ].map((tab, idx, arr) => (
+            <button
+                key={tab.id}
+                onClick={() => onTabChange(tab.id as TabId)}
+                className={`
+                    px-5 py-3 rounded-xl font-bold transition-all text-sm md:text-base flex items-center justify-center gap-2
+                    ${idx === arr.length - 1 && arr.length % 2 !== 0 ? 'col-span-2 md:col-span-1' : ''}
+                    ${activeTab === tab.id
+                        ? 'bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/30'
+                        : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
+                    }
+                `}
+            >
+                <span>{tab.icon}</span>
+                {tab.label}
+            </button>
+        ))}
+    </div>
+));
+TabNavigation.displayName = 'TabNavigation';
 
 const IntroductionSection: React.FC = memo(() => (
     <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-xl border border-slate-200 dark:border-white/5 mb-12 animate-fade-in">
@@ -1126,53 +1138,15 @@ const CommunityInspiration: React.FC = memo(() => {
  * The Quran's Message Page
  */
 const TheQuranPage: React.FC = memo(() => {
-    const [activeTab, setActiveTab] = useState<TabId | 'studio'>('intro');
+    const [activeTab, setActiveTab] = useState<TabId>('intro');
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20 overflow-x-hidden">
-            {/* Hero Section Updated Inline for Tab Logic */}
-            <div className="relative bg-gradient-to-br from-slate-950 to-slate-900 text-white overflow-hidden pb-16">
-                <div className="absolute inset-0 bg-[url('/patterns/islamic-pattern.svg')] opacity-10 animate-spin-slow"></div>
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-slate-950/90"></div>
+            <HeroSection />
 
-                <div className="relative z-10 container mx-auto px-6 pt-12 text-center">
-                    <Link to={ROUTES.WISDOM} className="inline-flex items-center gap-2 text-slate-300 hover:text-white mb-8 transition-colors">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                        Back to Divine Wisdom
-                    </Link>
+            <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-                    <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-                        The Quran's <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-300">Message</span>
-                    </h1>
-                    <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-10 leading-relaxed">
-                        Discover the depth, miracles, and timeless wisdom of Allah's words to humanity.
-                    </p>
-
-                    <div className="flex flex-wrap justify-center gap-4">
-                        {[
-                            { id: 'intro', label: 'Introduction' },
-                            { id: 'miracles', label: 'Miracles' },
-                            { id: 'themes', label: 'Themes' },
-                            { id: 'preservation', label: 'Preservation' },
-                            { id: 'application', label: 'Application' },
-                            { id: 'studio', label: 'Studio' }, // Added Studio Tab
-                        ].map((tab) => (
-                            <button
-                                key={tab.id}
-                                onClick={() => setActiveTab(tab.id as any)}
-                                className={`px-4 py-2 rounded-full font-bold transition-all text-sm md:text-base ${activeTab === tab.id
-                                    ? 'bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/30'
-                                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-                                    }`}
-                            >
-                                {tab.label}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            <div className="container mx-auto px-6 -mt-10 relative z-20">
+            <div className="container mx-auto px-6 relative z-20">
                 {activeTab === 'intro' && <IntroductionSection />}
                 {activeTab === 'miracles' && <MiraclesLab />}
                 {activeTab === 'themes' && <ThemesNavigator />}

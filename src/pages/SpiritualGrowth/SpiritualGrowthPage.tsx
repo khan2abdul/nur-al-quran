@@ -2035,193 +2035,197 @@ SpiritualDashboard.displayName = 'SpiritualDashboard';
 // MAIN PAGE COMPONENT
 // ============================================================================
 
+// ============================================================================
+// MAIN PAGE COMPONENT
+// ============================================================================
+
+type TabId = 'intro' | 'dhikr' | 'patience' | 'dua' | 'sincerity';
+
+const HeroSection: React.FC = memo(() => (
+    <div className="relative bg-gradient-to-br from-purple-900 via-slate-900 to-slate-800 overflow-hidden pb-16">
+        {/* Decorative Pattern */}
+        <div className="absolute inset-0 bg-[url('/patterns/islamic-pattern.svg')] opacity-10"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-slate-900/90"></div>
+
+        {/* Floating Icons */}
+        <div className="absolute top-20 left-10 text-6xl opacity-20 animate-float">✨</div>
+        <div className="absolute top-40 right-20 text-5xl opacity-20 animate-float-delayed">📿</div>
+        <div className="absolute bottom-20 left-1/4 text-4xl opacity-20 animate-float">🤲</div>
+
+        <div className="relative z-10 container mx-auto px-6 pt-12 text-center">
+            <div className="flex justify-center mb-6">
+                <Link to={ROUTES.WISDOM} className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    Back to Divine Wisdom
+                </Link>
+            </div>
+
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/30 border border-purple-400/50 text-purple-300 text-sm font-bold mb-6 backdrop-blur-sm">
+                <span>🌱</span> Spiritual Development
+            </div>
+
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight text-white">
+                Spiritual <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-300">Growth</span>
+            </h1>
+            <p className="text-xl text-white/90 max-w-3xl mx-auto mb-4 leading-relaxed">
+                Cultivate your inner self through mindfulness, sincerity, and connection with Allah
+            </p>
+        </div>
+    </div>
+));
+
+HeroSection.displayName = 'HeroSection';
+
+const TabNavigation: React.FC<{ activeTab: TabId; onTabChange: (id: TabId) => void }> = memo(({ activeTab, onTabChange }) => (
+    <div className="grid grid-cols-2 md:flex md:justify-center gap-3 -mt-6 relative z-20 px-4 max-w-4xl mx-auto">
+        {[
+            { id: 'intro' as TabId, label: 'Overview', icon: '✨' },
+            { id: 'dhikr' as TabId, label: 'Dhikr', icon: '📿' },
+            { id: 'patience' as TabId, label: 'Patience', icon: '🌱' },
+            { id: 'dua' as TabId, label: 'Dua Power', icon: '🤲' },
+            { id: 'sincerity' as TabId, label: 'Sincerity', icon: '💎' },
+        ].map((tab, idx, arr) => (
+            <button
+                key={tab.id}
+                onClick={() => onTabChange(tab.id)}
+                className={`
+                    px-5 py-3 rounded-xl font-bold transition-all text-sm md:text-base flex items-center justify-center gap-2
+                    ${idx === arr.length - 1 ? 'col-span-2 md:col-span-1' : ''}
+                    ${activeTab === tab.id
+                        ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/30'
+                        : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
+                    }
+                `}
+            >
+                <span>{tab.icon}</span>
+                {tab.label}
+            </button>
+        ))}
+    </div>
+));
+
+TabNavigation.displayName = 'TabNavigation';
+
 export const SpiritualGrowthPage: React.FC = memo(() => {
+    // State
+    const [activeTab, setActiveTab] = useState<TabId>('intro');
     const [data, setData] = useState<SpiritualData>(() =>
         getStorageItem(STORAGE_KEY, getDefaultData())
     );
-    const [scrollProgress, setScrollProgress] = useState(0);
-    const [activeSection, setActiveSection] = useState('intro');
 
-    // Save data to localStorage whenever it changes
+    // Persist data
     useEffect(() => {
         setStorageItem(STORAGE_KEY, data);
     }, [data]);
 
-    // Scroll progress tracking
-    useEffect(() => {
-        const handleScroll = () => {
-            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = (window.scrollY / scrollHeight) * 100;
-            setScrollProgress(progress);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    const handleUpdateData = useCallback((newData: SpiritualData) => {
+    const updateData = useCallback((newData: SpiritualData) => {
         setData(newData);
     }, []);
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 relative">
-            {/* Progress Bar */}
-            <ProgressBar progress={scrollProgress} />
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-20">
+            <HeroSection />
 
-            {/* Sidebar Navigation */}
-            <Sidebar sections={SECTIONS} activeSection={activeSection} />
+            <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-            {/* Main Content */}
-            <div className="max-w-4xl mx-auto px-4 py-12 lg:py-20">
-                {/* Header */}
-                <header className="text-center mb-16">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-400/10 border border-purple-400/20 text-purple-500 text-xs uppercase tracking-widest font-bold mb-6">
-                        <span>🌟</span> Spiritual Development
-                    </div>
-                    <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-                        Spiritual <span className="text-purple-500">Growth</span>
-                    </h1>
-                    <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
-                        Cultivate your inner self through mindfulness, sincerity, and connection with Allah
-                    </p>
-                </header>
+            <div className="max-w-4xl mx-auto px-4 py-12">
 
-                {/* Introduction Section */}
-                <section id="intro" className="mb-16">
-                    <div className="p-8 rounded-3xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-400/20">
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Welcome to Your Spiritual Journey</h2>
-                        <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                            In Islam, spiritual growth is about nurturing your relationship with Allah through consistent practice,
-                            sincere intentions, and mindful reflection. This page provides practical tools to help you on this journey.
-                        </p>
-                        <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            <strong className="text-purple-500">Start small, be consistent.</strong> The Prophet Muhammad ﷺ said:
-                            "The most beloved deeds to Allah are those done consistently, even if they are small."
-                        </p>
-                    </div>
-                </section>
-
-                {/* Spiritual Dashboard */}
-                <section className="mb-16">
-                    <SpiritualDashboard data={data} />
-                </section>
-
-                {/* Dhikr Section */}
-                <section id="dhikr" className="mb-16">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3 mb-6">
-                        📿 Dhikr & Mindfulness
-                    </h2>
-                    <p className="text-slate-600 dark:text-slate-300 mb-6">
-                        <strong>Dhikr</strong> means "remembrance" — the practice of remembering Allah throughout your day.
-                        It brings peace to the heart and keeps you spiritually connected.
-                    </p>
-
-                    <div className="space-y-6">
-                        {/* Digital Tasbih Counter */}
-                        <DhikrCounter data={data} onUpdate={handleUpdateData} />
-
-                        {/* Morning/Evening Routine */}
-                        <DailyRoutine />
-                    </div>
-                </section>
-
-                {/* Patience & Gratitude Section */}
-                <section id="patience" className="mb-16">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3 mb-6">
-                        🌱 Patience & Gratitude
-                    </h2>
-                    <p className="text-slate-600 dark:text-slate-300 mb-6">
-                        <strong>Sabr (patience)</strong> and <strong>Shukr (gratitude)</strong> are the twin pillars of spiritual resilience.
-                        Patience is active trust in Allah during hardships; gratitude multiplies your blessings.
-                    </p>
-
-                    <div className="space-y-6">
-                        {/* Mood Tracker */}
-                        <MoodTracker data={data} onUpdate={handleUpdateData} />
-
-                        {/* Gratitude Journal */}
-                        <GratitudeJournal data={data} onUpdate={handleUpdateData} />
-
-                        {/* Patience Tracker */}
-                        <PatienceTracker data={data} onUpdate={handleUpdateData} />
-                    </div>
-                </section>
-
-                {/* Dua Section */}
-                <section id="dua" className="mb-16">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3 mb-6">
-                        🤲 The Power of Dua
-                    </h2>
-                    <p className="text-slate-600 dark:text-slate-300 mb-6">
-                        <strong>Dua</strong> is direct communication with Allah — your private conversation with the Creator.
-                        There are no intermediaries, no special language required. Just speak from your heart.
-                    </p>
-
-                    <div className="space-y-6">
-                        {/* Info Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="p-4 rounded-xl bg-cyan-400/10 border border-cyan-400/20">
-                                <h4 className="font-bold text-cyan-500 mb-2">Best Times for Dua</h4>
-                                <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
-                                    <li>• Last third of the night</li>
-                                    <li>• Before breaking fast</li>
-                                    <li>• During rain</li>
-                                    <li>• After obligatory prayers</li>
-                                    <li>• On Friday</li>
-                                </ul>
-                            </div>
-                            <div className="p-4 rounded-xl bg-amber-400/10 border border-amber-400/20">
-                                <h4 className="font-bold text-amber-500 mb-2">How Allah Responds</h4>
-                                <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
-                                    <li>• Grants what you ask</li>
-                                    <li>• Gives something better</li>
-                                    <li>• Averts harm from you</li>
-                                    <li>• Saves reward for Hereafter</li>
-                                </ul>
+                {/* INTRO TAB */}
+                {activeTab === 'intro' && (
+                    <div className="animate-fade-in space-y-8">
+                        <div className="p-8 rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 shadow-xl">
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Welcome to Your Spiritual Journey</h2>
+                            <p className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
+                                In Islam, spiritual growth is about nurturing your relationship with Allah through consistent practice,
+                                sincere intentions, and mindful reflection. This page provides practical tools to help you on this journey.
+                            </p>
+                            <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-xl border border-purple-100 dark:border-purple-500/20">
+                                <p className="text-sm font-bold text-purple-800 dark:text-purple-300">
+                                    Start small, be consistent. <span className="font-normal text-slate-600 dark:text-slate-400">The Prophet Muhammad ﷺ said: "The most beloved deeds to Allah are those done consistently, even if they are small."</span>
+                                </p>
                             </div>
                         </div>
 
-                        {/* Dua Library */}
-                        <DuaLibrary data={data} onUpdate={handleUpdateData} />
+                        {/* Quick Dashboard */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 text-center">
+                                <span className="text-3xl block mb-2">📿</span>
+                                <span className="text-2xl font-bold text-slate-900 dark:text-white">{data.dhikr.totalCount}</span>
+                                <p className="text-xs text-slate-500">Total Dhikr</p>
+                            </div>
+                            <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 text-center">
+                                <span className="text-3xl block mb-2">🙏</span>
+                                <span className="text-2xl font-bold text-slate-900 dark:text-white">{data.gratitude.entries.length}</span>
+                                <p className="text-xs text-slate-500">Gratitude Entries</p>
+                            </div>
+                            <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 text-center">
+                                <span className="text-3xl block mb-2">🔥</span>
+                                <span className="text-2xl font-bold text-slate-900 dark:text-white">{data.dhikr.streak}</span>
+                                <p className="text-xs text-slate-500">Day Streak</p>
+                            </div>
+                            <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 text-center">
+                                <span className="text-3xl block mb-2">💎</span>
+                                <span className="text-2xl font-bold text-slate-900 dark:text-white">{data.hiddenDeeds}</span>
+                                <p className="text-xs text-slate-500">Hidden Deeds</p>
+                            </div>
+                        </div>
+
+                        <div className="p-8 rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 shadow-xl mt-8">
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                                <span>✨</span> 99 Names of Allah
+                            </h2>
+                            <NamesOfAllah />
+                        </div>
                     </div>
-                </section>
+                )}
 
-                {/* Sincerity Section */}
-                <section id="sincerity" className="mb-16">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3 mb-6">
-                        💎 Sincerity in Action
-                    </h2>
-                    <p className="text-slate-600 dark:text-slate-300 mb-6">
-                        <strong>Ikhlas (sincerity)</strong> means doing everything purely for Allah's pleasure — not for
-                        recognition, praise, or worldly gain. It transforms ordinary actions into acts of worship.
-                    </p>
-                    <SincerityChecker data={data} onUpdate={handleUpdateData} />
-                </section>
+                {/* DHIKR TAB */}
+                {activeTab === 'dhikr' && (
+                    <div className="animate-fade-in space-y-8">
+                        <div className="text-center mb-6">
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Dhikr & Mindfulness</h2>
+                            <p className="text-slate-600 dark:text-slate-400">Remember Allah in every moment</p>
+                        </div>
+                        <DhikrCounter data={data} onUpdate={updateData} />
+                        <DailyRoutine />
+                    </div>
+                )}
 
-                {/* 99 Names of Allah Section */}
-                <section className="mb-16">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3 mb-6">
-                        ✨ Knowing Allah
-                    </h2>
-                    <p className="text-slate-600 dark:text-slate-300 mb-6">
-                        The <strong>Asma ul Husna</strong> (Beautiful Names of Allah) help us understand and connect with our Creator.
-                        The Prophet ﷺ said: &quot;Allah has ninety-nine names. Whoever memorizes and understands them will enter Paradise.&quot;
-                    </p>
-                    <NamesOfAllah />
-                </section>
+                {/* PATIENCE TAB */}
+                {activeTab === 'patience' && (
+                    <div className="animate-fade-in space-y-8">
+                        <div className="text-center mb-6">
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Patience & Gratitude</h2>
+                            <p className="text-slate-600 dark:text-slate-400">The twin pillars of faith</p>
+                        </div>
+                        <MoodTracker data={data} onUpdate={updateData} />
+                        <GratitudeJournal data={data} onUpdate={updateData} />
+                        <PatienceTracker data={data} onUpdate={updateData} />
+                    </div>
+                )}
 
-                {/* Back to Home */}
-                <div className="text-center pt-8">
-                    <Link
-                        to={ROUTES.HOME}
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-purple-400 text-slate-900 font-bold hover:bg-purple-300 transition-all shadow-lg shadow-purple-400/20"
-                    >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                        Back to Home
-                    </Link>
-                </div>
+                {/* DUA TAB */}
+                {activeTab === 'dua' && (
+                    <div className="animate-fade-in space-y-8">
+                        <div className="text-center mb-6">
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">The Power of Dua</h2>
+                            <p className="text-slate-600 dark:text-slate-400">Supplications for every moment of your day</p>
+                        </div>
+                        <DuaLibrary data={data} onUpdate={updateData} />
+                    </div>
+                )}
+
+                {/* SINCERITY TAB */}
+                {activeTab === 'sincerity' && (
+                    <div className="animate-fade-in space-y-8">
+                        <div className="text-center mb-6">
+                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Ikhlas (Sincerity)</h2>
+                            <p className="text-slate-600 dark:text-slate-400">Purify your intentions for Allah alone</p>
+                        </div>
+                        <SincerityChecker data={data} onUpdate={updateData} />
+                    </div>
+                )}
+
             </div>
         </div>
     );
