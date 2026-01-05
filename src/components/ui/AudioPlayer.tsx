@@ -233,7 +233,7 @@ export const AudioPlayer: React.FC = memo(() => {
         return (
             <div className={`
                 fixed left-0 right-0 z-[100] transition-all duration-300
-                ${isMobile ? 'bottom-[64px]' : 'bottom-0'} 
+                ${isMobile ? 'bottom-[calc(80px+env(safe-area-inset-bottom,0px))]' : 'bottom-0'} 
                 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md
                 border-t border-primary-200 dark:border-primary-800
                 shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)]
@@ -249,7 +249,7 @@ export const AudioPlayer: React.FC = memo(() => {
     return (
         <div className={`
             fixed left-0 right-0 z-[100] transition-all duration-300
-            ${isMobile ? 'bottom-[64px]' : 'bottom-0'} 
+            ${isMobile ? 'bottom-[calc(80px+env(safe-area-inset-bottom,0px))]' : 'bottom-0'} 
             bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl
             border-t border-slate-200 dark:border-white/5
             shadow-[0_-8px_40px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_-8px_40px_-10px_rgba(0,0,0,0.5)]

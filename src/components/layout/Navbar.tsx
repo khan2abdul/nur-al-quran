@@ -301,8 +301,8 @@ const MobileNav: React.FC = memo(() => {
     ).slice(0, 4);
 
     return (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-t border-slate-200 dark:border-white/5 pb-safe pb-[env(safe-area-inset-bottom)]">
-            <div className="flex items-center justify-around h-16 px-1">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-t border-slate-200 dark:border-white/5 pb-[env(safe-area-inset-bottom,0px)]">
+            <div className="flex items-center justify-around h-20 px-1">
                 {mobileItems.map((item) => {
                     const isActive = location.pathname === item.path;
                     return (
@@ -317,7 +317,7 @@ const MobileNav: React.FC = memo(() => {
                             <div className={`${isActive ? 'scale-110' : ''}`}>
                                 {getIcon(item.icon)}
                             </div>
-                            <span className="text-[9px] font-bold uppercase tracking-widest mt-1">{item.name}</span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest mt-1 leading-none">{item.name === 'Divine Wisdom' ? 'Divine' : item.name}</span>
                         </Link>
                     );
                 })}
@@ -348,8 +348,8 @@ const MobileNav: React.FC = memo(() => {
                             <span className="text-lg">🔑</span>
                         )}
                     </div>
-                    <span className="text-[9px] font-bold uppercase tracking-widest mt-1">
-                        {user ? 'Account' : 'Sign In'}
+                    <span className="text-[10px] font-bold uppercase tracking-widest mt-1 leading-none">
+                        {user ? 'Account' : 'Sign'}
                     </span>
                 </Link>
             </div>
