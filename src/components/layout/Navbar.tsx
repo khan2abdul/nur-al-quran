@@ -7,7 +7,7 @@
  * @module components/layout/Navbar
  */
 
-import React, { memo, useState, useCallback } from 'react';
+import React, { memo, useState, useCallback, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -148,6 +148,12 @@ LanguageSwitcher.displayName = 'LanguageSwitcher';
 const ProfileDropdown: React.FC = memo(() => {
     const { user, signOut, signInWithGoogle } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
+    const location = useLocation();
+
+    // Close dropdown on navigation
+    useEffect(() => {
+        setIsOpen(false);
+    }, [location.pathname]);
 
     const handleLogout = useCallback(async () => {
         await signOut();
@@ -322,36 +328,7 @@ const MobileNav: React.FC = memo(() => {
                     );
                 })}
 
-                {/* Dynamic Auth/Profile Item */}
-                <Link
-                    to={user ? ROUTES.HOME : ROUTES.AUTH}
-                    onClick={(e) => {
-                        if (user) {
-                            // If user is logged in, clicking this opens the profile dropdown in the header 
-                            // or we can redirect to a profile page if it exists.
-                            // For now, let's keep it consistent or show a toast.
-                        }
-                    }}
-                    className={`flex flex-col items-center justify-center gap-1 px-3 py-2 transition-all ${location.pathname === ROUTES.AUTH
-                        ? 'text-cyan-400'
-                        : 'text-slate-500 dark:text-slate-400'
-                        }`}
-                >
-                    <div className="w-6 h-6 flex items-center justify-center">
-                        {user ? (
-                            <img
-                                src={user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}&background=random`}
-                                alt="Profile"
-                                className="w-5 h-5 rounded-full object-cover border border-cyan-400/30"
-                            />
-                        ) : (
-                            <span className="text-lg">🔑</span>
-                        )}
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest mt-1 leading-none">
-                        {user ? 'Account' : 'Sign'}
-                    </span>
-                </Link>
+                {/* Dynamic Auth/Profile Item removed from bottom bar as per user request */}
             </div>
         </nav>
     );

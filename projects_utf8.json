@@ -1,0 +1,27 @@
+﻿{
+  "status": "success",
+  "result": [
+    {
+      "projectId": "calorie-tracker-a234f",
+      "projectNumber": "177162777050",
+      "displayName": "calorie tracker",
+      "name": "projects/calorie-tracker-a234f",
+      "resources": {
+        "hostingSite": "calorie-tracker-a234f"
+      },
+      "state": "ACTIVE",
+      "etag": "1_099668d1-966e-4196-a422-fa021d387443"
+    },
+    {
+      "projectId": "qainnovationlabs-7c131",
+      "projectNumber": "894975353744",
+      "displayName": "QAInnovationLabs",
+      "name": "projects/qainnovationlabs-7c131",
+      "resources": {
+        "hostingSite": "qainnovationlabs-7c131"
+      },
+      "state": "ACTIVE",
+      "etag": "1_2fa5c29c-9c67-40c4-ae2f-574e90882f8f"
+    }
+  ]
+}
