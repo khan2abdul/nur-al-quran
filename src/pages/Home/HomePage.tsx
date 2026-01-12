@@ -178,7 +178,7 @@ export const HomePage: React.FC = memo(() => {
                 </div>
 
                 {/* Layer 3: Main Content */}
-                <div className="h-20 md:h-32" />
+                <div className="h-4 md:h-32" />
                 <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
                     <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full glass-card border-slate-200 dark:border-white/5 text-cyan-600 dark:text-cyan-400 text-[9px] sm:text-[11px] uppercase tracking-[0.2em] sm:tracking-[0.4em] font-bold mb-10 transition-all hover:border-cyan-400/30 hover:bg-cyan-400/5 group cursor-default shadow-sm dark:shadow-none">
                         <span className="relative flex h-2 w-2">

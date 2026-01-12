@@ -24,13 +24,13 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         link: ROUTES.LEARN,
     },
     {
-        id: 'spiritual',
-        title: 'Spiritual Growth',
-        description: 'Cultivate your inner self through mindfulness, sincerity, and connection with Allah.',
-        icon: '✨',
-        color: 'from-purple-500/20 to-pink-500/20',
-        topics: ['Dhikir & Mindfulness', 'Patience & Gratitude', 'The Power of Dua', 'Sincerity in Action'],
-        link: ROUTES.SPIRITUAL,
+        id: 'converts',
+        title: 'Converts & New Muslims',
+        description: 'A welcoming guide for those starting their journey in Islam.',
+        icon: '🌱',
+        color: 'from-teal-500/20 to-cyan-500/20',
+        topics: ['Shahada Guide', 'Islam Basics', 'Learning Salah', 'Family Relations', 'Finding Community', 'FAQs'],
+        link: ROUTES.NEW_MUSLIMS,
     },
     {
         id: 'character',
@@ -42,6 +42,15 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         link: ROUTES.PROPHETIC,
     },
     {
+        id: 'living',
+        title: 'Living Islam Daily',
+        description: 'Practical guidance for navigating modern life, work, family, and challenges.',
+        icon: '🌿',
+        color: 'from-teal-500/20 to-emerald-500/20',
+        topics: ['Work & Ethics', 'Family Harmony', 'Modern Challenges', 'Personal Growth'],
+        link: ROUTES.LIVING_ISLAM,
+    },
+    {
         id: 'quran',
         title: "The Quran's Message",
         description: 'Understand the depth and miracles of the final revelation to humanity.',
@@ -51,6 +60,15 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         link: ROUTES.THE_QURAN,
     },
     {
+        id: 'spiritual',
+        title: 'Spiritual Growth',
+        description: 'Cultivate your inner self through mindfulness, sincerity, and connection with Allah.',
+        icon: '✨',
+        color: 'from-purple-500/20 to-pink-500/20',
+        topics: ['Dhikir & Mindfulness', 'Patience & Gratitude', 'The Power of Dua', 'Sincerity in Action'],
+        link: ROUTES.SPIRITUAL,
+    },
+    {
         id: 'history',
         title: 'Islamic Legacy',
         description: 'Discover the rich history and contributions of Islamic civilization to the world.',
@@ -58,15 +76,6 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         color: 'from-indigo-500/20 to-blue-500/20',
         topics: ['History of Prophets', 'Golden Age of Science', 'Islamic Empires', 'Lessons from History'],
         link: ROUTES.ISLAMIC_LEGACY,
-    },
-    {
-        id: 'living',
-        title: 'Living Islam Daily',
-        description: 'Practical guidance for navigating modern life, work, family, and challenges.',
-        icon: '🌿',
-        color: 'from-teal-500/20 to-emerald-500/20',
-        topics: ['Work & Ethics', 'Family Harmony', 'Modern Challenges', 'Personal Growth'],
-        link: ROUTES.LIVING_ISLAM,
     },
     {
         id: 'women',
@@ -123,15 +132,6 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         link: ROUTES.DEATH_AND_AFTERLIFE,
     },
     {
-        id: 'converts',
-        title: 'Converts & New Muslims',
-        description: 'A welcoming guide for those starting their journey in Islam.',
-        icon: '🌱',
-        color: 'from-teal-500/20 to-cyan-500/20',
-        topics: ['Shahada Guide', 'Islam Basics', 'Learning Salah', 'Family Relations', 'Finding Community', 'FAQs'],
-        link: ROUTES.NEW_MUSLIMS,
-    },
-    {
         id: 'fiqh',
         title: 'Islamic Law (Fiqh)',
         description: 'Understanding the practical rules and jurisprudence that govern daily Muslim life.',
@@ -149,8 +149,6 @@ const WISDOM_CATEGORIES: WisdomCategory[] = [
         topics: ['Psychology of Belief', 'The BRIDGE Method', 'Misconception Hub', 'Dialogue Frameworks', 'Public Speaking', 'Digital Da\'wah Lab'],
         link: ROUTES.DAWAH
     },
-
-
 ];
 
 const CategoryCard: React.FC<{ category: WisdomCategory }> = memo(({ category }) => {
