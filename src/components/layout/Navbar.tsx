@@ -240,7 +240,7 @@ ProfileDropdown.displayName = 'ProfileDropdown';
  */
 const DesktopNav: React.FC = memo(() => {
     const location = useLocation();
-    const { theme, toggleTheme } = useTheme();
+    const { resolvedTheme, toggleTheme } = useTheme();
 
     return (
         <header className="hidden md:block fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5">
@@ -280,9 +280,9 @@ const DesktopNav: React.FC = memo(() => {
                         onClick={toggleTheme}
                         className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 hover:text-cyan-400 transition-all"
                         aria-label="Toggle theme"
-                        title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+                        title={`Switch to ${resolvedTheme === 'light' ? 'dark' : 'light'} mode`}
                     >
-                        {getIcon(theme === 'light' ? 'moon' : 'sun')}
+                        {getIcon(resolvedTheme === 'light' ? 'moon' : 'sun')}
                     </button>
 
                     <ProfileDropdown />
@@ -340,7 +340,7 @@ MobileNav.displayName = 'MobileNav';
  * Mobile Header (Top bar)
  */
 const MobileHeader: React.FC = memo(() => {
-    const { theme, toggleTheme } = useTheme();
+    const { resolvedTheme, toggleTheme } = useTheme();
 
     return (
         <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-2">
@@ -359,7 +359,7 @@ const MobileHeader: React.FC = memo(() => {
                         className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 hover:text-cyan-400 transition-all"
                         aria-label="Toggle theme"
                     >
-                        {getIcon(theme === 'light' ? 'moon' : 'sun')}
+                        {getIcon(resolvedTheme === 'light' ? 'moon' : 'sun')}
                     </button>
                     <ProfileDropdown />
                 </div>

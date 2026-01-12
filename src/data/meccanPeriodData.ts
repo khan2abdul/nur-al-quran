@@ -210,3 +210,87 @@ export const MECCAN_TIMELINE: TimelineEvent[] = [
         location: 'Mecca to Madinah'
     }
 ];
+
+export const PROPHET_FAMILY = [
+    {
+        id: 'father',
+        name: 'Abdullah ibn Abdul-Muttalib',
+        relation: 'Father',
+        description: 'Passed away before the Prophet ﷺ was born. A noble young man of Quraysh.'
+    },
+    {
+        id: 'mother',
+        name: 'Aminah bint Wahb',
+        relation: 'Mother',
+        description: 'Passed away when the Prophet ﷺ was 6 years old at Abwa.'
+    },
+    {
+        id: 'grandpa',
+        name: 'Abdul-Muttalib',
+        relation: 'Grandfather',
+        description: 'Chieftain of Quraysh who took care of him until age 8.'
+    },
+    {
+        id: 'uncle',
+        name: 'Abu Talib',
+        relation: 'Uncle',
+        description: 'Protected and supported him for over 40 years until his death.'
+    },
+    {
+        id: 'wife',
+        name: 'Khadijah bint Khuwaylid',
+        relation: 'Wife',
+        description: 'The first believer and his greatest emotional support.'
+    }
+];
+
+export const FORMATIVE_YEARS_TIMELINE = [
+    {
+        age: 0,
+        year: '570 CE',
+        location: 'Mecca',
+        title: 'The Blessed Birth',
+        description: 'Born in the Year of the Elephant. His father Abdullah had already passed away.',
+        details: ['Monday, 12th Rabi al-Awwal', 'Nursed by Halimah as-Sa’diyah']
+    },
+    {
+        age: 6,
+        year: '576 CE',
+        location: 'Abwa',
+        title: 'Loss of Mother',
+        description: 'His mother Aminah passes away during a return journey from Madinah.',
+        details: ['Becomes an orphan of both parents', 'Taken into care by grandfather']
+    },
+    {
+        age: 8,
+        year: '578 CE',
+        location: 'Mecca',
+        title: 'Grandfather’s Death',
+        description: 'Abdul-Muttalib passes away and guardianship transfers to his uncle Abu Talib.',
+        details: ['Abu Talib treats him like his own son', 'Learns trade and shepherding']
+    },
+    {
+        age: 25,
+        year: '595 CE',
+        location: 'Mecca',
+        title: 'Marriage to Khadijah',
+        description: 'Marries the noble businesswoman Khadijah (RA) after managing her trade.',
+        details: ['Age 25 (Him) vs 40 (Her)', 'Start of a loving, monogamous union']
+    },
+    {
+        age: 35,
+        year: '605 CE',
+        location: 'Kaaba',
+        title: 'Rebuilding the Kaaba',
+        description: 'Resolves a tribal dispute regarding the Black Stone placement, avoiding bloodshed.',
+        details: [' Known as Al-Amin (The Trustworthy)', 'Placed stone with his own hands']
+    },
+    {
+        age: 40,
+        year: '610 CE',
+        location: 'Cave Hira',
+        title: 'First Revelation',
+        description: 'Angel Jibril brings the first revelation of the Quran: "Read!".',
+        details: ['Start of Prophethood', 'Solitude in Cave Hira']
+    }
+];
