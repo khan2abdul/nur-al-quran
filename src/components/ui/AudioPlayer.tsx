@@ -275,7 +275,8 @@ export const AudioPlayer: React.FC = memo(() => {
                     <div className="flex items-center gap-4">
                         {/* Skip backward */}
                         <button
-                            onClick={actions.skipBackward}
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={(e) => { actions.skipBackward(); (e.target as HTMLButtonElement).blur(); }}
                             className="hidden md:flex p-2 text-slate-400 dark:text-white/40 hover:text-cyan-400 transition-colors"
                             aria-label="Rewind 10 seconds"
                         >
@@ -284,7 +285,8 @@ export const AudioPlayer: React.FC = memo(() => {
 
                         {/* Previous verse */}
                         <button
-                            onClick={actions.prevVerse}
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={(e) => { actions.prevVerse(); (e.target as HTMLButtonElement).blur(); }}
                             className="p-2 text-slate-400 dark:text-white/40 hover:text-cyan-400 transition-colors"
                             aria-label="Previous verse"
                         >
@@ -293,7 +295,8 @@ export const AudioPlayer: React.FC = memo(() => {
 
                         {/* Play/Pause */}
                         <button
-                            onClick={actions.togglePlayPause}
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={(e) => { actions.togglePlayPause(); (e.target as HTMLButtonElement).blur(); }}
                             disabled={syncState.isLoading}
                             className="w-14 h-14 flex items-center justify-center bg-cyan-400 hover:bg-cyan-300 text-slate-900 rounded-full transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:scale-105 active:scale-95 disabled:opacity-50"
                             aria-label={syncState.isPlaying ? 'Pause' : 'Play'}
@@ -309,7 +312,8 @@ export const AudioPlayer: React.FC = memo(() => {
 
                         {/* Next verse */}
                         <button
-                            onClick={actions.nextVerse}
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={(e) => { actions.nextVerse(); (e.target as HTMLButtonElement).blur(); }}
                             className="p-2 text-slate-400 dark:text-white/40 hover:text-cyan-400 transition-colors"
                             aria-label="Next verse"
                         >
@@ -318,7 +322,8 @@ export const AudioPlayer: React.FC = memo(() => {
 
                         {/* Skip forward */}
                         <button
-                            onClick={actions.skipForward}
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={(e) => { actions.skipForward(); (e.target as HTMLButtonElement).blur(); }}
                             className="hidden md:flex p-2 text-slate-400 dark:text-white/40 hover:text-cyan-400 transition-colors"
                             aria-label="Forward 10 seconds"
                         >

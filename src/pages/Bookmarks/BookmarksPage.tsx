@@ -75,6 +75,7 @@ const BookmarkCard: React.FC<BookmarkCardProps> = memo(({ bookmark, onRemove }) 
     return (
         <Link
             to={`${getSurahRoute(bookmark.surahId)}#verse-${bookmark.verseNumber}`}
+            state={{ startingVerse: bookmark.verseNumber }}
             className="block bg-white dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-slate-200 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 transition-all group shadow-sm"
         >
             <div className="flex items-start justify-between gap-4">

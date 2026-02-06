@@ -80,9 +80,10 @@
 /* Base Layer Customizations */
 @layer base {
 
-  /* Smooth scrolling */
+  /* Smooth scrolling - but disable scroll anchoring to prevent jumps */
   html {
     scroll-behavior: smooth;
+    overflow-anchor: none; /* Prevents browser from auto-adjusting scroll on DOM changes */
   }
 
   /* Base body styles */

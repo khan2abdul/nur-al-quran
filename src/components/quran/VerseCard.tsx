@@ -274,6 +274,7 @@ export const VerseCard: React.FC<VerseCardProps> = memo(({
                         <div className="flex items-center justify-between mb-10">
                             <div className="flex items-center gap-4">
                                 <button
+                                    onMouseDown={(e) => e.preventDefault()}
                                     onClick={handlePlayClick}
                                     className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${isPlaying
                                         ? 'bg-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.5)]'

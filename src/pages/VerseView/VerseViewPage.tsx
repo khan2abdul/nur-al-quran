@@ -7,7 +7,7 @@
  * @module pages/VerseView/VerseViewPage
  */
 
-import React, { memo, useEffect, useState, useCallback, useRef } from 'react';
+import React, { memo, useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { fetchSurah, fetchVerses, fetchChapterAudio, fetchSurahInfo } from '@/services/quranApi';
 import { useAudioSync, useAudioActions } from '@/context/AudioPlayerContext';
@@ -92,7 +92,25 @@ export const VerseViewPage: React.FC = memo(() => {
     const { surahId } = useParams<{ surahId: string }>();
     const surahNumber = parseInt(surahId ?? '1', 10);
     const location = useLocation();
-    const startingVerse = (location.state as { startingVerse?: number })?.startingVerse;
+
+    // Get starting verse from location state OR from URL hash (for bookmark navigation)
+    // Memoize to prevent recalculating on every render
+    const startingVerse = useMemo(() => {
+        // First check location.state
+        const stateVerse = (location.state as { startingVerse?: number })?.startingVerse;
+        if (stateVerse) return stateVerse;
+
+        // Then check URL hash (e.g., #verse-5)
+        const hash = location.hash;
+        if (hash) {
+            const match = hash.match(/^#verse-(\d+)$/);
+            if (match) {
+                return parseInt(match[1], 10);
+            }
+        }
+
+        return undefined;
+    }, [location.state, location.hash]);
 
     const [surah, setSurah] = useState<Surah | null>(null);
     const [surahInfo, setSurahInfo] = useState<any | null>(null);
@@ -116,6 +134,7 @@ export const VerseViewPage: React.FC = memo(() => {
     const { isRead, toggleReadStatus } = useReadSurahs();
     const { hasNote, getNote, addNote } = useNotes();
     const versesContainerRef = useRef<HTMLDivElement>(null);
+    const prevVerseRef = useRef<number | null>(null);
 
     // Note modal state
     const [noteModal, setNoteModal] = useState<{ isOpen: boolean; verseNumber: number; text: string }>({
@@ -171,11 +190,18 @@ export const VerseViewPage: React.FC = memo(() => {
         };
 
         loadData();
-    }, [surahNumber, syncState.selectedReciter?.id, actions]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [surahNumber, syncState.selectedReciter?.id]); // NOTE: 'actions' intentionally excluded - it can change on every render and we don't want to reload data
 
-    // Auto-scroll to starting verse on load
+    // Track if we've already scrolled to the starting verse (to prevent re-scrolling)
+    const hasScrolledToStartRef = useRef<boolean>(false);
+
+    // Auto-scroll to starting verse on load - ONLY ONCE
     useEffect(() => {
-        if (!loading && startingVerse && verses.length > 0) {
+        // Only scroll if we haven't already and all conditions are met
+        if (!loading && startingVerse && verses.length > 0 && !hasScrolledToStartRef.current) {
+            hasScrolledToStartRef.current = true; // Mark as done immediately
+
             // Small timeout to ensure DOM is ready
             setTimeout(() => {
                 const verseElement = document.getElementById(`verse-${startingVerse}`);
@@ -189,10 +215,43 @@ export const VerseViewPage: React.FC = memo(() => {
         }
     }, [loading, startingVerse, verses.length]);
 
-    // Auto-scroll to current verse when playing
+    // Track previous playing state to detect when we just started/stopped playing
+    const wasPlayingRef = useRef<boolean>(false);
+    // Track the last verse we scrolled to during playback (separate from UI state)
+    const lastPlaybackVerseRef = useRef<number | null>(null);
+
+    // Auto-scroll to current verse when playing - only when verse changes during active playback
     useEffect(() => {
-        if (syncState.isPlaying && syncState.currentSurah === surahNumber) {
-            // Updated to find the element inside VerseCard (id is on the card itself)
+        const isCurrentlyPlaying = syncState.isPlaying;
+        const wasPlaying = wasPlayingRef.current;
+
+        // When playback starts, initialize the playback verse tracker
+        // This prevents scroll when pressing play - we only scroll when verse naturally changes
+        if (isCurrentlyPlaying && !wasPlaying) {
+            // Just started playing - set the baseline without scrolling
+            lastPlaybackVerseRef.current = syncState.currentVerse;
+            wasPlayingRef.current = true;
+            return;
+        }
+
+        // When playback stops, reset tracking
+        if (!isCurrentlyPlaying && wasPlaying) {
+            wasPlayingRef.current = false;
+            return;
+        }
+
+        // Only scroll if:
+        // 1. Audio is actively playing (was playing before AND is playing now)
+        // 2. We're on the correct surah
+        // 3. The verse has actually changed from our last playback position
+        const shouldScroll =
+            isCurrentlyPlaying &&
+            wasPlaying &&
+            syncState.currentSurah === surahNumber &&
+            lastPlaybackVerseRef.current !== null &&
+            lastPlaybackVerseRef.current !== syncState.currentVerse;
+
+        if (shouldScroll) {
             const verseElement = document.getElementById(`verse-${syncState.currentVerse}`);
             if (verseElement) {
                 // Ensure we scroll with an offset to account for the sticky audio player
@@ -204,7 +263,12 @@ export const VerseViewPage: React.FC = memo(() => {
                     behavior: 'smooth'
                 });
             }
+            // Update the playback verse tracker after scrolling
+            lastPlaybackVerseRef.current = syncState.currentVerse;
         }
+
+        // Update the previous verse ref for general tracking
+        prevVerseRef.current = syncState.currentVerse;
     }, [syncState.currentVerse, syncState.isPlaying, syncState.currentSurah, surahNumber]);
 
     // Handle bookmark toggle

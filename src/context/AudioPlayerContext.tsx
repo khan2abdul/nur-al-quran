@@ -312,6 +312,17 @@ export const AudioPlayerProvider: React.FC<{ children: ReactNode }> = ({ childre
                             onError={handleError}
                             preload="metadata"
                             crossOrigin="anonymous"
+                            // Hidden and positioned off-screen to prevent browser scroll on play/pause
+                            style={{
+                                position: 'absolute',
+                                width: '1px',
+                                height: '1px',
+                                top: '-9999px',
+                                left: '-9999px',
+                                opacity: 0,
+                                pointerEvents: 'none',
+                            }}
+                            tabIndex={-1}
                         />
                     </AudioRefContext.Provider>
                 </AudioActionsContext.Provider>
